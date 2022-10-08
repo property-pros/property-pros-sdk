@@ -1,0 +1,12 @@
+version: "3.3"
+services:
+  buf:
+    image: property-pros/buf-local
+    command: generate
+    entrypoint: /usr/local/bin/buf
+    build: 
+      context: .
+      dockerfile: Dockerfile.buf
+    volumes:
+      - .:/app/
+      - /app/node_modules/
