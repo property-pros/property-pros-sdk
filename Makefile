@@ -8,8 +8,11 @@ generate:
 	make postGenerate
 preGenerate:
 	rm -rf generated/*
+	make generateTypeDeclarationFile
 postGenerate:
 	mv -f ./generated/proto/* ./generated
+generateTypeDeclarationFile:
+	tsc generated/**/*.ts --declaration --emitDeclarationOnly
 renameDependencies:
 	mv ./proto/protoc-gen-openapiv2/options/openapiv2.js ./proto/protoc-gen-openapiv2/options/annotations_pb.js
 	mv ./proto/protoc-gen-openapiv2/options/openapiv2.d.ts ./proto/protoc-gen-openapiv2/options/annotations_pb.d.ts

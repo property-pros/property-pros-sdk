@@ -1,4 +1,2 @@
-declare module "property-pros-sdk" {
-  export * as notepurchaseagreement from "./generated/proto/notepurchaseagreement/notePurchaseAgreement";
-  export * as auth from "./generated/proto/auth/auth";
-}
+export * as notepurchaseagreement from "./generated/proto/notepurchaseagreement/notePurchaseAgreement";
+export * as auth from "./generated/proto/auth/auth";
