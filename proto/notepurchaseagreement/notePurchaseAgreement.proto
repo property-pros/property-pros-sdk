@@ -5,7 +5,7 @@ package notepurchaseagreement;
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "property-pros-docs/proto/notepurchaseagreement/v1;notepurchaseagreement";
+option go_package = "property-pros-sdk/notepurchaseagreement/v1;notepurchaseagreement";
 
 message NotePurchaseAgreement {
   string Id = 1;

@@ -5,7 +5,7 @@ package auth;
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "property-pros-docs/proto/auth/v1;auth";
+option go_package = "property-pros-sdk/proto/auth/v1;auth";
 
 message User {
   string id = 1;
