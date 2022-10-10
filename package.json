@@ -5,7 +5,7 @@
     "test": "ts-mocha **/*.test.ts"
   },
   "main": "./index.js",
-  "types": "./types.d.ts",
+  "types": "./index.d.ts",
   "devDependencies": {
     "@protobuf-ts/runtime": "^2.2.2",
     "@types/chai": "^4.3.0",
