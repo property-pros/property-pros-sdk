@@ -1,6 +1,6 @@
 {
   "name": "property-pros-sdk",
-  "version": "v1.0.11",
+  "version": "v1.0.12",
   "scripts": {
     "test": "ts-mocha **/*.test.ts"
   },
