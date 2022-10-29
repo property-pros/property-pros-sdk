@@ -1,11 +1,11 @@
 {
   "name": "property-pros-sdk",
-  "version": "v1.0.14",
+  "version": "v1.0.19",
   "scripts": {
     "test": "ts-mocha **/*.test.ts"
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "devDependencies": {
     "@protobuf-ts/runtime": "^2.2.2",
     "@types/chai": "^4.3.0",

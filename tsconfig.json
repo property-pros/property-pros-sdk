@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "module": "ES2022",
+    "module": "ES6",
     "baseUrl": "./generated",
     "moduleResolution": "Node",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "target": "ES3",
+    "allowJs": true
+
   },
-  "include": ["generated/auth", "generated/notepurchaseagreement"],
+  "include": ["generated/auth", "generated/notepurchaseagreement", "index.ts"],
   "exclude": ["node_modules"]
 }

@@ -7,10 +7,10 @@ generate:
 	docker compose run buf generate
 	make postGenerate
 preGenerate:
-	rm -rf generated/*
-	make generateTypeDeclarationFile
+	rm -rf generated/* dist
 postGenerate:
 	mv -f ./generated/proto/* ./generated
+	make generateTypeDeclarationFile
 generateTypeDeclarationFile:
 	tsc --project tsconfig.json
 renameDependencies:
