@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/auth/auth.proto",
+    "title": "proto/api/auth.proto",
     "version": "version not set"
   },
   "tags": [
@@ -44,6 +44,36 @@
       }
     },
     "/v1/notepurchaseagreement": {
+      "get": {
+        "summary": "Get Note Purchase Agreement Document",
+        "description": "Gets a note purchase agreement filled out with customer data.",
+        "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreement",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/notepurchaseagreementGetNotePurchaseAgreementResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Payload.Id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "NotePurchaseAgreement"
+        ]
+      },
       "post": {
         "summary": "Save Note Purchase Agreement Document",
         "description": "Saves a note purchase agreement filled out with customer data.",
@@ -67,16 +97,16 @@
         ]
       }
     },
-    "/v1/notepurchaseagreementdoc": {
+    "/v1/notepurchaseagreements": {
       "get": {
-        "summary": "Get Note Purchase Agreement Document",
-        "description": "Gets a note purchase agreement filled out with customer data.",
-        "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreementDoc",
+        "summary": "Get All Note Purchase Agreement Documents",
+        "description": "Gets note purchase agreements with limited data.",
+        "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreements",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/notepurchaseagreementGetNotePurchaseAgreementDocResponse"
+              "$ref": "#/definitions/notepurchaseagreementGetNotePurchaseAgreementsResponse"
             }
           },
           "default": {
@@ -86,63 +116,6 @@
             }
           }
         },
-        "parameters": [
-          {
-            "name": "payload.Id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.FirstName",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.LastName",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.DateOfBirth",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.HomeAddress",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.EmailAddress",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.PhoneNumber",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.SocialSecurity",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "payload.FundsCommitted",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
         "tags": [
           "NotePurchaseAgreement"
         ]
@@ -164,27 +137,37 @@
     "authUser": {
       "type": "object",
       "properties": {
-        "id": {
+        "Id": {
           "type": "string"
         },
-        "emailAddress": {
+        "EmailAddress": {
           "type": "string"
         },
-        "password": {
+        "Password": {
           "type": "string"
         }
       }
     },
-    "notepurchaseagreementGetNotePurchaseAgreementDocResponse": {
+    "notepurchaseagreementGetNotePurchaseAgreementResponse": {
       "type": "object",
       "properties": {
-        "fileContent": {
-          "type": "string",
-          "format": "byte"
+        "payload": {
+          "$ref": "#/definitions/notepurchaseagreementNotePurchaseAgreementRecord"
         }
       }
     },
-    "notepurchaseagreementNotePurchaseAgreement": {
+    "notepurchaseagreementGetNotePurchaseAgreementsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/notepurchaseagreementRecordCollection"
+          }
+        }
+      }
+    },
+    "notepurchaseagreementNotePurchaseAgreementRecord": {
       "type": "object",
       "properties": {
         "Id": {
@@ -202,8 +185,8 @@
         "HomeAddress": {
           "type": "string"
         },
-        "EmailAddress": {
-          "type": "string"
+        "user": {
+          "$ref": "#/definitions/authUser"
         },
         "PhoneNumber": {
           "type": "string"
@@ -214,14 +197,51 @@
         "FundsCommitted": {
           "type": "string",
           "format": "uint64"
+        },
+        "FileContent": {
+          "type": "string",
+          "format": "byte"
+        },
+        "CreatedOn": {
+          "type": "string"
+        }
+      }
+    },
+    "notepurchaseagreementRecordCollection": {
+      "type": "object",
+      "properties": {
+        "Payload": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/notepurchaseagreementRecordRequestPayload"
+          }
+        }
+      }
+    },
+    "notepurchaseagreementRecordRequestPayload": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        }
+      }
+    },
+    "notepurchaseagreementRecordResultPayload": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "CreatedOn": {
+          "type": "string"
         }
       }
     },
     "notepurchaseagreementSaveNotePurchaseAgreementResponse": {
       "type": "object",
       "properties": {
-        "Id": {
-          "type": "string"
+        "payload": {
+          "$ref": "#/definitions/notepurchaseagreementRecordResultPayload"
         }
       }
     },

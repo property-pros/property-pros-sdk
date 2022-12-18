@@ -2,9 +2,9 @@ import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 export declare const protobufPackage = "auth";
 export interface User {
-    id: string;
-    emailAddress: string;
-    password: string;
+    Id: string;
+    EmailAddress: string;
+    Password: string;
 }
 export interface AuthenticateUserRequest {
     payload: User | undefined;
@@ -61,7 +61,7 @@ export declare const AuthenticationServiceDefinition: {
         };
     };
 };
-export interface AuthenticationServiceServiceImplementation<CallContextExt = {}> {
+export interface AuthenticationServiceImplementation<CallContextExt = {}> {
     authenticateUser(request: AuthenticateUserRequest, context: CallContext & CallContextExt): Promise<DeepPartial<AuthenticateUserResponse>>;
 }
 export interface AuthenticationServiceClient<CallOptionsExt = {}> {

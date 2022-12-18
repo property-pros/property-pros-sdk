@@ -11,9 +11,11 @@ plugins:
     opt: paths=source_relative
 
   # go rest api handlers
-  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.7.2-1
+  - name: grpc-gateway
     out: ./generated
-    opt: paths=source_relative
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
 
   # openapi for rest api
   - remote: buf.build/grpc-ecosystem/plugins/openapiv2:v2.6.0-1

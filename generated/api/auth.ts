@@ -1,13 +1,14 @@
 /* eslint-disable */
+import Long from "long";
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "auth";
 
 export interface User {
-  id: string;
-  emailAddress: string;
-  password: string;
+  Id: string;
+  EmailAddress: string;
+  Password: string;
 }
 
 export interface AuthenticateUserRequest {
@@ -20,19 +21,19 @@ export interface AuthenticateUserResponse {
 }
 
 function createBaseUser(): User {
-  return { id: "", emailAddress: "", password: "" };
+  return { Id: "", EmailAddress: "", Password: "" };
 }
 
 export const User = {
   encode(message: User, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.Id !== "") {
+      writer.uint32(10).string(message.Id);
     }
-    if (message.emailAddress !== "") {
-      writer.uint32(18).string(message.emailAddress);
+    if (message.EmailAddress !== "") {
+      writer.uint32(18).string(message.EmailAddress);
     }
-    if (message.password !== "") {
-      writer.uint32(26).string(message.password);
+    if (message.Password !== "") {
+      writer.uint32(26).string(message.Password);
     }
     return writer;
   },
@@ -45,13 +46,13 @@ export const User = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.Id = reader.string();
           break;
         case 2:
-          message.emailAddress = reader.string();
+          message.EmailAddress = reader.string();
           break;
         case 3:
-          message.password = reader.string();
+          message.Password = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -63,25 +64,25 @@ export const User = {
 
   fromJSON(object: any): User {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      emailAddress: isSet(object.emailAddress) ? String(object.emailAddress) : "",
-      password: isSet(object.password) ? String(object.password) : "",
+      Id: isSet(object.Id) ? String(object.Id) : "",
+      EmailAddress: isSet(object.EmailAddress) ? String(object.EmailAddress) : "",
+      Password: isSet(object.Password) ? String(object.Password) : "",
     };
   },
 
   toJSON(message: User): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.emailAddress !== undefined && (obj.emailAddress = message.emailAddress);
-    message.password !== undefined && (obj.password = message.password);
+    message.Id !== undefined && (obj.Id = message.Id);
+    message.EmailAddress !== undefined && (obj.EmailAddress = message.EmailAddress);
+    message.Password !== undefined && (obj.Password = message.Password);
     return obj;
   },
 
   fromPartial(object: DeepPartial<User>): User {
     const message = createBaseUser();
-    message.id = object.id ?? "";
-    message.emailAddress = object.emailAddress ?? "";
-    message.password = object.password ?? "";
+    message.Id = object.Id ?? "";
+    message.EmailAddress = object.EmailAddress ?? "";
+    message.Password = object.Password ?? "";
     return message;
   },
 };
@@ -209,7 +210,7 @@ export const AuthenticationServiceDefinition = {
   },
 } as const;
 
-export interface AuthenticationServiceServiceImplementation<CallContextExt = {}> {
+export interface AuthenticationServiceImplementation<CallContextExt = {}> {
   authenticateUser(
     request: AuthenticateUserRequest,
     context: CallContext & CallContextExt,

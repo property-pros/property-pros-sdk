@@ -79,7 +79,7 @@ export function schemeToJSON(object: Scheme): string {
  *      };
  *      license: {
  *        name: "BSD 3-Clause License";
- *        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
+ *        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt";
  *      };
  *    };
  *    schemes: HTTPS;
@@ -154,8 +154,20 @@ export interface Swagger {
    * Individual operations can override this definition.
    */
   security: SecurityRequirement[];
+  /**
+   * A list of tags for API documentation control. Tags can be used for logical
+   * grouping of operations by resources or any other qualifier.
+   */
+  tags: Tag[];
   /** Additional external documentation. */
-  externalDocs: ExternalDocumentation | undefined;
+  externalDocs:
+    | ExternalDocumentation
+    | undefined;
+  /**
+   * Custom properties that start with "x-" such as "x-foo" used to describe
+   * extra functionality that is not covered by the standard OpenAPI Specification.
+   * See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+   */
   extensions: { [key: string]: any | undefined };
 }
 
@@ -259,7 +271,18 @@ export interface Operation {
    * security declaration, an empty array can be used.
    */
   security: SecurityRequirement[];
+  /**
+   * Custom properties that start with "x-" such as "x-foo" used to describe
+   * extra functionality that is not covered by the standard OpenAPI Specification.
+   * See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+   */
   extensions: { [key: string]: any | undefined };
+  /**
+   * Custom parameters such as HTTP request headers.
+   * See: https://swagger.io/docs/specification/2-0/describing-parameters/
+   * and https://swagger.io/specification/v2/#parameter-object.
+   */
+  parameters: Parameters | undefined;
 }
 
 export interface Operation_ResponsesEntry {
@@ -270,6 +293,96 @@ export interface Operation_ResponsesEntry {
 export interface Operation_ExtensionsEntry {
   key: string;
   value: any | undefined;
+}
+
+/**
+ * `Parameters` is a representation of OpenAPI v2 specification's parameters object.
+ * Note: This technically breaks compatibility with the OpenAPI 2 definition structure as we only
+ * allow header parameters to be set here since we do not want users specifying custom non-header
+ * parameters beyond those inferred from the Protobuf schema.
+ * See: https://swagger.io/specification/v2/#parameter-object
+ */
+export interface Parameters {
+  /**
+   * `Headers` is one or more HTTP header parameter.
+   * See: https://swagger.io/docs/specification/2-0/describing-parameters/#header-parameters
+   */
+  headers: HeaderParameter[];
+}
+
+/**
+ * `HeaderParameter` a HTTP header parameter.
+ * See: https://swagger.io/specification/v2/#parameter-object
+ */
+export interface HeaderParameter {
+  /** `Name` is the header name. */
+  name: string;
+  /** `Description` is a short description of the header. */
+  description: string;
+  /**
+   * `Type` is the type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
+   * See: https://swagger.io/specification/v2/#parameterType.
+   */
+  type: HeaderParameter_Type;
+  /** `Format` The extending format for the previously mentioned type. */
+  format: string;
+  /** `Required` indicates if the header is optional */
+  required: boolean;
+}
+
+/**
+ * `Type` is a a supported HTTP header type.
+ * See https://swagger.io/specification/v2/#parameterType.
+ */
+export enum HeaderParameter_Type {
+  UNKNOWN = 0,
+  STRING = 1,
+  NUMBER = 2,
+  INTEGER = 3,
+  BOOLEAN = 4,
+  UNRECOGNIZED = -1,
+}
+
+export function headerParameter_TypeFromJSON(object: any): HeaderParameter_Type {
+  switch (object) {
+    case 0:
+    case "UNKNOWN":
+      return HeaderParameter_Type.UNKNOWN;
+    case 1:
+    case "STRING":
+      return HeaderParameter_Type.STRING;
+    case 2:
+    case "NUMBER":
+      return HeaderParameter_Type.NUMBER;
+    case 3:
+    case "INTEGER":
+      return HeaderParameter_Type.INTEGER;
+    case 4:
+    case "BOOLEAN":
+      return HeaderParameter_Type.BOOLEAN;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return HeaderParameter_Type.UNRECOGNIZED;
+  }
+}
+
+export function headerParameter_TypeToJSON(object: HeaderParameter_Type): string {
+  switch (object) {
+    case HeaderParameter_Type.UNKNOWN:
+      return "UNKNOWN";
+    case HeaderParameter_Type.STRING:
+      return "STRING";
+    case HeaderParameter_Type.NUMBER:
+      return "NUMBER";
+    case HeaderParameter_Type.INTEGER:
+      return "INTEGER";
+    case HeaderParameter_Type.BOOLEAN:
+      return "BOOLEAN";
+    case HeaderParameter_Type.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
 }
 
 /**
@@ -323,6 +436,11 @@ export interface Response {
    * See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object
    */
   examples: { [key: string]: string };
+  /**
+   * Custom properties that start with "x-" such as "x-foo" used to describe
+   * extra functionality that is not covered by the standard OpenAPI Specification.
+   * See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+   */
   extensions: { [key: string]: any | undefined };
 }
 
@@ -360,7 +478,7 @@ export interface Response_ExtensionsEntry {
  *      };
  *      license: {
  *        name: "BSD 3-Clause License";
- *        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
+ *        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt";
  *      };
  *    };
  *    ...
@@ -389,6 +507,11 @@ export interface Info {
    * with the specification version).
    */
   version: string;
+  /**
+   * Custom properties that start with "x-" such as "x-foo" used to describe
+   * extra functionality that is not covered by the standard OpenAPI Specification.
+   * See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+   */
   extensions: { [key: string]: any | undefined };
 }
 
@@ -444,7 +567,7 @@ export interface Contact {
  *      ...
  *      license: {
  *        name: "BSD 3-Clause License";
- *        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
+ *        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt";
  *      };
  *      ...
  *    };
@@ -605,7 +728,14 @@ export interface JSONSchema {
   /** Items in `enum` must be unique https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.1 */
   enum: string[];
   /** Additional field level properties used when generating the OpenAPI v2 file. */
-  fieldConfiguration: JSONSchema_FieldConfiguration | undefined;
+  fieldConfiguration:
+    | JSONSchema_FieldConfiguration
+    | undefined;
+  /**
+   * Custom properties that start with "x-" such as "x-foo" used to describe
+   * extra functionality that is not covered by the standard OpenAPI Specification.
+   * See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+   */
   extensions: { [key: string]: any | undefined };
 }
 
@@ -704,12 +834,31 @@ export interface JSONSchema_ExtensionsEntry {
  */
 export interface Tag {
   /**
+   * The name of the tag. Use it to allow override of the name of a
+   * global Tag object, then use that name to reference the tag throughout the
+   * OpenAPI file.
+   */
+  name: string;
+  /**
    * A short description for the tag. GFM syntax can be used for rich text
    * representation.
    */
   description: string;
   /** Additional external documentation for this tag. */
-  externalDocs: ExternalDocumentation | undefined;
+  externalDocs:
+    | ExternalDocumentation
+    | undefined;
+  /**
+   * Custom properties that start with "x-" such as "x-foo" used to describe
+   * extra functionality that is not covered by the standard OpenAPI Specification.
+   * See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+   */
+  extensions: { [key: string]: any | undefined };
+}
+
+export interface Tag_ExtensionsEntry {
+  key: string;
+  value: any | undefined;
 }
 
 /**
@@ -787,7 +936,14 @@ export interface SecurityScheme {
    * The available scopes for the OAuth2 security scheme.
    * Valid for oauth2.
    */
-  scopes: Scopes | undefined;
+  scopes:
+    | Scopes
+    | undefined;
+  /**
+   * Custom properties that start with "x-" such as "x-foo" used to describe
+   * extra functionality that is not covered by the standard OpenAPI Specification.
+   * See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+   */
   extensions: { [key: string]: any | undefined };
 }
 
@@ -1009,6 +1165,7 @@ function createBaseSwagger(): Swagger {
     responses: {},
     securityDefinitions: undefined,
     security: [],
+    tags: [],
     externalDocs: undefined,
     extensions: {},
   };
@@ -1047,6 +1204,9 @@ export const Swagger = {
     }
     for (const v of message.security) {
       SecurityRequirement.encode(v!, writer.uint32(98).fork()).ldelim();
+    }
+    for (const v of message.tags) {
+      Tag.encode(v!, writer.uint32(106).fork()).ldelim();
     }
     if (message.externalDocs !== undefined) {
       ExternalDocumentation.encode(message.externalDocs, writer.uint32(114).fork()).ldelim();
@@ -1106,6 +1266,9 @@ export const Swagger = {
         case 12:
           message.security.push(SecurityRequirement.decode(reader, reader.uint32()));
           break;
+        case 13:
+          message.tags.push(Tag.decode(reader, reader.uint32()));
+          break;
         case 14:
           message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
           break;
@@ -1142,6 +1305,7 @@ export const Swagger = {
         ? SecurityDefinitions.fromJSON(object.securityDefinitions)
         : undefined,
       security: Array.isArray(object?.security) ? object.security.map((e: any) => SecurityRequirement.fromJSON(e)) : [],
+      tags: Array.isArray(object?.tags) ? object.tags.map((e: any) => Tag.fromJSON(e)) : [],
       externalDocs: isSet(object.externalDocs) ? ExternalDocumentation.fromJSON(object.externalDocs) : undefined,
       extensions: isObject(object.extensions)
         ? Object.entries(object.extensions).reduce<{ [key: string]: any | undefined }>((acc, [key, value]) => {
@@ -1187,6 +1351,11 @@ export const Swagger = {
     } else {
       obj.security = [];
     }
+    if (message.tags) {
+      obj.tags = message.tags.map((e) => e ? Tag.toJSON(e) : undefined);
+    } else {
+      obj.tags = [];
+    }
     message.externalDocs !== undefined &&
       (obj.externalDocs = message.externalDocs ? ExternalDocumentation.toJSON(message.externalDocs) : undefined);
     obj.extensions = {};
@@ -1220,6 +1389,7 @@ export const Swagger = {
       ? SecurityDefinitions.fromPartial(object.securityDefinitions)
       : undefined;
     message.security = object.security?.map((e) => SecurityRequirement.fromPartial(e)) || [];
+    message.tags = object.tags?.map((e) => Tag.fromPartial(e)) || [];
     message.externalDocs = (object.externalDocs !== undefined && object.externalDocs !== null)
       ? ExternalDocumentation.fromPartial(object.externalDocs)
       : undefined;
@@ -1365,6 +1535,7 @@ function createBaseOperation(): Operation {
     deprecated: false,
     security: [],
     extensions: {},
+    parameters: undefined,
   };
 }
 
@@ -1410,6 +1581,9 @@ export const Operation = {
         Operation_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(106).fork()).ldelim();
       }
     });
+    if (message.parameters !== undefined) {
+      Parameters.encode(message.parameters, writer.uint32(114).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -1469,6 +1643,9 @@ export const Operation = {
             message.extensions[entry13.key] = entry13.value;
           }
           break;
+        case 14:
+          message.parameters = Parameters.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1501,6 +1678,7 @@ export const Operation = {
           return acc;
         }, {})
         : {},
+      parameters: isSet(object.parameters) ? Parameters.fromJSON(object.parameters) : undefined,
     };
   },
 
@@ -1549,6 +1727,8 @@ export const Operation = {
         obj.extensions[k] = v;
       });
     }
+    message.parameters !== undefined &&
+      (obj.parameters = message.parameters ? Parameters.toJSON(message.parameters) : undefined);
     return obj;
   },
 
@@ -1584,6 +1764,9 @@ export const Operation = {
       },
       {},
     );
+    message.parameters = (object.parameters !== undefined && object.parameters !== null)
+      ? Parameters.fromPartial(object.parameters)
+      : undefined;
     return message;
   },
 };
@@ -1699,6 +1882,144 @@ export const Operation_ExtensionsEntry = {
     const message = createBaseOperation_ExtensionsEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? undefined;
+    return message;
+  },
+};
+
+function createBaseParameters(): Parameters {
+  return { headers: [] };
+}
+
+export const Parameters = {
+  encode(message: Parameters, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.headers) {
+      HeaderParameter.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Parameters {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseParameters();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.headers.push(HeaderParameter.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Parameters {
+    return {
+      headers: Array.isArray(object?.headers) ? object.headers.map((e: any) => HeaderParameter.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: Parameters): unknown {
+    const obj: any = {};
+    if (message.headers) {
+      obj.headers = message.headers.map((e) => e ? HeaderParameter.toJSON(e) : undefined);
+    } else {
+      obj.headers = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Parameters>): Parameters {
+    const message = createBaseParameters();
+    message.headers = object.headers?.map((e) => HeaderParameter.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseHeaderParameter(): HeaderParameter {
+  return { name: "", description: "", type: 0, format: "", required: false };
+}
+
+export const HeaderParameter = {
+  encode(message: HeaderParameter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.type !== 0) {
+      writer.uint32(24).int32(message.type);
+    }
+    if (message.format !== "") {
+      writer.uint32(34).string(message.format);
+    }
+    if (message.required === true) {
+      writer.uint32(40).bool(message.required);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HeaderParameter {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHeaderParameter();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.description = reader.string();
+          break;
+        case 3:
+          message.type = reader.int32() as any;
+          break;
+        case 4:
+          message.format = reader.string();
+          break;
+        case 5:
+          message.required = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HeaderParameter {
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      type: isSet(object.type) ? headerParameter_TypeFromJSON(object.type) : 0,
+      format: isSet(object.format) ? String(object.format) : "",
+      required: isSet(object.required) ? Boolean(object.required) : false,
+    };
+  },
+
+  toJSON(message: HeaderParameter): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.description !== undefined && (obj.description = message.description);
+    message.type !== undefined && (obj.type = headerParameter_TypeToJSON(message.type));
+    message.format !== undefined && (obj.format = message.format);
+    message.required !== undefined && (obj.required = message.required);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<HeaderParameter>): HeaderParameter {
+    const message = createBaseHeaderParameter();
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
+    message.type = object.type ?? 0;
+    message.format = object.format ?? "";
+    message.required = object.required ?? false;
     return message;
   },
 };
@@ -3026,17 +3347,25 @@ export const JSONSchema_ExtensionsEntry = {
 };
 
 function createBaseTag(): Tag {
-  return { description: "", externalDocs: undefined };
+  return { name: "", description: "", externalDocs: undefined, extensions: {} };
 }
 
 export const Tag = {
   encode(message: Tag, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
     if (message.externalDocs !== undefined) {
       ExternalDocumentation.encode(message.externalDocs, writer.uint32(26).fork()).ldelim();
     }
+    Object.entries(message.extensions).forEach(([key, value]) => {
+      if (value !== undefined) {
+        Tag_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).ldelim();
+      }
+    });
     return writer;
   },
 
@@ -3047,11 +3376,20 @@ export const Tag = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
         case 2:
           message.description = reader.string();
           break;
         case 3:
           message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
+          break;
+        case 4:
+          const entry4 = Tag_ExtensionsEntry.decode(reader, reader.uint32());
+          if (entry4.value !== undefined) {
+            message.extensions[entry4.key] = entry4.value;
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -3063,25 +3401,104 @@ export const Tag = {
 
   fromJSON(object: any): Tag {
     return {
+      name: isSet(object.name) ? String(object.name) : "",
       description: isSet(object.description) ? String(object.description) : "",
       externalDocs: isSet(object.externalDocs) ? ExternalDocumentation.fromJSON(object.externalDocs) : undefined,
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{ [key: string]: any | undefined }>((acc, [key, value]) => {
+          acc[key] = value as any | undefined;
+          return acc;
+        }, {})
+        : {},
     };
   },
 
   toJSON(message: Tag): unknown {
     const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
     message.description !== undefined && (obj.description = message.description);
     message.externalDocs !== undefined &&
       (obj.externalDocs = message.externalDocs ? ExternalDocumentation.toJSON(message.externalDocs) : undefined);
+    obj.extensions = {};
+    if (message.extensions) {
+      Object.entries(message.extensions).forEach(([k, v]) => {
+        obj.extensions[k] = v;
+      });
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<Tag>): Tag {
     const message = createBaseTag();
+    message.name = object.name ?? "";
     message.description = object.description ?? "";
     message.externalDocs = (object.externalDocs !== undefined && object.externalDocs !== null)
       ? ExternalDocumentation.fromPartial(object.externalDocs)
       : undefined;
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseTag_ExtensionsEntry(): Tag_ExtensionsEntry {
+  return { key: "", value: undefined };
+}
+
+export const Tag_ExtensionsEntry = {
+  encode(message: Tag_ExtensionsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      Value.encode(Value.wrap(message.value), writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Tag_ExtensionsEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTag_ExtensionsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Tag_ExtensionsEntry {
+    return { key: isSet(object.key) ? String(object.key) : "", value: isSet(object?.value) ? object.value : undefined };
+  },
+
+  toJSON(message: Tag_ExtensionsEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Tag_ExtensionsEntry>): Tag_ExtensionsEntry {
+    const message = createBaseTag_ExtensionsEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? undefined;
     return message;
   },
 };
@@ -3740,7 +4157,7 @@ export const Scopes_ScopeEntry = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
+var tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -3765,7 +4182,7 @@ export type DeepPartial<T> = T extends Builtin ? T
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }

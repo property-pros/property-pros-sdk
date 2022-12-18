@@ -1,10 +1,10 @@
-import * as authModule from "./generated/auth/auth"
-import * as notePurchaseAgreementModule from "./generated/notePurchaseAgreement/notePurchaseAgreement"
+export * as auth from "./generated/api/auth"
+export * as notePurchaseAgreement from "./generated/api/notePurchaseAgreement"
 
-export default {
-    ...authModule,
-    ...notePurchaseAgreementModule
-}
+// export default {
+//     ...auth,
+//     ...notePurchaseAgreement
+// }
 
-export const auth = authModule
-export const notePurchaseAgreement = notePurchaseAgreementModule
+// export const auth = authModule
+// export const notePurchaseAgreement = notePurchaseAgreementModule

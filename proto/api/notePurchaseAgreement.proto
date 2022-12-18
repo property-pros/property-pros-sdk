@@ -3,43 +3,77 @@ syntax = "proto3";
 package notepurchaseagreement;
 
 import "google/api/annotations.proto";
+import "proto/api/auth.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "property-pros-sdk/notepurchaseagreement/v1;notepurchaseagreement";
 
-message NotePurchaseAgreement {
+message RecordRequestPayload {
+  string Id = 1;
+}
+
+message RecordCollection {
+  repeated RecordRequestPayload Payload = 1;
+}
+
+message RecordResultPayload {
+  string Id = 1;
+  string CreatedOn = 2;
+}
+
+message NotePurchaseAgreementRecord {
   string Id = 1;
   string FirstName = 2;
   string LastName = 3;
   string DateOfBirth = 4;
   string HomeAddress = 5;
-  string EmailAddress = 6;
+  auth.User user = 6;
   string PhoneNumber = 7;
   string SocialSecurity = 8;
   uint64 FundsCommitted = 9;
+  bytes FileContent = 10;
+  string CreatedOn = 11;
 }
 
-message GetNotePurchaseAgreementDocRequest {
-  NotePurchaseAgreement payload = 1;
+message GetNotePurchaseAgreementRequest {
+  RecordRequestPayload Payload = 1;
 }
 
-message GetNotePurchaseAgreementDocResponse {
-  bytes fileContent = 1;
+message GetNotePurchaseAgreementResponse {
+  NotePurchaseAgreementRecord payload = 1;
+}
+
+message GetNotePurchaseAgreementsRequest {}
+
+message GetNotePurchaseAgreementsResponse {
+  repeated RecordCollection payload = 1;
 }
 
 message SaveNotePurchaseAgreementRequest {
-  NotePurchaseAgreement payload = 1;
+  NotePurchaseAgreementRecord payload = 1;
 }
 
 message SaveNotePurchaseAgreementResponse {
-  string Id = 1;
+  RecordResultPayload payload = 1;
 }
 
 service NotePurchaseAgreementService {
-  rpc GetNotePurchaseAgreementDoc(GetNotePurchaseAgreementDocRequest) returns (GetNotePurchaseAgreementDocResponse) {
+  rpc GetNotePurchaseAgreements(GetNotePurchaseAgreementsRequest) returns (GetNotePurchaseAgreementsResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /config
-      get: "/v1/notepurchaseagreementdoc"
+      get: "/v1/notepurchaseagreements"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get All Note Purchase Agreement Documents"
+      description: "Gets note purchase agreements with limited data."
+      tags: "NotePurchaseAgreement"
+    };
+  }
+
+  rpc GetNotePurchaseAgreement(GetNotePurchaseAgreementRequest) returns (GetNotePurchaseAgreementResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /config
+      get: "/v1/notepurchaseagreement"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get Note Purchase Agreement Document"
