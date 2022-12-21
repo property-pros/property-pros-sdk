@@ -3,7 +3,7 @@ syntax = "proto3";
 package notepurchaseagreement;
 
 import "google/api/annotations.proto";
-import "proto/api/auth.proto";
+import "proto/api/auth/auth.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "property-pros-sdk/notepurchaseagreement/v1;notepurchaseagreement";

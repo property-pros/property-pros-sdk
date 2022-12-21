@@ -1,6 +1,6 @@
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
-import { User } from "./auth";
+import { User } from "../auth/auth";
 export declare const protobufPackage = "notepurchaseagreement";
 export interface RecordRequestPayload {
     Id: string;

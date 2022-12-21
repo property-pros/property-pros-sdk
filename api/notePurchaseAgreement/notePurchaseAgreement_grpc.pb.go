@@ -170,5 +170,5 @@ var NotePurchaseAgreementService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/api/notePurchaseAgreement.proto",
+	Metadata: "proto/api/notePurchaseAgreement/notePurchaseAgreement.proto",
 }
