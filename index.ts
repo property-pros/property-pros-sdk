@@ -1,5 +1,5 @@
 export * as auth from "./api/auth/auth"
-export * as notePurchaseAgreement from "./api/notePurchaseAgreement/notePurchaseAgreement"
+export * as notePurchaseAgreement from "./api/notepurchaseagreement/notePurchaseAgreement"
 
 // export default {
 //     ...auth,
