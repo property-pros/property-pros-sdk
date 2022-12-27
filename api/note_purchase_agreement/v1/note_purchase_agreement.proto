@@ -1,42 +1,42 @@
 syntax = "proto3";
 
-package notepurchaseagreement;
+package api.note_purchase_agreement.v1;
 
+import "api/auth/v1/auth.proto";
 import "google/api/annotations.proto";
-import "proto/api/auth/auth.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "property-pros-sdk/notepurchaseagreement/v1;notepurchaseagreement";
+option go_package = "github.com/vireocloud/property-pros-sdk/api/notepurchaseagreement/v1;notepurchaseagreement";
 
 message RecordRequestPayload {
-  string Id = 1;
+  string id = 1;
 }
 
 message RecordCollection {
-  repeated RecordRequestPayload Payload = 1;
+  repeated RecordRequestPayload payload = 1;
 }
 
 message RecordResultPayload {
-  string Id = 1;
-  string CreatedOn = 2;
+  string id = 1;
+  string created_on = 2;
 }
 
 message NotePurchaseAgreementRecord {
-  string Id = 1;
-  string FirstName = 2;
-  string LastName = 3;
-  string DateOfBirth = 4;
-  string HomeAddress = 5;
-  auth.User user = 6;
-  string PhoneNumber = 7;
-  string SocialSecurity = 8;
-  uint64 FundsCommitted = 9;
-  bytes FileContent = 10;
-  string CreatedOn = 11;
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string date_of_birth = 4;
+  string home_address = 5;
+  api.auth.v1.User user = 6;
+  string phone_number = 7;
+  string social_security = 8;
+  uint64 funds_committed = 9;
+  bytes file_content = 10;
+  string created_on = 11;
 }
 
 message GetNotePurchaseAgreementRequest {
-  RecordRequestPayload Payload = 1;
+  RecordRequestPayload payload = 1;
 }
 
 message GetNotePurchaseAgreementResponse {

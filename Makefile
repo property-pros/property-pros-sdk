@@ -7,10 +7,8 @@ generate:
 	docker compose run buf generate
 	make postGenerate
 preGenerate:
-	rm -rf api/* dist
 postGenerate:
-	mv -f ./api/proto/* ./api
-	mv -f ./api/api/* ./api
+	make lint
 	make generateTypeDeclarationFile
 generateTypeDeclarationFile:
 	tsc --project tsconfig.json
@@ -22,5 +20,6 @@ renameDependencies:
 update:
 	docker compose run buf mod update
 lint:
-	docker compose run buf lint
-	docker compose run buf breaking --against 'https://github.com/johanbrandhorst/grpc-gateway-boilerplate.git#branch=master'
+	- docker compose run buf lint
+	- go vet ./...
+	- go fmt ./...

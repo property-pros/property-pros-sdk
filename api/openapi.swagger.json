@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/api/auth/auth.proto",
+    "title": "api/auth/v1/auth.proto",
     "version": "version not set"
   },
   "tags": [
@@ -28,7 +28,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/authAuthenticateUserResponse"
+              "$ref": "#/definitions/v1AuthenticateUserResponse"
             }
           },
           "default": {
@@ -52,7 +52,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/notepurchaseagreementGetNotePurchaseAgreementResponse"
+              "$ref": "#/definitions/v1GetNotePurchaseAgreementResponse"
             }
           },
           "default": {
@@ -64,7 +64,7 @@
         },
         "parameters": [
           {
-            "name": "Payload.Id",
+            "name": "payload.id",
             "in": "query",
             "required": false,
             "type": "string"
@@ -82,7 +82,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/notepurchaseagreementSaveNotePurchaseAgreementResponse"
+              "$ref": "#/definitions/v1SaveNotePurchaseAgreementResponse"
             }
           },
           "default": {
@@ -106,7 +106,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/notepurchaseagreementGetNotePurchaseAgreementsResponse"
+              "$ref": "#/definitions/v1GetNotePurchaseAgreementsResponse"
             }
           },
           "default": {
@@ -123,128 +123,6 @@
     }
   },
   "definitions": {
-    "authAuthenticateUserResponse": {
-      "type": "object",
-      "properties": {
-        "authenticated": {
-          "type": "boolean"
-        },
-        "errorMessage": {
-          "type": "string"
-        }
-      }
-    },
-    "authUser": {
-      "type": "object",
-      "properties": {
-        "Id": {
-          "type": "string"
-        },
-        "EmailAddress": {
-          "type": "string"
-        },
-        "Password": {
-          "type": "string"
-        }
-      }
-    },
-    "notepurchaseagreementGetNotePurchaseAgreementResponse": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "$ref": "#/definitions/notepurchaseagreementNotePurchaseAgreementRecord"
-        }
-      }
-    },
-    "notepurchaseagreementGetNotePurchaseAgreementsResponse": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/notepurchaseagreementRecordCollection"
-          }
-        }
-      }
-    },
-    "notepurchaseagreementNotePurchaseAgreementRecord": {
-      "type": "object",
-      "properties": {
-        "Id": {
-          "type": "string"
-        },
-        "FirstName": {
-          "type": "string"
-        },
-        "LastName": {
-          "type": "string"
-        },
-        "DateOfBirth": {
-          "type": "string"
-        },
-        "HomeAddress": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/authUser"
-        },
-        "PhoneNumber": {
-          "type": "string"
-        },
-        "SocialSecurity": {
-          "type": "string"
-        },
-        "FundsCommitted": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "FileContent": {
-          "type": "string",
-          "format": "byte"
-        },
-        "CreatedOn": {
-          "type": "string"
-        }
-      }
-    },
-    "notepurchaseagreementRecordCollection": {
-      "type": "object",
-      "properties": {
-        "Payload": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/notepurchaseagreementRecordRequestPayload"
-          }
-        }
-      }
-    },
-    "notepurchaseagreementRecordRequestPayload": {
-      "type": "object",
-      "properties": {
-        "Id": {
-          "type": "string"
-        }
-      }
-    },
-    "notepurchaseagreementRecordResultPayload": {
-      "type": "object",
-      "properties": {
-        "Id": {
-          "type": "string"
-        },
-        "CreatedOn": {
-          "type": "string"
-        }
-      }
-    },
-    "notepurchaseagreementSaveNotePurchaseAgreementResponse": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "$ref": "#/definitions/notepurchaseagreementRecordResultPayload"
-        }
-      }
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -269,6 +147,128 @@
           "items": {
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "v1AuthenticateUserResponse": {
+      "type": "object",
+      "properties": {
+        "isAuthenticated": {
+          "type": "boolean"
+        },
+        "errorMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetNotePurchaseAgreementResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/v1NotePurchaseAgreementRecord"
+        }
+      }
+    },
+    "v1GetNotePurchaseAgreementsResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1RecordCollection"
+          }
+        }
+      }
+    },
+    "v1NotePurchaseAgreementRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "dateOfBirth": {
+          "type": "string"
+        },
+        "homeAddress": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "socialSecurity": {
+          "type": "string"
+        },
+        "fundsCommitted": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "fileContent": {
+          "type": "string",
+          "format": "byte"
+        },
+        "createdOn": {
+          "type": "string"
+        }
+      }
+    },
+    "v1RecordCollection": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1RecordRequestPayload"
+          }
+        }
+      }
+    },
+    "v1RecordRequestPayload": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1RecordResultPayload": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdOn": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SaveNotePurchaseAgreementResponse": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/v1RecordResultPayload"
+        }
+      }
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "emailAddress": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
         }
       }
     }

@@ -1,32 +1,32 @@
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
-import { User } from "../auth/auth";
-export declare const protobufPackage = "notepurchaseagreement";
+import { User } from "../../auth/v1/auth";
+export declare const protobufPackage = "api.note_purchase_agreement.v1";
 export interface RecordRequestPayload {
-    Id: string;
+    id: string;
 }
 export interface RecordCollection {
-    Payload: RecordRequestPayload[];
+    payload: RecordRequestPayload[];
 }
 export interface RecordResultPayload {
-    Id: string;
-    CreatedOn: string;
+    id: string;
+    createdOn: string;
 }
 export interface NotePurchaseAgreementRecord {
-    Id: string;
-    FirstName: string;
-    LastName: string;
-    DateOfBirth: string;
-    HomeAddress: string;
+    id: string;
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    homeAddress: string;
     user: User | undefined;
-    PhoneNumber: string;
-    SocialSecurity: string;
-    FundsCommitted: number;
-    FileContent: Uint8Array;
-    CreatedOn: string;
+    phoneNumber: string;
+    socialSecurity: string;
+    fundsCommitted: number;
+    fileContent: Uint8Array;
+    createdOn: string;
 }
 export interface GetNotePurchaseAgreementRequest {
-    Payload: RecordRequestPayload | undefined;
+    payload: RecordRequestPayload | undefined;
 }
 export interface GetNotePurchaseAgreementResponse {
     payload: NotePurchaseAgreementRecord | undefined;
@@ -115,7 +115,7 @@ export declare const SaveNotePurchaseAgreementResponse: {
 export declare type NotePurchaseAgreementServiceDefinition = typeof NotePurchaseAgreementServiceDefinition;
 export declare const NotePurchaseAgreementServiceDefinition: {
     readonly name: "NotePurchaseAgreementService";
-    readonly fullName: "notepurchaseagreement.NotePurchaseAgreementService";
+    readonly fullName: "api.note_purchase_agreement.v1.NotePurchaseAgreementService";
     readonly methods: {
         readonly getNotePurchaseAgreements: {
             readonly name: "GetNotePurchaseAgreements";

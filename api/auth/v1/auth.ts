@@ -3,12 +3,12 @@ import Long from "long";
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "auth";
+export const protobufPackage = "api.auth.v1";
 
 export interface User {
-  Id: string;
-  EmailAddress: string;
-  Password: string;
+  id: string;
+  emailAddress: string;
+  password: string;
 }
 
 export interface AuthenticateUserRequest {
@@ -16,24 +16,24 @@ export interface AuthenticateUserRequest {
 }
 
 export interface AuthenticateUserResponse {
-  authenticated: boolean;
+  isAuthenticated: boolean;
   errorMessage: string;
 }
 
 function createBaseUser(): User {
-  return { Id: "", EmailAddress: "", Password: "" };
+  return { id: "", emailAddress: "", password: "" };
 }
 
 export const User = {
   encode(message: User, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.Id !== "") {
-      writer.uint32(10).string(message.Id);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
-    if (message.EmailAddress !== "") {
-      writer.uint32(18).string(message.EmailAddress);
+    if (message.emailAddress !== "") {
+      writer.uint32(18).string(message.emailAddress);
     }
-    if (message.Password !== "") {
-      writer.uint32(26).string(message.Password);
+    if (message.password !== "") {
+      writer.uint32(26).string(message.password);
     }
     return writer;
   },
@@ -46,13 +46,13 @@ export const User = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Id = reader.string();
+          message.id = reader.string();
           break;
         case 2:
-          message.EmailAddress = reader.string();
+          message.emailAddress = reader.string();
           break;
         case 3:
-          message.Password = reader.string();
+          message.password = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -64,25 +64,25 @@ export const User = {
 
   fromJSON(object: any): User {
     return {
-      Id: isSet(object.Id) ? String(object.Id) : "",
-      EmailAddress: isSet(object.EmailAddress) ? String(object.EmailAddress) : "",
-      Password: isSet(object.Password) ? String(object.Password) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      emailAddress: isSet(object.emailAddress) ? String(object.emailAddress) : "",
+      password: isSet(object.password) ? String(object.password) : "",
     };
   },
 
   toJSON(message: User): unknown {
     const obj: any = {};
-    message.Id !== undefined && (obj.Id = message.Id);
-    message.EmailAddress !== undefined && (obj.EmailAddress = message.EmailAddress);
-    message.Password !== undefined && (obj.Password = message.Password);
+    message.id !== undefined && (obj.id = message.id);
+    message.emailAddress !== undefined && (obj.emailAddress = message.emailAddress);
+    message.password !== undefined && (obj.password = message.password);
     return obj;
   },
 
   fromPartial(object: DeepPartial<User>): User {
     const message = createBaseUser();
-    message.Id = object.Id ?? "";
-    message.EmailAddress = object.EmailAddress ?? "";
-    message.Password = object.Password ?? "";
+    message.id = object.id ?? "";
+    message.emailAddress = object.emailAddress ?? "";
+    message.password = object.password ?? "";
     return message;
   },
 };
@@ -137,13 +137,13 @@ export const AuthenticateUserRequest = {
 };
 
 function createBaseAuthenticateUserResponse(): AuthenticateUserResponse {
-  return { authenticated: false, errorMessage: "" };
+  return { isAuthenticated: false, errorMessage: "" };
 }
 
 export const AuthenticateUserResponse = {
   encode(message: AuthenticateUserResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.authenticated === true) {
-      writer.uint32(8).bool(message.authenticated);
+    if (message.isAuthenticated === true) {
+      writer.uint32(8).bool(message.isAuthenticated);
     }
     if (message.errorMessage !== "") {
       writer.uint32(18).string(message.errorMessage);
@@ -159,7 +159,7 @@ export const AuthenticateUserResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.authenticated = reader.bool();
+          message.isAuthenticated = reader.bool();
           break;
         case 2:
           message.errorMessage = reader.string();
@@ -174,21 +174,21 @@ export const AuthenticateUserResponse = {
 
   fromJSON(object: any): AuthenticateUserResponse {
     return {
-      authenticated: isSet(object.authenticated) ? Boolean(object.authenticated) : false,
+      isAuthenticated: isSet(object.isAuthenticated) ? Boolean(object.isAuthenticated) : false,
       errorMessage: isSet(object.errorMessage) ? String(object.errorMessage) : "",
     };
   },
 
   toJSON(message: AuthenticateUserResponse): unknown {
     const obj: any = {};
-    message.authenticated !== undefined && (obj.authenticated = message.authenticated);
+    message.isAuthenticated !== undefined && (obj.isAuthenticated = message.isAuthenticated);
     message.errorMessage !== undefined && (obj.errorMessage = message.errorMessage);
     return obj;
   },
 
   fromPartial(object: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse {
     const message = createBaseAuthenticateUserResponse();
-    message.authenticated = object.authenticated ?? false;
+    message.isAuthenticated = object.isAuthenticated ?? false;
     message.errorMessage = object.errorMessage ?? "";
     return message;
   },
@@ -197,7 +197,7 @@ export const AuthenticateUserResponse = {
 export type AuthenticationServiceDefinition = typeof AuthenticationServiceDefinition;
 export const AuthenticationServiceDefinition = {
   name: "AuthenticationService",
-  fullName: "auth.AuthenticationService",
+  fullName: "api.auth.v1.AuthenticationService",
   methods: {
     authenticateUser: {
       name: "AuthenticateUser",

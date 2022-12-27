@@ -33,7 +33,7 @@ func NewNotePurchaseAgreementServiceClient(cc grpc.ClientConnInterface) NotePurc
 
 func (c *notePurchaseAgreementServiceClient) GetNotePurchaseAgreements(ctx context.Context, in *GetNotePurchaseAgreementsRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementsResponse, error) {
 	out := new(GetNotePurchaseAgreementsResponse)
-	err := c.cc.Invoke(ctx, "/notepurchaseagreement.NotePurchaseAgreementService/GetNotePurchaseAgreements", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreements", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (c *notePurchaseAgreementServiceClient) GetNotePurchaseAgreements(ctx conte
 
 func (c *notePurchaseAgreementServiceClient) GetNotePurchaseAgreement(ctx context.Context, in *GetNotePurchaseAgreementRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementResponse, error) {
 	out := new(GetNotePurchaseAgreementResponse)
-	err := c.cc.Invoke(ctx, "/notepurchaseagreement.NotePurchaseAgreementService/GetNotePurchaseAgreement", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreement", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *notePurchaseAgreementServiceClient) GetNotePurchaseAgreement(ctx contex
 
 func (c *notePurchaseAgreementServiceClient) SaveNotePurchaseAgreement(ctx context.Context, in *SaveNotePurchaseAgreementRequest, opts ...grpc.CallOption) (*SaveNotePurchaseAgreementResponse, error) {
 	out := new(SaveNotePurchaseAgreementResponse)
-	err := c.cc.Invoke(ctx, "/notepurchaseagreement.NotePurchaseAgreementService/SaveNotePurchaseAgreement", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/SaveNotePurchaseAgreement", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func _NotePurchaseAgreementService_GetNotePurchaseAgreements_Handler(srv interfa
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/notepurchaseagreement.NotePurchaseAgreementService/GetNotePurchaseAgreements",
+		FullMethod: "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreements",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NotePurchaseAgreementServiceServer).GetNotePurchaseAgreements(ctx, req.(*GetNotePurchaseAgreementsRequest))
@@ -123,7 +123,7 @@ func _NotePurchaseAgreementService_GetNotePurchaseAgreement_Handler(srv interfac
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/notepurchaseagreement.NotePurchaseAgreementService/GetNotePurchaseAgreement",
+		FullMethod: "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreement",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NotePurchaseAgreementServiceServer).GetNotePurchaseAgreement(ctx, req.(*GetNotePurchaseAgreementRequest))
@@ -141,7 +141,7 @@ func _NotePurchaseAgreementService_SaveNotePurchaseAgreement_Handler(srv interfa
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/notepurchaseagreement.NotePurchaseAgreementService/SaveNotePurchaseAgreement",
+		FullMethod: "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/SaveNotePurchaseAgreement",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NotePurchaseAgreementServiceServer).SaveNotePurchaseAgreement(ctx, req.(*SaveNotePurchaseAgreementRequest))
@@ -153,7 +153,7 @@ func _NotePurchaseAgreementService_SaveNotePurchaseAgreement_Handler(srv interfa
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var NotePurchaseAgreementService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "notepurchaseagreement.NotePurchaseAgreementService",
+	ServiceName: "api.note_purchase_agreement.v1.NotePurchaseAgreementService",
 	HandlerType: (*NotePurchaseAgreementServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -170,5 +170,5 @@ var NotePurchaseAgreementService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/api/notePurchaseAgreement/notePurchaseAgreement.proto",
+	Metadata: "api/note_purchase_agreement/v1/note_purchase_agreement.proto",
 }

@@ -1,16 +1,16 @@
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
-export declare const protobufPackage = "auth";
+export declare const protobufPackage = "api.auth.v1";
 export interface User {
-    Id: string;
-    EmailAddress: string;
-    Password: string;
+    id: string;
+    emailAddress: string;
+    password: string;
 }
 export interface AuthenticateUserRequest {
     payload: User | undefined;
 }
 export interface AuthenticateUserResponse {
-    authenticated: boolean;
+    isAuthenticated: boolean;
     errorMessage: string;
 }
 export declare const User: {
@@ -37,7 +37,7 @@ export declare const AuthenticateUserResponse: {
 export declare type AuthenticationServiceDefinition = typeof AuthenticationServiceDefinition;
 export declare const AuthenticationServiceDefinition: {
     readonly name: "AuthenticationService";
-    readonly fullName: "auth.AuthenticationService";
+    readonly fullName: "api.auth.v1.AuthenticationService";
     readonly methods: {
         readonly authenticateUser: {
             readonly name: "AuthenticateUser";

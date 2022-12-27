@@ -2,39 +2,39 @@
 import Long from "long";
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
-import { User } from "../auth/auth";
+import { User } from "../../auth/v1/auth";
 
-export const protobufPackage = "notepurchaseagreement";
+export const protobufPackage = "api.note_purchase_agreement.v1";
 
 export interface RecordRequestPayload {
-  Id: string;
+  id: string;
 }
 
 export interface RecordCollection {
-  Payload: RecordRequestPayload[];
+  payload: RecordRequestPayload[];
 }
 
 export interface RecordResultPayload {
-  Id: string;
-  CreatedOn: string;
+  id: string;
+  createdOn: string;
 }
 
 export interface NotePurchaseAgreementRecord {
-  Id: string;
-  FirstName: string;
-  LastName: string;
-  DateOfBirth: string;
-  HomeAddress: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  homeAddress: string;
   user: User | undefined;
-  PhoneNumber: string;
-  SocialSecurity: string;
-  FundsCommitted: number;
-  FileContent: Uint8Array;
-  CreatedOn: string;
+  phoneNumber: string;
+  socialSecurity: string;
+  fundsCommitted: number;
+  fileContent: Uint8Array;
+  createdOn: string;
 }
 
 export interface GetNotePurchaseAgreementRequest {
-  Payload: RecordRequestPayload | undefined;
+  payload: RecordRequestPayload | undefined;
 }
 
 export interface GetNotePurchaseAgreementResponse {
@@ -57,13 +57,13 @@ export interface SaveNotePurchaseAgreementResponse {
 }
 
 function createBaseRecordRequestPayload(): RecordRequestPayload {
-  return { Id: "" };
+  return { id: "" };
 }
 
 export const RecordRequestPayload = {
   encode(message: RecordRequestPayload, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.Id !== "") {
-      writer.uint32(10).string(message.Id);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
     return writer;
   },
@@ -76,7 +76,7 @@ export const RecordRequestPayload = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Id = reader.string();
+          message.id = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -87,29 +87,29 @@ export const RecordRequestPayload = {
   },
 
   fromJSON(object: any): RecordRequestPayload {
-    return { Id: isSet(object.Id) ? String(object.Id) : "" };
+    return { id: isSet(object.id) ? String(object.id) : "" };
   },
 
   toJSON(message: RecordRequestPayload): unknown {
     const obj: any = {};
-    message.Id !== undefined && (obj.Id = message.Id);
+    message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
   fromPartial(object: DeepPartial<RecordRequestPayload>): RecordRequestPayload {
     const message = createBaseRecordRequestPayload();
-    message.Id = object.Id ?? "";
+    message.id = object.id ?? "";
     return message;
   },
 };
 
 function createBaseRecordCollection(): RecordCollection {
-  return { Payload: [] };
+  return { payload: [] };
 }
 
 export const RecordCollection = {
   encode(message: RecordCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.Payload) {
+    for (const v of message.payload) {
       RecordRequestPayload.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
@@ -123,7 +123,7 @@ export const RecordCollection = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Payload.push(RecordRequestPayload.decode(reader, reader.uint32()));
+          message.payload.push(RecordRequestPayload.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -135,38 +135,38 @@ export const RecordCollection = {
 
   fromJSON(object: any): RecordCollection {
     return {
-      Payload: Array.isArray(object?.Payload) ? object.Payload.map((e: any) => RecordRequestPayload.fromJSON(e)) : [],
+      payload: Array.isArray(object?.payload) ? object.payload.map((e: any) => RecordRequestPayload.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: RecordCollection): unknown {
     const obj: any = {};
-    if (message.Payload) {
-      obj.Payload = message.Payload.map((e) => e ? RecordRequestPayload.toJSON(e) : undefined);
+    if (message.payload) {
+      obj.payload = message.payload.map((e) => e ? RecordRequestPayload.toJSON(e) : undefined);
     } else {
-      obj.Payload = [];
+      obj.payload = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<RecordCollection>): RecordCollection {
     const message = createBaseRecordCollection();
-    message.Payload = object.Payload?.map((e) => RecordRequestPayload.fromPartial(e)) || [];
+    message.payload = object.payload?.map((e) => RecordRequestPayload.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseRecordResultPayload(): RecordResultPayload {
-  return { Id: "", CreatedOn: "" };
+  return { id: "", createdOn: "" };
 }
 
 export const RecordResultPayload = {
   encode(message: RecordResultPayload, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.Id !== "") {
-      writer.uint32(10).string(message.Id);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
-    if (message.CreatedOn !== "") {
-      writer.uint32(18).string(message.CreatedOn);
+    if (message.createdOn !== "") {
+      writer.uint32(18).string(message.createdOn);
     }
     return writer;
   },
@@ -179,10 +179,10 @@ export const RecordResultPayload = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Id = reader.string();
+          message.id = reader.string();
           break;
         case 2:
-          message.CreatedOn = reader.string();
+          message.createdOn = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -194,76 +194,76 @@ export const RecordResultPayload = {
 
   fromJSON(object: any): RecordResultPayload {
     return {
-      Id: isSet(object.Id) ? String(object.Id) : "",
-      CreatedOn: isSet(object.CreatedOn) ? String(object.CreatedOn) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      createdOn: isSet(object.createdOn) ? String(object.createdOn) : "",
     };
   },
 
   toJSON(message: RecordResultPayload): unknown {
     const obj: any = {};
-    message.Id !== undefined && (obj.Id = message.Id);
-    message.CreatedOn !== undefined && (obj.CreatedOn = message.CreatedOn);
+    message.id !== undefined && (obj.id = message.id);
+    message.createdOn !== undefined && (obj.createdOn = message.createdOn);
     return obj;
   },
 
   fromPartial(object: DeepPartial<RecordResultPayload>): RecordResultPayload {
     const message = createBaseRecordResultPayload();
-    message.Id = object.Id ?? "";
-    message.CreatedOn = object.CreatedOn ?? "";
+    message.id = object.id ?? "";
+    message.createdOn = object.createdOn ?? "";
     return message;
   },
 };
 
 function createBaseNotePurchaseAgreementRecord(): NotePurchaseAgreementRecord {
   return {
-    Id: "",
-    FirstName: "",
-    LastName: "",
-    DateOfBirth: "",
-    HomeAddress: "",
+    id: "",
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    homeAddress: "",
     user: undefined,
-    PhoneNumber: "",
-    SocialSecurity: "",
-    FundsCommitted: 0,
-    FileContent: new Uint8Array(),
-    CreatedOn: "",
+    phoneNumber: "",
+    socialSecurity: "",
+    fundsCommitted: 0,
+    fileContent: new Uint8Array(),
+    createdOn: "",
   };
 }
 
 export const NotePurchaseAgreementRecord = {
   encode(message: NotePurchaseAgreementRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.Id !== "") {
-      writer.uint32(10).string(message.Id);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
-    if (message.FirstName !== "") {
-      writer.uint32(18).string(message.FirstName);
+    if (message.firstName !== "") {
+      writer.uint32(18).string(message.firstName);
     }
-    if (message.LastName !== "") {
-      writer.uint32(26).string(message.LastName);
+    if (message.lastName !== "") {
+      writer.uint32(26).string(message.lastName);
     }
-    if (message.DateOfBirth !== "") {
-      writer.uint32(34).string(message.DateOfBirth);
+    if (message.dateOfBirth !== "") {
+      writer.uint32(34).string(message.dateOfBirth);
     }
-    if (message.HomeAddress !== "") {
-      writer.uint32(42).string(message.HomeAddress);
+    if (message.homeAddress !== "") {
+      writer.uint32(42).string(message.homeAddress);
     }
     if (message.user !== undefined) {
       User.encode(message.user, writer.uint32(50).fork()).ldelim();
     }
-    if (message.PhoneNumber !== "") {
-      writer.uint32(58).string(message.PhoneNumber);
+    if (message.phoneNumber !== "") {
+      writer.uint32(58).string(message.phoneNumber);
     }
-    if (message.SocialSecurity !== "") {
-      writer.uint32(66).string(message.SocialSecurity);
+    if (message.socialSecurity !== "") {
+      writer.uint32(66).string(message.socialSecurity);
     }
-    if (message.FundsCommitted !== 0) {
-      writer.uint32(72).uint64(message.FundsCommitted);
+    if (message.fundsCommitted !== 0) {
+      writer.uint32(72).uint64(message.fundsCommitted);
     }
-    if (message.FileContent.length !== 0) {
-      writer.uint32(82).bytes(message.FileContent);
+    if (message.fileContent.length !== 0) {
+      writer.uint32(82).bytes(message.fileContent);
     }
-    if (message.CreatedOn !== "") {
-      writer.uint32(90).string(message.CreatedOn);
+    if (message.createdOn !== "") {
+      writer.uint32(90).string(message.createdOn);
     }
     return writer;
   },
@@ -276,37 +276,37 @@ export const NotePurchaseAgreementRecord = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Id = reader.string();
+          message.id = reader.string();
           break;
         case 2:
-          message.FirstName = reader.string();
+          message.firstName = reader.string();
           break;
         case 3:
-          message.LastName = reader.string();
+          message.lastName = reader.string();
           break;
         case 4:
-          message.DateOfBirth = reader.string();
+          message.dateOfBirth = reader.string();
           break;
         case 5:
-          message.HomeAddress = reader.string();
+          message.homeAddress = reader.string();
           break;
         case 6:
           message.user = User.decode(reader, reader.uint32());
           break;
         case 7:
-          message.PhoneNumber = reader.string();
+          message.phoneNumber = reader.string();
           break;
         case 8:
-          message.SocialSecurity = reader.string();
+          message.socialSecurity = reader.string();
           break;
         case 9:
-          message.FundsCommitted = longToNumber(reader.uint64() as Long);
+          message.fundsCommitted = longToNumber(reader.uint64() as Long);
           break;
         case 10:
-          message.FileContent = reader.bytes();
+          message.fileContent = reader.bytes();
           break;
         case 11:
-          message.CreatedOn = reader.string();
+          message.createdOn = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -318,62 +318,62 @@ export const NotePurchaseAgreementRecord = {
 
   fromJSON(object: any): NotePurchaseAgreementRecord {
     return {
-      Id: isSet(object.Id) ? String(object.Id) : "",
-      FirstName: isSet(object.FirstName) ? String(object.FirstName) : "",
-      LastName: isSet(object.LastName) ? String(object.LastName) : "",
-      DateOfBirth: isSet(object.DateOfBirth) ? String(object.DateOfBirth) : "",
-      HomeAddress: isSet(object.HomeAddress) ? String(object.HomeAddress) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      firstName: isSet(object.firstName) ? String(object.firstName) : "",
+      lastName: isSet(object.lastName) ? String(object.lastName) : "",
+      dateOfBirth: isSet(object.dateOfBirth) ? String(object.dateOfBirth) : "",
+      homeAddress: isSet(object.homeAddress) ? String(object.homeAddress) : "",
       user: isSet(object.user) ? User.fromJSON(object.user) : undefined,
-      PhoneNumber: isSet(object.PhoneNumber) ? String(object.PhoneNumber) : "",
-      SocialSecurity: isSet(object.SocialSecurity) ? String(object.SocialSecurity) : "",
-      FundsCommitted: isSet(object.FundsCommitted) ? Number(object.FundsCommitted) : 0,
-      FileContent: isSet(object.FileContent) ? bytesFromBase64(object.FileContent) : new Uint8Array(),
-      CreatedOn: isSet(object.CreatedOn) ? String(object.CreatedOn) : "",
+      phoneNumber: isSet(object.phoneNumber) ? String(object.phoneNumber) : "",
+      socialSecurity: isSet(object.socialSecurity) ? String(object.socialSecurity) : "",
+      fundsCommitted: isSet(object.fundsCommitted) ? Number(object.fundsCommitted) : 0,
+      fileContent: isSet(object.fileContent) ? bytesFromBase64(object.fileContent) : new Uint8Array(),
+      createdOn: isSet(object.createdOn) ? String(object.createdOn) : "",
     };
   },
 
   toJSON(message: NotePurchaseAgreementRecord): unknown {
     const obj: any = {};
-    message.Id !== undefined && (obj.Id = message.Id);
-    message.FirstName !== undefined && (obj.FirstName = message.FirstName);
-    message.LastName !== undefined && (obj.LastName = message.LastName);
-    message.DateOfBirth !== undefined && (obj.DateOfBirth = message.DateOfBirth);
-    message.HomeAddress !== undefined && (obj.HomeAddress = message.HomeAddress);
+    message.id !== undefined && (obj.id = message.id);
+    message.firstName !== undefined && (obj.firstName = message.firstName);
+    message.lastName !== undefined && (obj.lastName = message.lastName);
+    message.dateOfBirth !== undefined && (obj.dateOfBirth = message.dateOfBirth);
+    message.homeAddress !== undefined && (obj.homeAddress = message.homeAddress);
     message.user !== undefined && (obj.user = message.user ? User.toJSON(message.user) : undefined);
-    message.PhoneNumber !== undefined && (obj.PhoneNumber = message.PhoneNumber);
-    message.SocialSecurity !== undefined && (obj.SocialSecurity = message.SocialSecurity);
-    message.FundsCommitted !== undefined && (obj.FundsCommitted = Math.round(message.FundsCommitted));
-    message.FileContent !== undefined &&
-      (obj.FileContent = base64FromBytes(message.FileContent !== undefined ? message.FileContent : new Uint8Array()));
-    message.CreatedOn !== undefined && (obj.CreatedOn = message.CreatedOn);
+    message.phoneNumber !== undefined && (obj.phoneNumber = message.phoneNumber);
+    message.socialSecurity !== undefined && (obj.socialSecurity = message.socialSecurity);
+    message.fundsCommitted !== undefined && (obj.fundsCommitted = Math.round(message.fundsCommitted));
+    message.fileContent !== undefined &&
+      (obj.fileContent = base64FromBytes(message.fileContent !== undefined ? message.fileContent : new Uint8Array()));
+    message.createdOn !== undefined && (obj.createdOn = message.createdOn);
     return obj;
   },
 
   fromPartial(object: DeepPartial<NotePurchaseAgreementRecord>): NotePurchaseAgreementRecord {
     const message = createBaseNotePurchaseAgreementRecord();
-    message.Id = object.Id ?? "";
-    message.FirstName = object.FirstName ?? "";
-    message.LastName = object.LastName ?? "";
-    message.DateOfBirth = object.DateOfBirth ?? "";
-    message.HomeAddress = object.HomeAddress ?? "";
+    message.id = object.id ?? "";
+    message.firstName = object.firstName ?? "";
+    message.lastName = object.lastName ?? "";
+    message.dateOfBirth = object.dateOfBirth ?? "";
+    message.homeAddress = object.homeAddress ?? "";
     message.user = (object.user !== undefined && object.user !== null) ? User.fromPartial(object.user) : undefined;
-    message.PhoneNumber = object.PhoneNumber ?? "";
-    message.SocialSecurity = object.SocialSecurity ?? "";
-    message.FundsCommitted = object.FundsCommitted ?? 0;
-    message.FileContent = object.FileContent ?? new Uint8Array();
-    message.CreatedOn = object.CreatedOn ?? "";
+    message.phoneNumber = object.phoneNumber ?? "";
+    message.socialSecurity = object.socialSecurity ?? "";
+    message.fundsCommitted = object.fundsCommitted ?? 0;
+    message.fileContent = object.fileContent ?? new Uint8Array();
+    message.createdOn = object.createdOn ?? "";
     return message;
   },
 };
 
 function createBaseGetNotePurchaseAgreementRequest(): GetNotePurchaseAgreementRequest {
-  return { Payload: undefined };
+  return { payload: undefined };
 }
 
 export const GetNotePurchaseAgreementRequest = {
   encode(message: GetNotePurchaseAgreementRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.Payload !== undefined) {
-      RecordRequestPayload.encode(message.Payload, writer.uint32(10).fork()).ldelim();
+    if (message.payload !== undefined) {
+      RecordRequestPayload.encode(message.payload, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -386,7 +386,7 @@ export const GetNotePurchaseAgreementRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Payload = RecordRequestPayload.decode(reader, reader.uint32());
+          message.payload = RecordRequestPayload.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -397,20 +397,20 @@ export const GetNotePurchaseAgreementRequest = {
   },
 
   fromJSON(object: any): GetNotePurchaseAgreementRequest {
-    return { Payload: isSet(object.Payload) ? RecordRequestPayload.fromJSON(object.Payload) : undefined };
+    return { payload: isSet(object.payload) ? RecordRequestPayload.fromJSON(object.payload) : undefined };
   },
 
   toJSON(message: GetNotePurchaseAgreementRequest): unknown {
     const obj: any = {};
-    message.Payload !== undefined &&
-      (obj.Payload = message.Payload ? RecordRequestPayload.toJSON(message.Payload) : undefined);
+    message.payload !== undefined &&
+      (obj.payload = message.payload ? RecordRequestPayload.toJSON(message.payload) : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementRequest>): GetNotePurchaseAgreementRequest {
     const message = createBaseGetNotePurchaseAgreementRequest();
-    message.Payload = (object.Payload !== undefined && object.Payload !== null)
-      ? RecordRequestPayload.fromPartial(object.Payload)
+    message.payload = (object.payload !== undefined && object.payload !== null)
+      ? RecordRequestPayload.fromPartial(object.payload)
       : undefined;
     return message;
   },
@@ -661,7 +661,7 @@ export const SaveNotePurchaseAgreementResponse = {
 export type NotePurchaseAgreementServiceDefinition = typeof NotePurchaseAgreementServiceDefinition;
 export const NotePurchaseAgreementServiceDefinition = {
   name: "NotePurchaseAgreementService",
-  fullName: "notepurchaseagreement.NotePurchaseAgreementService",
+  fullName: "api.note_purchase_agreement.v1.NotePurchaseAgreementService",
   methods: {
     getNotePurchaseAgreements: {
       name: "GetNotePurchaseAgreements",

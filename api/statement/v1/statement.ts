@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "statement";
+export const protobufPackage = "api.statement.v1";
 
 export interface Statement {
   id: string;
