@@ -31,6 +31,12 @@ export interface GetNotePurchaseAgreementRequest {
 export interface GetNotePurchaseAgreementResponse {
     payload: NotePurchaseAgreementRecord | undefined;
 }
+export interface GetNotePurchaseAgreementDocRequest {
+    payload: NotePurchaseAgreementRecord | undefined;
+}
+export interface GetNotePurchaseAgreementDocResponse {
+    fileContent: Uint8Array;
+}
 export interface GetNotePurchaseAgreementsRequest {
 }
 export interface GetNotePurchaseAgreementsResponse {
@@ -83,6 +89,20 @@ export declare const GetNotePurchaseAgreementResponse: {
     fromJSON(object: any): GetNotePurchaseAgreementResponse;
     toJSON(message: GetNotePurchaseAgreementResponse): unknown;
     fromPartial(object: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse;
+};
+export declare const GetNotePurchaseAgreementDocRequest: {
+    encode(message: GetNotePurchaseAgreementDocRequest, writer?: _m0.Writer): _m0.Writer;
+    decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocRequest;
+    fromJSON(object: any): GetNotePurchaseAgreementDocRequest;
+    toJSON(message: GetNotePurchaseAgreementDocRequest): unknown;
+    fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest;
+};
+export declare const GetNotePurchaseAgreementDocResponse: {
+    encode(message: GetNotePurchaseAgreementDocResponse, writer?: _m0.Writer): _m0.Writer;
+    decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocResponse;
+    fromJSON(object: any): GetNotePurchaseAgreementDocResponse;
+    toJSON(message: GetNotePurchaseAgreementDocResponse): unknown;
+    fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
 };
 export declare const GetNotePurchaseAgreementsRequest: {
     encode(_: GetNotePurchaseAgreementsRequest, writer?: _m0.Writer): _m0.Writer;
@@ -177,17 +197,39 @@ export declare const NotePurchaseAgreementServiceDefinition: {
             readonly responseStream: false;
             readonly options: {};
         };
+        readonly getNotePurchaseAgreementDoc: {
+            readonly name: "GetNotePurchaseAgreementDoc";
+            readonly requestType: {
+                encode(message: GetNotePurchaseAgreementDocRequest, writer?: _m0.Writer): _m0.Writer;
+                decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocRequest;
+                fromJSON(object: any): GetNotePurchaseAgreementDocRequest;
+                toJSON(message: GetNotePurchaseAgreementDocRequest): unknown;
+                fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest;
+            };
+            readonly requestStream: false;
+            readonly responseType: {
+                encode(message: GetNotePurchaseAgreementDocResponse, writer?: _m0.Writer): _m0.Writer;
+                decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocResponse;
+                fromJSON(object: any): GetNotePurchaseAgreementDocResponse;
+                toJSON(message: GetNotePurchaseAgreementDocResponse): unknown;
+                fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
+            };
+            readonly responseStream: false;
+            readonly options: {};
+        };
     };
 };
 export interface NotePurchaseAgreementServiceImplementation<CallContextExt = {}> {
     getNotePurchaseAgreements(request: GetNotePurchaseAgreementsRequest, context: CallContext & CallContextExt): Promise<DeepPartial<GetNotePurchaseAgreementsResponse>>;
     getNotePurchaseAgreement(request: GetNotePurchaseAgreementRequest, context: CallContext & CallContextExt): Promise<DeepPartial<GetNotePurchaseAgreementResponse>>;
     saveNotePurchaseAgreement(request: SaveNotePurchaseAgreementRequest, context: CallContext & CallContextExt): Promise<DeepPartial<SaveNotePurchaseAgreementResponse>>;
+    getNotePurchaseAgreementDoc(request: GetNotePurchaseAgreementDocRequest, context: CallContext & CallContextExt): Promise<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
 }
 export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
     getNotePurchaseAgreements(request: DeepPartial<GetNotePurchaseAgreementsRequest>, options?: CallOptions & CallOptionsExt): Promise<GetNotePurchaseAgreementsResponse>;
     getNotePurchaseAgreement(request: DeepPartial<GetNotePurchaseAgreementRequest>, options?: CallOptions & CallOptionsExt): Promise<GetNotePurchaseAgreementResponse>;
     saveNotePurchaseAgreement(request: DeepPartial<SaveNotePurchaseAgreementRequest>, options?: CallOptions & CallOptionsExt): Promise<SaveNotePurchaseAgreementResponse>;
+    getNotePurchaseAgreementDoc(request: DeepPartial<GetNotePurchaseAgreementDocRequest>, options?: CallOptions & CallOptionsExt): Promise<GetNotePurchaseAgreementDocResponse>;
 }
 declare type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 export declare type DeepPartial<T> = T extends Builtin ? T : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>> : T extends {} ? {

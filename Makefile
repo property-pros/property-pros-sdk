@@ -8,6 +8,8 @@ generate:
 	make postGenerate
 preGenerate:
 postGenerate:
+	rsync -va ./api/api/* ./api
+	rm -rf ./api/api
 	make lint
 	make generateTypeDeclarationFile
 generateTypeDeclarationFile:

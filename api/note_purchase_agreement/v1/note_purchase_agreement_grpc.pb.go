@@ -21,6 +21,7 @@ type NotePurchaseAgreementServiceClient interface {
 	GetNotePurchaseAgreements(ctx context.Context, in *GetNotePurchaseAgreementsRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementsResponse, error)
 	GetNotePurchaseAgreement(ctx context.Context, in *GetNotePurchaseAgreementRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementResponse, error)
 	SaveNotePurchaseAgreement(ctx context.Context, in *SaveNotePurchaseAgreementRequest, opts ...grpc.CallOption) (*SaveNotePurchaseAgreementResponse, error)
+	GetNotePurchaseAgreementDoc(ctx context.Context, in *GetNotePurchaseAgreementDocRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementDocResponse, error)
 }
 
 type notePurchaseAgreementServiceClient struct {
@@ -58,6 +59,15 @@ func (c *notePurchaseAgreementServiceClient) SaveNotePurchaseAgreement(ctx conte
 	return out, nil
 }
 
+func (c *notePurchaseAgreementServiceClient) GetNotePurchaseAgreementDoc(ctx context.Context, in *GetNotePurchaseAgreementDocRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementDocResponse, error) {
+	out := new(GetNotePurchaseAgreementDocResponse)
+	err := c.cc.Invoke(ctx, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreementDoc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotePurchaseAgreementServiceServer is the server API for NotePurchaseAgreementService service.
 // All implementations must embed UnimplementedNotePurchaseAgreementServiceServer
 // for forward compatibility
@@ -65,6 +75,7 @@ type NotePurchaseAgreementServiceServer interface {
 	GetNotePurchaseAgreements(context.Context, *GetNotePurchaseAgreementsRequest) (*GetNotePurchaseAgreementsResponse, error)
 	GetNotePurchaseAgreement(context.Context, *GetNotePurchaseAgreementRequest) (*GetNotePurchaseAgreementResponse, error)
 	SaveNotePurchaseAgreement(context.Context, *SaveNotePurchaseAgreementRequest) (*SaveNotePurchaseAgreementResponse, error)
+	GetNotePurchaseAgreementDoc(context.Context, *GetNotePurchaseAgreementDocRequest) (*GetNotePurchaseAgreementDocResponse, error)
 	mustEmbedUnimplementedNotePurchaseAgreementServiceServer()
 }
 
@@ -80,6 +91,9 @@ func (UnimplementedNotePurchaseAgreementServiceServer) GetNotePurchaseAgreement(
 }
 func (UnimplementedNotePurchaseAgreementServiceServer) SaveNotePurchaseAgreement(context.Context, *SaveNotePurchaseAgreementRequest) (*SaveNotePurchaseAgreementResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveNotePurchaseAgreement not implemented")
+}
+func (UnimplementedNotePurchaseAgreementServiceServer) GetNotePurchaseAgreementDoc(context.Context, *GetNotePurchaseAgreementDocRequest) (*GetNotePurchaseAgreementDocResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNotePurchaseAgreementDoc not implemented")
 }
 func (UnimplementedNotePurchaseAgreementServiceServer) mustEmbedUnimplementedNotePurchaseAgreementServiceServer() {
 }
@@ -149,6 +163,24 @@ func _NotePurchaseAgreementService_SaveNotePurchaseAgreement_Handler(srv interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNotePurchaseAgreementDocRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotePurchaseAgreementServiceServer).GetNotePurchaseAgreementDoc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreementDoc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotePurchaseAgreementServiceServer).GetNotePurchaseAgreementDoc(ctx, req.(*GetNotePurchaseAgreementDocRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotePurchaseAgreementService_ServiceDesc is the grpc.ServiceDesc for NotePurchaseAgreementService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -167,6 +199,10 @@ var NotePurchaseAgreementService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SaveNotePurchaseAgreement",
 			Handler:    _NotePurchaseAgreementService_SaveNotePurchaseAgreement_Handler,
+		},
+		{
+			MethodName: "GetNotePurchaseAgreementDoc",
+			Handler:    _NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

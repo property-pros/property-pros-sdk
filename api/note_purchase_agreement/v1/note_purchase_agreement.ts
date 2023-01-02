@@ -41,6 +41,14 @@ export interface GetNotePurchaseAgreementResponse {
   payload: NotePurchaseAgreementRecord | undefined;
 }
 
+export interface GetNotePurchaseAgreementDocRequest {
+  payload: NotePurchaseAgreementRecord | undefined;
+}
+
+export interface GetNotePurchaseAgreementDocResponse {
+  fileContent: Uint8Array;
+}
+
 export interface GetNotePurchaseAgreementsRequest {
 }
 
@@ -466,6 +474,104 @@ export const GetNotePurchaseAgreementResponse = {
   },
 };
 
+function createBaseGetNotePurchaseAgreementDocRequest(): GetNotePurchaseAgreementDocRequest {
+  return { payload: undefined };
+}
+
+export const GetNotePurchaseAgreementDocRequest = {
+  encode(message: GetNotePurchaseAgreementDocRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.payload !== undefined) {
+      NotePurchaseAgreementRecord.encode(message.payload, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetNotePurchaseAgreementDocRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.payload = NotePurchaseAgreementRecord.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetNotePurchaseAgreementDocRequest {
+    return { payload: isSet(object.payload) ? NotePurchaseAgreementRecord.fromJSON(object.payload) : undefined };
+  },
+
+  toJSON(message: GetNotePurchaseAgreementDocRequest): unknown {
+    const obj: any = {};
+    message.payload !== undefined &&
+      (obj.payload = message.payload ? NotePurchaseAgreementRecord.toJSON(message.payload) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest {
+    const message = createBaseGetNotePurchaseAgreementDocRequest();
+    message.payload = (object.payload !== undefined && object.payload !== null)
+      ? NotePurchaseAgreementRecord.fromPartial(object.payload)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseGetNotePurchaseAgreementDocResponse(): GetNotePurchaseAgreementDocResponse {
+  return { fileContent: new Uint8Array() };
+}
+
+export const GetNotePurchaseAgreementDocResponse = {
+  encode(message: GetNotePurchaseAgreementDocResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fileContent.length !== 0) {
+      writer.uint32(10).bytes(message.fileContent);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetNotePurchaseAgreementDocResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.fileContent = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetNotePurchaseAgreementDocResponse {
+    return { fileContent: isSet(object.fileContent) ? bytesFromBase64(object.fileContent) : new Uint8Array() };
+  },
+
+  toJSON(message: GetNotePurchaseAgreementDocResponse): unknown {
+    const obj: any = {};
+    message.fileContent !== undefined &&
+      (obj.fileContent = base64FromBytes(message.fileContent !== undefined ? message.fileContent : new Uint8Array()));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse {
+    const message = createBaseGetNotePurchaseAgreementDocResponse();
+    message.fileContent = object.fileContent ?? new Uint8Array();
+    return message;
+  },
+};
+
 function createBaseGetNotePurchaseAgreementsRequest(): GetNotePurchaseAgreementsRequest {
   return {};
 }
@@ -687,6 +793,14 @@ export const NotePurchaseAgreementServiceDefinition = {
       responseStream: false,
       options: {},
     },
+    getNotePurchaseAgreementDoc: {
+      name: "GetNotePurchaseAgreementDoc",
+      requestType: GetNotePurchaseAgreementDocRequest,
+      requestStream: false,
+      responseType: GetNotePurchaseAgreementDocResponse,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
 
@@ -703,6 +817,10 @@ export interface NotePurchaseAgreementServiceImplementation<CallContextExt = {}>
     request: SaveNotePurchaseAgreementRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<SaveNotePurchaseAgreementResponse>>;
+  getNotePurchaseAgreementDoc(
+    request: GetNotePurchaseAgreementDocRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
 }
 
 export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
@@ -718,6 +836,10 @@ export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
     request: DeepPartial<SaveNotePurchaseAgreementRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<SaveNotePurchaseAgreementResponse>;
+  getNotePurchaseAgreementDoc(
+    request: DeepPartial<GetNotePurchaseAgreementDocRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<GetNotePurchaseAgreementDocResponse>;
 }
 
 declare var self: any | undefined;

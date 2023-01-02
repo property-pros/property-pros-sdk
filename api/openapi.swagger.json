@@ -45,8 +45,8 @@
     },
     "/v1/notepurchaseagreement": {
       "get": {
-        "summary": "Get Note Purchase Agreement Document",
-        "description": "Gets a note purchase agreement filled out with customer data.",
+        "summary": "Get Note Purchase Agreement Record",
+        "description": "Gets a note purchase agreement full record data.",
         "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreement",
         "responses": {
           "200": {
@@ -75,7 +75,7 @@
         ]
       },
       "post": {
-        "summary": "Save Note Purchase Agreement Document",
+        "summary": "Save Note Purchase Agreement Record",
         "description": "Saves a note purchase agreement filled out with customer data.",
         "operationId": "NotePurchaseAgreementService_SaveNotePurchaseAgreement",
         "responses": {
@@ -97,10 +97,116 @@
         ]
       }
     },
+    "/v1/notepurchaseagreement/file": {
+      "get": {
+        "summary": "Get Note Purchase Agreement Document File Only",
+        "description": "Gets a note purchase agreement document file only.  No record data otherwise.",
+        "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreementDoc",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetNotePurchaseAgreementDocResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "payload.id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.firstName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.lastName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.dateOfBirth",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.homeAddress",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.user.id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.user.emailAddress",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.user.password",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.phoneNumber",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.socialSecurity",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.fundsCommitted",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "payload.fileContent",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "payload.createdOn",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "NotePurchaseAgreement"
+        ]
+      }
+    },
     "/v1/notepurchaseagreements": {
       "get": {
-        "summary": "Get All Note Purchase Agreement Documents",
-        "description": "Gets note purchase agreements with limited data.",
+        "summary": "Get All Note Purchase Agreement Document Records",
+        "description": "Gets note purchase agreement records with limited data.",
         "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreements",
         "responses": {
           "200": {
@@ -158,6 +264,15 @@
         },
         "errorMessage": {
           "type": "string"
+        }
+      }
+    },
+    "v1GetNotePurchaseAgreementDocResponse": {
+      "type": "object",
+      "properties": {
+        "fileContent": {
+          "type": "string",
+          "format": "byte"
         }
       }
     },
