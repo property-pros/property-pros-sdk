@@ -43,6 +43,14 @@ message GetNotePurchaseAgreementResponse {
   NotePurchaseAgreementRecord payload = 1;
 }
 
+message GetNotePurchaseAgreementDocRequest {
+  NotePurchaseAgreementRecord payload = 1;
+}
+
+message GetNotePurchaseAgreementDocResponse {
+  bytes file_content = 1;
+}
+
 message GetNotePurchaseAgreementsRequest {}
 
 message GetNotePurchaseAgreementsResponse {
@@ -64,8 +72,8 @@ service NotePurchaseAgreementService {
       get: "/v1/notepurchaseagreements"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get All Note Purchase Agreement Documents"
-      description: "Gets note purchase agreements with limited data."
+      summary: "Get All Note Purchase Agreement Document Records"
+      description: "Gets note purchase agreement records with limited data."
       tags: "NotePurchaseAgreement"
     };
   }
@@ -76,8 +84,8 @@ service NotePurchaseAgreementService {
       get: "/v1/notepurchaseagreement"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get Note Purchase Agreement Document"
-      description: "Gets a note purchase agreement filled out with customer data."
+      summary: "Get Note Purchase Agreement Record"
+      description: "Gets a note purchase agreement full record data."
       tags: "NotePurchaseAgreement"
     };
   }
@@ -88,8 +96,20 @@ service NotePurchaseAgreementService {
       post: "/v1/notepurchaseagreement"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Save Note Purchase Agreement Document"
+      summary: "Save Note Purchase Agreement Record"
       description: "Saves a note purchase agreement filled out with customer data."
+      tags: "NotePurchaseAgreement"
+    };
+  }
+
+  rpc GetNotePurchaseAgreementDoc(GetNotePurchaseAgreementDocRequest) returns (GetNotePurchaseAgreementDocResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /config
+      get: "/v1/notepurchaseagreement/file"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get Note Purchase Agreement Document File Only"
+      description: "Gets a note purchase agreement document file only.  No record data otherwise."
       tags: "NotePurchaseAgreement"
     };
   }
