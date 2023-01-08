@@ -40,7 +40,7 @@ export interface GetNotePurchaseAgreementDocResponse {
 export interface GetNotePurchaseAgreementsRequest {
 }
 export interface GetNotePurchaseAgreementsResponse {
-    payload: RecordCollection[];
+    payload: RecordCollection | undefined;
 }
 export interface SaveNotePurchaseAgreementRequest {
     payload: NotePurchaseAgreementRecord | undefined;

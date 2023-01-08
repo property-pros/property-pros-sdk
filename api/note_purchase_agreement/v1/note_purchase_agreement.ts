@@ -53,7 +53,7 @@ export interface GetNotePurchaseAgreementsRequest {
 }
 
 export interface GetNotePurchaseAgreementsResponse {
-  payload: RecordCollection[];
+  payload: RecordCollection | undefined;
 }
 
 export interface SaveNotePurchaseAgreementRequest {
@@ -612,13 +612,13 @@ export const GetNotePurchaseAgreementsRequest = {
 };
 
 function createBaseGetNotePurchaseAgreementsResponse(): GetNotePurchaseAgreementsResponse {
-  return { payload: [] };
+  return { payload: undefined };
 }
 
 export const GetNotePurchaseAgreementsResponse = {
   encode(message: GetNotePurchaseAgreementsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.payload) {
-      RecordCollection.encode(v!, writer.uint32(10).fork()).ldelim();
+    if (message.payload !== undefined) {
+      RecordCollection.encode(message.payload, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -631,7 +631,7 @@ export const GetNotePurchaseAgreementsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.payload.push(RecordCollection.decode(reader, reader.uint32()));
+          message.payload = RecordCollection.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -642,24 +642,21 @@ export const GetNotePurchaseAgreementsResponse = {
   },
 
   fromJSON(object: any): GetNotePurchaseAgreementsResponse {
-    return {
-      payload: Array.isArray(object?.payload) ? object.payload.map((e: any) => RecordCollection.fromJSON(e)) : [],
-    };
+    return { payload: isSet(object.payload) ? RecordCollection.fromJSON(object.payload) : undefined };
   },
 
   toJSON(message: GetNotePurchaseAgreementsResponse): unknown {
     const obj: any = {};
-    if (message.payload) {
-      obj.payload = message.payload.map((e) => e ? RecordCollection.toJSON(e) : undefined);
-    } else {
-      obj.payload = [];
-    }
+    message.payload !== undefined &&
+      (obj.payload = message.payload ? RecordCollection.toJSON(message.payload) : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse {
     const message = createBaseGetNotePurchaseAgreementsResponse();
-    message.payload = object.payload?.map((e) => RecordCollection.fromPartial(e)) || [];
+    message.payload = (object.payload !== undefined && object.payload !== null)
+      ? RecordCollection.fromPartial(object.payload)
+      : undefined;
     return message;
   },
 };

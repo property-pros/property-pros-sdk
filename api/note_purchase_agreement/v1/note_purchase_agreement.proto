@@ -54,7 +54,7 @@ message GetNotePurchaseAgreementDocResponse {
 message GetNotePurchaseAgreementsRequest {}
 
 message GetNotePurchaseAgreementsResponse {
-  repeated RecordCollection payload = 1;
+  RecordCollection payload = 1;
 }
 
 message SaveNotePurchaseAgreementRequest {
