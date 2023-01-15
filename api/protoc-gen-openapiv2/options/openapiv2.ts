@@ -1367,6 +1367,10 @@ export const Swagger = {
     return obj;
   },
 
+  create(base?: DeepPartial<Swagger>): Swagger {
+    return Swagger.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Swagger>): Swagger {
     const message = createBaseSwagger();
     message.swagger = object.swagger ?? "";
@@ -1456,6 +1460,10 @@ export const Swagger_ResponsesEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<Swagger_ResponsesEntry>): Swagger_ResponsesEntry {
+    return Swagger_ResponsesEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Swagger_ResponsesEntry>): Swagger_ResponsesEntry {
     const message = createBaseSwagger_ResponsesEntry();
     message.key = object.key ?? "";
@@ -1511,6 +1519,10 @@ export const Swagger_ExtensionsEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
+  },
+
+  create(base?: DeepPartial<Swagger_ExtensionsEntry>): Swagger_ExtensionsEntry {
+    return Swagger_ExtensionsEntry.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<Swagger_ExtensionsEntry>): Swagger_ExtensionsEntry {
@@ -1732,6 +1744,10 @@ export const Operation = {
     return obj;
   },
 
+  create(base?: DeepPartial<Operation>): Operation {
+    return Operation.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Operation>): Operation {
     const message = createBaseOperation();
     message.tags = object.tags?.map((e) => e) || [];
@@ -1821,6 +1837,10 @@ export const Operation_ResponsesEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<Operation_ResponsesEntry>): Operation_ResponsesEntry {
+    return Operation_ResponsesEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Operation_ResponsesEntry>): Operation_ResponsesEntry {
     const message = createBaseOperation_ResponsesEntry();
     message.key = object.key ?? "";
@@ -1878,6 +1898,10 @@ export const Operation_ExtensionsEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<Operation_ExtensionsEntry>): Operation_ExtensionsEntry {
+    return Operation_ExtensionsEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Operation_ExtensionsEntry>): Operation_ExtensionsEntry {
     const message = createBaseOperation_ExtensionsEntry();
     message.key = object.key ?? "";
@@ -1930,6 +1954,10 @@ export const Parameters = {
       obj.headers = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<Parameters>): Parameters {
+    return Parameters.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<Parameters>): Parameters {
@@ -2011,6 +2039,10 @@ export const HeaderParameter = {
     message.format !== undefined && (obj.format = message.format);
     message.required !== undefined && (obj.required = message.required);
     return obj;
+  },
+
+  create(base?: DeepPartial<HeaderParameter>): HeaderParameter {
+    return HeaderParameter.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<HeaderParameter>): HeaderParameter {
@@ -2096,6 +2128,10 @@ export const Header = {
     message.default !== undefined && (obj.default = message.default);
     message.pattern !== undefined && (obj.pattern = message.pattern);
     return obj;
+  },
+
+  create(base?: DeepPartial<Header>): Header {
+    return Header.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<Header>): Header {
@@ -2224,6 +2260,10 @@ export const Response = {
     return obj;
   },
 
+  create(base?: DeepPartial<Response>): Response {
+    return Response.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Response>): Response {
     const message = createBaseResponse();
     message.description = object.description ?? "";
@@ -2305,6 +2345,10 @@ export const Response_HeadersEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<Response_HeadersEntry>): Response_HeadersEntry {
+    return Response_HeadersEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Response_HeadersEntry>): Response_HeadersEntry {
     const message = createBaseResponse_HeadersEntry();
     message.key = object.key ?? "";
@@ -2362,6 +2406,10 @@ export const Response_ExamplesEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<Response_ExamplesEntry>): Response_ExamplesEntry {
+    return Response_ExamplesEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Response_ExamplesEntry>): Response_ExamplesEntry {
     const message = createBaseResponse_ExamplesEntry();
     message.key = object.key ?? "";
@@ -2415,6 +2463,10 @@ export const Response_ExtensionsEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
+  },
+
+  create(base?: DeepPartial<Response_ExtensionsEntry>): Response_ExtensionsEntry {
+    return Response_ExtensionsEntry.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<Response_ExtensionsEntry>): Response_ExtensionsEntry {
@@ -2538,6 +2590,10 @@ export const Info = {
     return obj;
   },
 
+  create(base?: DeepPartial<Info>): Info {
+    return Info.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Info>): Info {
     const message = createBaseInfo();
     message.title = object.title ?? "";
@@ -2610,6 +2666,10 @@ export const Info_ExtensionsEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<Info_ExtensionsEntry>): Info_ExtensionsEntry {
+    return Info_ExtensionsEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Info_ExtensionsEntry>): Info_ExtensionsEntry {
     const message = createBaseInfo_ExtensionsEntry();
     message.key = object.key ?? "";
@@ -2676,6 +2736,10 @@ export const Contact = {
     return obj;
   },
 
+  create(base?: DeepPartial<Contact>): Contact {
+    return Contact.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Contact>): Contact {
     const message = createBaseContact();
     message.name = object.name ?? "";
@@ -2730,6 +2794,10 @@ export const License = {
     message.name !== undefined && (obj.name = message.name);
     message.url !== undefined && (obj.url = message.url);
     return obj;
+  },
+
+  create(base?: DeepPartial<License>): License {
+    return License.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<License>): License {
@@ -2788,6 +2856,10 @@ export const ExternalDocumentation = {
     message.description !== undefined && (obj.description = message.description);
     message.url !== undefined && (obj.url = message.url);
     return obj;
+  },
+
+  create(base?: DeepPartial<ExternalDocumentation>): ExternalDocumentation {
+    return ExternalDocumentation.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<ExternalDocumentation>): ExternalDocumentation {
@@ -2872,6 +2944,10 @@ export const Schema = {
       (obj.externalDocs = message.externalDocs ? ExternalDocumentation.toJSON(message.externalDocs) : undefined);
     message.example !== undefined && (obj.example = message.example);
     return obj;
+  },
+
+  create(base?: DeepPartial<Schema>): Schema {
+    return Schema.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<Schema>): Schema {
@@ -3202,6 +3278,10 @@ export const JSONSchema = {
     return obj;
   },
 
+  create(base?: DeepPartial<JSONSchema>): JSONSchema {
+    return JSONSchema.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<JSONSchema>): JSONSchema {
     const message = createBaseJSONSchema();
     message.ref = object.ref ?? "";
@@ -3284,6 +3364,10 @@ export const JSONSchema_FieldConfiguration = {
     return obj;
   },
 
+  create(base?: DeepPartial<JSONSchema_FieldConfiguration>): JSONSchema_FieldConfiguration {
+    return JSONSchema_FieldConfiguration.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<JSONSchema_FieldConfiguration>): JSONSchema_FieldConfiguration {
     const message = createBaseJSONSchema_FieldConfiguration();
     message.pathParamName = object.pathParamName ?? "";
@@ -3336,6 +3420,10 @@ export const JSONSchema_ExtensionsEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
+  },
+
+  create(base?: DeepPartial<JSONSchema_ExtensionsEntry>): JSONSchema_ExtensionsEntry {
+    return JSONSchema_ExtensionsEntry.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<JSONSchema_ExtensionsEntry>): JSONSchema_ExtensionsEntry {
@@ -3428,6 +3516,10 @@ export const Tag = {
     return obj;
   },
 
+  create(base?: DeepPartial<Tag>): Tag {
+    return Tag.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Tag>): Tag {
     const message = createBaseTag();
     message.name = object.name ?? "";
@@ -3495,6 +3587,10 @@ export const Tag_ExtensionsEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<Tag_ExtensionsEntry>): Tag_ExtensionsEntry {
+    return Tag_ExtensionsEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Tag_ExtensionsEntry>): Tag_ExtensionsEntry {
     const message = createBaseTag_ExtensionsEntry();
     message.key = object.key ?? "";
@@ -3556,6 +3652,10 @@ export const SecurityDefinitions = {
       });
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<SecurityDefinitions>): SecurityDefinitions {
+    return SecurityDefinitions.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<SecurityDefinitions>): SecurityDefinitions {
@@ -3621,6 +3721,10 @@ export const SecurityDefinitions_SecurityEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value ? SecurityScheme.toJSON(message.value) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<SecurityDefinitions_SecurityEntry>): SecurityDefinitions_SecurityEntry {
+    return SecurityDefinitions_SecurityEntry.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<SecurityDefinitions_SecurityEntry>): SecurityDefinitions_SecurityEntry {
@@ -3764,6 +3868,10 @@ export const SecurityScheme = {
     return obj;
   },
 
+  create(base?: DeepPartial<SecurityScheme>): SecurityScheme {
+    return SecurityScheme.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SecurityScheme>): SecurityScheme {
     const message = createBaseSecurityScheme();
     message.type = object.type ?? 0;
@@ -3836,6 +3944,10 @@ export const SecurityScheme_ExtensionsEntry = {
     return obj;
   },
 
+  create(base?: DeepPartial<SecurityScheme_ExtensionsEntry>): SecurityScheme_ExtensionsEntry {
+    return SecurityScheme_ExtensionsEntry.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SecurityScheme_ExtensionsEntry>): SecurityScheme_ExtensionsEntry {
     const message = createBaseSecurityScheme_ExtensionsEntry();
     message.key = object.key ?? "";
@@ -3902,6 +4014,10 @@ export const SecurityRequirement = {
     return obj;
   },
 
+  create(base?: DeepPartial<SecurityRequirement>): SecurityRequirement {
+    return SecurityRequirement.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SecurityRequirement>): SecurityRequirement {
     const message = createBaseSecurityRequirement();
     message.securityRequirement = Object.entries(object.securityRequirement ?? {}).reduce<
@@ -3958,6 +4074,12 @@ export const SecurityRequirement_SecurityRequirementValue = {
       obj.scope = [];
     }
     return obj;
+  },
+
+  create(
+    base?: DeepPartial<SecurityRequirement_SecurityRequirementValue>,
+  ): SecurityRequirement_SecurityRequirementValue {
+    return SecurityRequirement_SecurityRequirementValue.fromPartial(base ?? {});
   },
 
   fromPartial(
@@ -4018,6 +4140,12 @@ export const SecurityRequirement_SecurityRequirementEntry = {
     message.value !== undefined &&
       (obj.value = message.value ? SecurityRequirement_SecurityRequirementValue.toJSON(message.value) : undefined);
     return obj;
+  },
+
+  create(
+    base?: DeepPartial<SecurityRequirement_SecurityRequirementEntry>,
+  ): SecurityRequirement_SecurityRequirementEntry {
+    return SecurityRequirement_SecurityRequirementEntry.fromPartial(base ?? {});
   },
 
   fromPartial(
@@ -4087,6 +4215,10 @@ export const Scopes = {
     return obj;
   },
 
+  create(base?: DeepPartial<Scopes>): Scopes {
+    return Scopes.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Scopes>): Scopes {
     const message = createBaseScopes();
     message.scope = Object.entries(object.scope ?? {}).reduce<{ [key: string]: string }>((acc, [key, value]) => {
@@ -4144,6 +4276,10 @@ export const Scopes_ScopeEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
+  },
+
+  create(base?: DeepPartial<Scopes_ScopeEntry>): Scopes_ScopeEntry {
+    return Scopes_ScopeEntry.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<Scopes_ScopeEntry>): Scopes_ScopeEntry {

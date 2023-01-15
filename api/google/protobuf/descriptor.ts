@@ -1182,6 +1182,10 @@ export const FileDescriptorSet = {
     return obj;
   },
 
+  create(base?: DeepPartial<FileDescriptorSet>): FileDescriptorSet {
+    return FileDescriptorSet.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FileDescriptorSet>): FileDescriptorSet {
     const message = createBaseFileDescriptorSet();
     message.file = object.file?.map((e) => FileDescriptorProto.fromPartial(e)) || [];
@@ -1385,6 +1389,10 @@ export const FileDescriptorProto = {
     return obj;
   },
 
+  create(base?: DeepPartial<FileDescriptorProto>): FileDescriptorProto {
+    return FileDescriptorProto.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FileDescriptorProto>): FileDescriptorProto {
     const message = createBaseFileDescriptorProto();
     message.name = object.name ?? "";
@@ -1575,6 +1583,10 @@ export const DescriptorProto = {
     return obj;
   },
 
+  create(base?: DeepPartial<DescriptorProto>): DescriptorProto {
+    return DescriptorProto.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DescriptorProto>): DescriptorProto {
     const message = createBaseDescriptorProto();
     message.name = object.name ?? "";
@@ -1652,6 +1664,10 @@ export const DescriptorProto_ExtensionRange = {
     return obj;
   },
 
+  create(base?: DeepPartial<DescriptorProto_ExtensionRange>): DescriptorProto_ExtensionRange {
+    return DescriptorProto_ExtensionRange.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DescriptorProto_ExtensionRange>): DescriptorProto_ExtensionRange {
     const message = createBaseDescriptorProto_ExtensionRange();
     message.start = object.start ?? 0;
@@ -1710,6 +1726,10 @@ export const DescriptorProto_ReservedRange = {
     return obj;
   },
 
+  create(base?: DeepPartial<DescriptorProto_ReservedRange>): DescriptorProto_ReservedRange {
+    return DescriptorProto_ReservedRange.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<DescriptorProto_ReservedRange>): DescriptorProto_ReservedRange {
     const message = createBaseDescriptorProto_ReservedRange();
     message.start = object.start ?? 0;
@@ -1764,6 +1784,10 @@ export const ExtensionRangeOptions = {
       obj.uninterpretedOption = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<ExtensionRangeOptions>): ExtensionRangeOptions {
+    return ExtensionRangeOptions.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<ExtensionRangeOptions>): ExtensionRangeOptions {
@@ -1907,6 +1931,10 @@ export const FieldDescriptorProto = {
     return obj;
   },
 
+  create(base?: DeepPartial<FieldDescriptorProto>): FieldDescriptorProto {
+    return FieldDescriptorProto.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FieldDescriptorProto>): FieldDescriptorProto {
     const message = createBaseFieldDescriptorProto();
     message.name = object.name ?? "";
@@ -1974,6 +2002,10 @@ export const OneofDescriptorProto = {
     message.name !== undefined && (obj.name = message.name);
     message.options !== undefined && (obj.options = message.options ? OneofOptions.toJSON(message.options) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<OneofDescriptorProto>): OneofDescriptorProto {
+    return OneofDescriptorProto.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<OneofDescriptorProto>): OneofDescriptorProto {
@@ -2076,6 +2108,10 @@ export const EnumDescriptorProto = {
     return obj;
   },
 
+  create(base?: DeepPartial<EnumDescriptorProto>): EnumDescriptorProto {
+    return EnumDescriptorProto.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EnumDescriptorProto>): EnumDescriptorProto {
     const message = createBaseEnumDescriptorProto();
     message.name = object.name ?? "";
@@ -2135,6 +2171,10 @@ export const EnumDescriptorProto_EnumReservedRange = {
     message.start !== undefined && (obj.start = Math.round(message.start));
     message.end !== undefined && (obj.end = Math.round(message.end));
     return obj;
+  },
+
+  create(base?: DeepPartial<EnumDescriptorProto_EnumReservedRange>): EnumDescriptorProto_EnumReservedRange {
+    return EnumDescriptorProto_EnumReservedRange.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<EnumDescriptorProto_EnumReservedRange>): EnumDescriptorProto_EnumReservedRange {
@@ -2202,6 +2242,10 @@ export const EnumValueDescriptorProto = {
     message.options !== undefined &&
       (obj.options = message.options ? EnumValueOptions.toJSON(message.options) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<EnumValueDescriptorProto>): EnumValueDescriptorProto {
+    return EnumValueDescriptorProto.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<EnumValueDescriptorProto>): EnumValueDescriptorProto {
@@ -2276,6 +2320,10 @@ export const ServiceDescriptorProto = {
     message.options !== undefined &&
       (obj.options = message.options ? ServiceOptions.toJSON(message.options) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<ServiceDescriptorProto>): ServiceDescriptorProto {
+    return ServiceDescriptorProto.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<ServiceDescriptorProto>): ServiceDescriptorProto {
@@ -2377,6 +2425,10 @@ export const MethodDescriptorProto = {
     message.clientStreaming !== undefined && (obj.clientStreaming = message.clientStreaming);
     message.serverStreaming !== undefined && (obj.serverStreaming = message.serverStreaming);
     return obj;
+  },
+
+  create(base?: DeepPartial<MethodDescriptorProto>): MethodDescriptorProto {
+    return MethodDescriptorProto.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<MethodDescriptorProto>): MethodDescriptorProto {
@@ -2626,6 +2678,10 @@ export const FileOptions = {
     return obj;
   },
 
+  create(base?: DeepPartial<FileOptions>): FileOptions {
+    return FileOptions.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FileOptions>): FileOptions {
     const message = createBaseFileOptions();
     message.javaPackage = object.javaPackage ?? "";
@@ -2740,6 +2796,10 @@ export const MessageOptions = {
       obj.uninterpretedOption = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<MessageOptions>): MessageOptions {
+    return MessageOptions.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<MessageOptions>): MessageOptions {
@@ -2866,6 +2926,10 @@ export const FieldOptions = {
     return obj;
   },
 
+  create(base?: DeepPartial<FieldOptions>): FieldOptions {
+    return FieldOptions.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<FieldOptions>): FieldOptions {
     const message = createBaseFieldOptions();
     message.ctype = object.ctype ?? 0;
@@ -2926,6 +2990,10 @@ export const OneofOptions = {
       obj.uninterpretedOption = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<OneofOptions>): OneofOptions {
+    return OneofOptions.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<OneofOptions>): OneofOptions {
@@ -2999,6 +3067,10 @@ export const EnumOptions = {
     return obj;
   },
 
+  create(base?: DeepPartial<EnumOptions>): EnumOptions {
+    return EnumOptions.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EnumOptions>): EnumOptions {
     const message = createBaseEnumOptions();
     message.allowAlias = object.allowAlias ?? false;
@@ -3064,6 +3136,10 @@ export const EnumValueOptions = {
     return obj;
   },
 
+  create(base?: DeepPartial<EnumValueOptions>): EnumValueOptions {
+    return EnumValueOptions.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<EnumValueOptions>): EnumValueOptions {
     const message = createBaseEnumValueOptions();
     message.deprecated = object.deprecated ?? false;
@@ -3126,6 +3202,10 @@ export const ServiceOptions = {
       obj.uninterpretedOption = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<ServiceOptions>): ServiceOptions {
+    return ServiceOptions.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<ServiceOptions>): ServiceOptions {
@@ -3201,6 +3281,10 @@ export const MethodOptions = {
       obj.uninterpretedOption = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<MethodOptions>): MethodOptions {
+    return MethodOptions.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<MethodOptions>): MethodOptions {
@@ -3315,6 +3399,10 @@ export const UninterpretedOption = {
     return obj;
   },
 
+  create(base?: DeepPartial<UninterpretedOption>): UninterpretedOption {
+    return UninterpretedOption.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UninterpretedOption>): UninterpretedOption {
     const message = createBaseUninterpretedOption();
     message.name = object.name?.map((e) => UninterpretedOption_NamePart.fromPartial(e)) || [];
@@ -3378,6 +3466,10 @@ export const UninterpretedOption_NamePart = {
     return obj;
   },
 
+  create(base?: DeepPartial<UninterpretedOption_NamePart>): UninterpretedOption_NamePart {
+    return UninterpretedOption_NamePart.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<UninterpretedOption_NamePart>): UninterpretedOption_NamePart {
     const message = createBaseUninterpretedOption_NamePart();
     message.namePart = object.namePart ?? "";
@@ -3432,6 +3524,10 @@ export const SourceCodeInfo = {
       obj.location = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<SourceCodeInfo>): SourceCodeInfo {
+    return SourceCodeInfo.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<SourceCodeInfo>): SourceCodeInfo {
@@ -3547,6 +3643,10 @@ export const SourceCodeInfo_Location = {
     return obj;
   },
 
+  create(base?: DeepPartial<SourceCodeInfo_Location>): SourceCodeInfo_Location {
+    return SourceCodeInfo_Location.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SourceCodeInfo_Location>): SourceCodeInfo_Location {
     const message = createBaseSourceCodeInfo_Location();
     message.path = object.path?.map((e) => e) || [];
@@ -3604,6 +3704,10 @@ export const GeneratedCodeInfo = {
       obj.annotation = [];
     }
     return obj;
+  },
+
+  create(base?: DeepPartial<GeneratedCodeInfo>): GeneratedCodeInfo {
+    return GeneratedCodeInfo.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<GeneratedCodeInfo>): GeneratedCodeInfo {
@@ -3690,6 +3794,10 @@ export const GeneratedCodeInfo_Annotation = {
     message.begin !== undefined && (obj.begin = Math.round(message.begin));
     message.end !== undefined && (obj.end = Math.round(message.end));
     return obj;
+  },
+
+  create(base?: DeepPartial<GeneratedCodeInfo_Annotation>): GeneratedCodeInfo_Annotation {
+    return GeneratedCodeInfo_Annotation.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<GeneratedCodeInfo_Annotation>): GeneratedCodeInfo_Annotation {

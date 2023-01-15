@@ -68,6 +68,10 @@ export const Statement = {
     return obj;
   },
 
+  create(base?: DeepPartial<Statement>): Statement {
+    return Statement.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Statement>): Statement {
     const message = createBaseStatement();
     message.id = object.id ?? "";

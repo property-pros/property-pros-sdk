@@ -10,8 +10,12 @@ export interface RecordRequestPayload {
   id: string;
 }
 
-export interface RecordCollection {
+export interface RecordRequestCollection {
   payload: RecordRequestPayload[];
+}
+
+export interface RecordCollection {
+  payload: RecordResultPayload[];
 }
 
 export interface RecordResultPayload {
@@ -104,6 +108,10 @@ export const RecordRequestPayload = {
     return obj;
   },
 
+  create(base?: DeepPartial<RecordRequestPayload>): RecordRequestPayload {
+    return RecordRequestPayload.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RecordRequestPayload>): RecordRequestPayload {
     const message = createBaseRecordRequestPayload();
     message.id = object.id ?? "";
@@ -111,22 +119,22 @@ export const RecordRequestPayload = {
   },
 };
 
-function createBaseRecordCollection(): RecordCollection {
+function createBaseRecordRequestCollection(): RecordRequestCollection {
   return { payload: [] };
 }
 
-export const RecordCollection = {
-  encode(message: RecordCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const RecordRequestCollection = {
+  encode(message: RecordRequestCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.payload) {
       RecordRequestPayload.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): RecordCollection {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RecordRequestCollection {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseRecordCollection();
+    const message = createBaseRecordRequestCollection();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -141,13 +149,13 @@ export const RecordCollection = {
     return message;
   },
 
-  fromJSON(object: any): RecordCollection {
+  fromJSON(object: any): RecordRequestCollection {
     return {
       payload: Array.isArray(object?.payload) ? object.payload.map((e: any) => RecordRequestPayload.fromJSON(e)) : [],
     };
   },
 
-  toJSON(message: RecordCollection): unknown {
+  toJSON(message: RecordRequestCollection): unknown {
     const obj: any = {};
     if (message.payload) {
       obj.payload = message.payload.map((e) => e ? RecordRequestPayload.toJSON(e) : undefined);
@@ -157,9 +165,70 @@ export const RecordCollection = {
     return obj;
   },
 
+  create(base?: DeepPartial<RecordRequestCollection>): RecordRequestCollection {
+    return RecordRequestCollection.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<RecordRequestCollection>): RecordRequestCollection {
+    const message = createBaseRecordRequestCollection();
+    message.payload = object.payload?.map((e) => RecordRequestPayload.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseRecordCollection(): RecordCollection {
+  return { payload: [] };
+}
+
+export const RecordCollection = {
+  encode(message: RecordCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.payload) {
+      RecordResultPayload.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RecordCollection {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRecordCollection();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.payload.push(RecordResultPayload.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RecordCollection {
+    return {
+      payload: Array.isArray(object?.payload) ? object.payload.map((e: any) => RecordResultPayload.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: RecordCollection): unknown {
+    const obj: any = {};
+    if (message.payload) {
+      obj.payload = message.payload.map((e) => e ? RecordResultPayload.toJSON(e) : undefined);
+    } else {
+      obj.payload = [];
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<RecordCollection>): RecordCollection {
+    return RecordCollection.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<RecordCollection>): RecordCollection {
     const message = createBaseRecordCollection();
-    message.payload = object.payload?.map((e) => RecordRequestPayload.fromPartial(e)) || [];
+    message.payload = object.payload?.map((e) => RecordResultPayload.fromPartial(e)) || [];
     return message;
   },
 };
@@ -212,6 +281,10 @@ export const RecordResultPayload = {
     message.id !== undefined && (obj.id = message.id);
     message.createdOn !== undefined && (obj.createdOn = message.createdOn);
     return obj;
+  },
+
+  create(base?: DeepPartial<RecordResultPayload>): RecordResultPayload {
+    return RecordResultPayload.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<RecordResultPayload>): RecordResultPayload {
@@ -357,6 +430,10 @@ export const NotePurchaseAgreementRecord = {
     return obj;
   },
 
+  create(base?: DeepPartial<NotePurchaseAgreementRecord>): NotePurchaseAgreementRecord {
+    return NotePurchaseAgreementRecord.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<NotePurchaseAgreementRecord>): NotePurchaseAgreementRecord {
     const message = createBaseNotePurchaseAgreementRecord();
     message.id = object.id ?? "";
@@ -415,6 +492,10 @@ export const GetNotePurchaseAgreementRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<GetNotePurchaseAgreementRequest>): GetNotePurchaseAgreementRequest {
+    return GetNotePurchaseAgreementRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementRequest>): GetNotePurchaseAgreementRequest {
     const message = createBaseGetNotePurchaseAgreementRequest();
     message.payload = (object.payload !== undefined && object.payload !== null)
@@ -463,6 +544,10 @@ export const GetNotePurchaseAgreementResponse = {
     message.payload !== undefined &&
       (obj.payload = message.payload ? NotePurchaseAgreementRecord.toJSON(message.payload) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse {
+    return GetNotePurchaseAgreementResponse.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse {
@@ -515,6 +600,10 @@ export const GetNotePurchaseAgreementDocRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest {
+    return GetNotePurchaseAgreementDocRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest {
     const message = createBaseGetNotePurchaseAgreementDocRequest();
     message.payload = (object.payload !== undefined && object.payload !== null)
@@ -565,6 +654,10 @@ export const GetNotePurchaseAgreementDocResponse = {
     return obj;
   },
 
+  create(base?: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse {
+    return GetNotePurchaseAgreementDocResponse.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse {
     const message = createBaseGetNotePurchaseAgreementDocResponse();
     message.fileContent = object.fileContent ?? new Uint8Array();
@@ -603,6 +696,10 @@ export const GetNotePurchaseAgreementsRequest = {
   toJSON(_: GetNotePurchaseAgreementsRequest): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create(base?: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest {
+    return GetNotePurchaseAgreementsRequest.fromPartial(base ?? {});
   },
 
   fromPartial(_: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest {
@@ -650,6 +747,10 @@ export const GetNotePurchaseAgreementsResponse = {
     message.payload !== undefined &&
       (obj.payload = message.payload ? RecordCollection.toJSON(message.payload) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse {
+    return GetNotePurchaseAgreementsResponse.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse {
@@ -702,6 +803,10 @@ export const SaveNotePurchaseAgreementRequest = {
     return obj;
   },
 
+  create(base?: DeepPartial<SaveNotePurchaseAgreementRequest>): SaveNotePurchaseAgreementRequest {
+    return SaveNotePurchaseAgreementRequest.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<SaveNotePurchaseAgreementRequest>): SaveNotePurchaseAgreementRequest {
     const message = createBaseSaveNotePurchaseAgreementRequest();
     message.payload = (object.payload !== undefined && object.payload !== null)
@@ -750,6 +855,10 @@ export const SaveNotePurchaseAgreementResponse = {
     message.payload !== undefined &&
       (obj.payload = message.payload ? RecordResultPayload.toJSON(message.payload) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<SaveNotePurchaseAgreementResponse>): SaveNotePurchaseAgreementResponse {
+    return SaveNotePurchaseAgreementResponse.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<SaveNotePurchaseAgreementResponse>): SaveNotePurchaseAgreementResponse {

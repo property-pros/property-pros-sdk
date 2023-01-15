@@ -12,8 +12,12 @@ message RecordRequestPayload {
   string id = 1;
 }
 
-message RecordCollection {
+message RecordRequestCollection {
   repeated RecordRequestPayload payload = 1;
+}
+
+message RecordCollection {
+  repeated RecordResultPayload payload = 1;
 }
 
 message RecordResultPayload {

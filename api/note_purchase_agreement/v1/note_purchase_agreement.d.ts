@@ -5,8 +5,11 @@ export declare const protobufPackage = "api.note_purchase_agreement.v1";
 export interface RecordRequestPayload {
     id: string;
 }
-export interface RecordCollection {
+export interface RecordRequestCollection {
     payload: RecordRequestPayload[];
+}
+export interface RecordCollection {
+    payload: RecordResultPayload[];
 }
 export interface RecordResultPayload {
     id: string;
@@ -53,13 +56,23 @@ export declare const RecordRequestPayload: {
     decode(input: _m0.Reader | Uint8Array, length?: number): RecordRequestPayload;
     fromJSON(object: any): RecordRequestPayload;
     toJSON(message: RecordRequestPayload): unknown;
+    create(base?: DeepPartial<RecordRequestPayload>): RecordRequestPayload;
     fromPartial(object: DeepPartial<RecordRequestPayload>): RecordRequestPayload;
+};
+export declare const RecordRequestCollection: {
+    encode(message: RecordRequestCollection, writer?: _m0.Writer): _m0.Writer;
+    decode(input: _m0.Reader | Uint8Array, length?: number): RecordRequestCollection;
+    fromJSON(object: any): RecordRequestCollection;
+    toJSON(message: RecordRequestCollection): unknown;
+    create(base?: DeepPartial<RecordRequestCollection>): RecordRequestCollection;
+    fromPartial(object: DeepPartial<RecordRequestCollection>): RecordRequestCollection;
 };
 export declare const RecordCollection: {
     encode(message: RecordCollection, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): RecordCollection;
     fromJSON(object: any): RecordCollection;
     toJSON(message: RecordCollection): unknown;
+    create(base?: DeepPartial<RecordCollection>): RecordCollection;
     fromPartial(object: DeepPartial<RecordCollection>): RecordCollection;
 };
 export declare const RecordResultPayload: {
@@ -67,6 +80,7 @@ export declare const RecordResultPayload: {
     decode(input: _m0.Reader | Uint8Array, length?: number): RecordResultPayload;
     fromJSON(object: any): RecordResultPayload;
     toJSON(message: RecordResultPayload): unknown;
+    create(base?: DeepPartial<RecordResultPayload>): RecordResultPayload;
     fromPartial(object: DeepPartial<RecordResultPayload>): RecordResultPayload;
 };
 export declare const NotePurchaseAgreementRecord: {
@@ -74,6 +88,7 @@ export declare const NotePurchaseAgreementRecord: {
     decode(input: _m0.Reader | Uint8Array, length?: number): NotePurchaseAgreementRecord;
     fromJSON(object: any): NotePurchaseAgreementRecord;
     toJSON(message: NotePurchaseAgreementRecord): unknown;
+    create(base?: DeepPartial<NotePurchaseAgreementRecord>): NotePurchaseAgreementRecord;
     fromPartial(object: DeepPartial<NotePurchaseAgreementRecord>): NotePurchaseAgreementRecord;
 };
 export declare const GetNotePurchaseAgreementRequest: {
@@ -81,6 +96,7 @@ export declare const GetNotePurchaseAgreementRequest: {
     decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementRequest;
     fromJSON(object: any): GetNotePurchaseAgreementRequest;
     toJSON(message: GetNotePurchaseAgreementRequest): unknown;
+    create(base?: DeepPartial<GetNotePurchaseAgreementRequest>): GetNotePurchaseAgreementRequest;
     fromPartial(object: DeepPartial<GetNotePurchaseAgreementRequest>): GetNotePurchaseAgreementRequest;
 };
 export declare const GetNotePurchaseAgreementResponse: {
@@ -88,6 +104,7 @@ export declare const GetNotePurchaseAgreementResponse: {
     decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementResponse;
     fromJSON(object: any): GetNotePurchaseAgreementResponse;
     toJSON(message: GetNotePurchaseAgreementResponse): unknown;
+    create(base?: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse;
     fromPartial(object: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse;
 };
 export declare const GetNotePurchaseAgreementDocRequest: {
@@ -95,6 +112,7 @@ export declare const GetNotePurchaseAgreementDocRequest: {
     decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocRequest;
     fromJSON(object: any): GetNotePurchaseAgreementDocRequest;
     toJSON(message: GetNotePurchaseAgreementDocRequest): unknown;
+    create(base?: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest;
     fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest;
 };
 export declare const GetNotePurchaseAgreementDocResponse: {
@@ -102,6 +120,7 @@ export declare const GetNotePurchaseAgreementDocResponse: {
     decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocResponse;
     fromJSON(object: any): GetNotePurchaseAgreementDocResponse;
     toJSON(message: GetNotePurchaseAgreementDocResponse): unknown;
+    create(base?: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
     fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
 };
 export declare const GetNotePurchaseAgreementsRequest: {
@@ -109,6 +128,7 @@ export declare const GetNotePurchaseAgreementsRequest: {
     decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementsRequest;
     fromJSON(_: any): GetNotePurchaseAgreementsRequest;
     toJSON(_: GetNotePurchaseAgreementsRequest): unknown;
+    create(base?: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest;
     fromPartial(_: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest;
 };
 export declare const GetNotePurchaseAgreementsResponse: {
@@ -116,6 +136,7 @@ export declare const GetNotePurchaseAgreementsResponse: {
     decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementsResponse;
     fromJSON(object: any): GetNotePurchaseAgreementsResponse;
     toJSON(message: GetNotePurchaseAgreementsResponse): unknown;
+    create(base?: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse;
     fromPartial(object: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse;
 };
 export declare const SaveNotePurchaseAgreementRequest: {
@@ -123,6 +144,7 @@ export declare const SaveNotePurchaseAgreementRequest: {
     decode(input: _m0.Reader | Uint8Array, length?: number): SaveNotePurchaseAgreementRequest;
     fromJSON(object: any): SaveNotePurchaseAgreementRequest;
     toJSON(message: SaveNotePurchaseAgreementRequest): unknown;
+    create(base?: DeepPartial<SaveNotePurchaseAgreementRequest>): SaveNotePurchaseAgreementRequest;
     fromPartial(object: DeepPartial<SaveNotePurchaseAgreementRequest>): SaveNotePurchaseAgreementRequest;
 };
 export declare const SaveNotePurchaseAgreementResponse: {
@@ -130,6 +152,7 @@ export declare const SaveNotePurchaseAgreementResponse: {
     decode(input: _m0.Reader | Uint8Array, length?: number): SaveNotePurchaseAgreementResponse;
     fromJSON(object: any): SaveNotePurchaseAgreementResponse;
     toJSON(message: SaveNotePurchaseAgreementResponse): unknown;
+    create(base?: DeepPartial<SaveNotePurchaseAgreementResponse>): SaveNotePurchaseAgreementResponse;
     fromPartial(object: DeepPartial<SaveNotePurchaseAgreementResponse>): SaveNotePurchaseAgreementResponse;
 };
 export declare type NotePurchaseAgreementServiceDefinition = typeof NotePurchaseAgreementServiceDefinition;
@@ -144,6 +167,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementsRequest;
                 fromJSON(_: any): GetNotePurchaseAgreementsRequest;
                 toJSON(_: GetNotePurchaseAgreementsRequest): unknown;
+                create(base?: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest;
                 fromPartial(_: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest;
             };
             readonly requestStream: false;
@@ -152,6 +176,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementsResponse;
                 fromJSON(object: any): GetNotePurchaseAgreementsResponse;
                 toJSON(message: GetNotePurchaseAgreementsResponse): unknown;
+                create(base?: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse;
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse;
             };
             readonly responseStream: false;
@@ -164,6 +189,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementRequest;
                 fromJSON(object: any): GetNotePurchaseAgreementRequest;
                 toJSON(message: GetNotePurchaseAgreementRequest): unknown;
+                create(base?: DeepPartial<GetNotePurchaseAgreementRequest>): GetNotePurchaseAgreementRequest;
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementRequest>): GetNotePurchaseAgreementRequest;
             };
             readonly requestStream: false;
@@ -172,6 +198,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementResponse;
                 fromJSON(object: any): GetNotePurchaseAgreementResponse;
                 toJSON(message: GetNotePurchaseAgreementResponse): unknown;
+                create(base?: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse;
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse;
             };
             readonly responseStream: false;
@@ -184,6 +211,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): SaveNotePurchaseAgreementRequest;
                 fromJSON(object: any): SaveNotePurchaseAgreementRequest;
                 toJSON(message: SaveNotePurchaseAgreementRequest): unknown;
+                create(base?: DeepPartial<SaveNotePurchaseAgreementRequest>): SaveNotePurchaseAgreementRequest;
                 fromPartial(object: DeepPartial<SaveNotePurchaseAgreementRequest>): SaveNotePurchaseAgreementRequest;
             };
             readonly requestStream: false;
@@ -192,6 +220,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): SaveNotePurchaseAgreementResponse;
                 fromJSON(object: any): SaveNotePurchaseAgreementResponse;
                 toJSON(message: SaveNotePurchaseAgreementResponse): unknown;
+                create(base?: DeepPartial<SaveNotePurchaseAgreementResponse>): SaveNotePurchaseAgreementResponse;
                 fromPartial(object: DeepPartial<SaveNotePurchaseAgreementResponse>): SaveNotePurchaseAgreementResponse;
             };
             readonly responseStream: false;
@@ -204,6 +233,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocRequest;
                 fromJSON(object: any): GetNotePurchaseAgreementDocRequest;
                 toJSON(message: GetNotePurchaseAgreementDocRequest): unknown;
+                create(base?: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest;
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocRequest>): GetNotePurchaseAgreementDocRequest;
             };
             readonly requestStream: false;
@@ -212,6 +242,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocResponse;
                 fromJSON(object: any): GetNotePurchaseAgreementDocResponse;
                 toJSON(message: GetNotePurchaseAgreementDocResponse): unknown;
+                create(base?: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
             };
             readonly responseStream: false;

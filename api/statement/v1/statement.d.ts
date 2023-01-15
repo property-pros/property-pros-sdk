@@ -10,6 +10,7 @@ export declare const Statement: {
     decode(input: _m0.Reader | Uint8Array, length?: number): Statement;
     fromJSON(object: any): Statement;
     toJSON(message: Statement): unknown;
+    create(base?: DeepPartial<Statement>): Statement;
     fromPartial(object: DeepPartial<Statement>): Statement;
 };
 declare type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;

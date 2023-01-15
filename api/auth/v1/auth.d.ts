@@ -18,6 +18,7 @@ export declare const User: {
     decode(input: _m0.Reader | Uint8Array, length?: number): User;
     fromJSON(object: any): User;
     toJSON(message: User): unknown;
+    create(base?: DeepPartial<User>): User;
     fromPartial(object: DeepPartial<User>): User;
 };
 export declare const AuthenticateUserRequest: {
@@ -25,6 +26,7 @@ export declare const AuthenticateUserRequest: {
     decode(input: _m0.Reader | Uint8Array, length?: number): AuthenticateUserRequest;
     fromJSON(object: any): AuthenticateUserRequest;
     toJSON(message: AuthenticateUserRequest): unknown;
+    create(base?: DeepPartial<AuthenticateUserRequest>): AuthenticateUserRequest;
     fromPartial(object: DeepPartial<AuthenticateUserRequest>): AuthenticateUserRequest;
 };
 export declare const AuthenticateUserResponse: {
@@ -32,6 +34,7 @@ export declare const AuthenticateUserResponse: {
     decode(input: _m0.Reader | Uint8Array, length?: number): AuthenticateUserResponse;
     fromJSON(object: any): AuthenticateUserResponse;
     toJSON(message: AuthenticateUserResponse): unknown;
+    create(base?: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse;
     fromPartial(object: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse;
 };
 export declare type AuthenticationServiceDefinition = typeof AuthenticationServiceDefinition;
@@ -46,6 +49,7 @@ export declare const AuthenticationServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): AuthenticateUserRequest;
                 fromJSON(object: any): AuthenticateUserRequest;
                 toJSON(message: AuthenticateUserRequest): unknown;
+                create(base?: DeepPartial<AuthenticateUserRequest>): AuthenticateUserRequest;
                 fromPartial(object: DeepPartial<AuthenticateUserRequest>): AuthenticateUserRequest;
             };
             readonly requestStream: false;
@@ -54,6 +58,7 @@ export declare const AuthenticationServiceDefinition: {
                 decode(input: _m0.Reader | Uint8Array, length?: number): AuthenticateUserResponse;
                 fromJSON(object: any): AuthenticateUserResponse;
                 toJSON(message: AuthenticateUserResponse): unknown;
+                create(base?: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse;
                 fromPartial(object: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse;
             };
             readonly responseStream: false;

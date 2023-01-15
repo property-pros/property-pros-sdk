@@ -78,6 +78,10 @@ export const User = {
     return obj;
   },
 
+  create(base?: DeepPartial<User>): User {
+    return User.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<User>): User {
     const message = createBaseUser();
     message.id = object.id ?? "";
@@ -125,6 +129,10 @@ export const AuthenticateUserRequest = {
     const obj: any = {};
     message.payload !== undefined && (obj.payload = message.payload ? User.toJSON(message.payload) : undefined);
     return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticateUserRequest>): AuthenticateUserRequest {
+    return AuthenticateUserRequest.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<AuthenticateUserRequest>): AuthenticateUserRequest {
@@ -184,6 +192,10 @@ export const AuthenticateUserResponse = {
     message.isAuthenticated !== undefined && (obj.isAuthenticated = message.isAuthenticated);
     message.errorMessage !== undefined && (obj.errorMessage = message.errorMessage);
     return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse {
+    return AuthenticateUserResponse.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse {

@@ -426,6 +426,10 @@ export const Http = {
     return obj;
   },
 
+  create(base?: DeepPartial<Http>): Http {
+    return Http.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<Http>): Http {
     const message = createBaseHttp();
     message.rules = object.rules?.map((e) => HttpRule.fromPartial(e)) || [];
@@ -566,6 +570,10 @@ export const HttpRule = {
     return obj;
   },
 
+  create(base?: DeepPartial<HttpRule>): HttpRule {
+    return HttpRule.fromPartial(base ?? {});
+  },
+
   fromPartial(object: DeepPartial<HttpRule>): HttpRule {
     const message = createBaseHttpRule();
     message.selector = object.selector ?? "";
@@ -629,6 +637,10 @@ export const CustomHttpPattern = {
     message.kind !== undefined && (obj.kind = message.kind);
     message.path !== undefined && (obj.path = message.path);
     return obj;
+  },
+
+  create(base?: DeepPartial<CustomHttpPattern>): CustomHttpPattern {
+    return CustomHttpPattern.fromPartial(base ?? {});
   },
 
   fromPartial(object: DeepPartial<CustomHttpPattern>): CustomHttpPattern {

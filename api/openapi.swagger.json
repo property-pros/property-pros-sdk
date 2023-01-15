@@ -338,7 +338,7 @@
         "payload": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1RecordRequestPayload"
+            "$ref": "#/definitions/v1RecordResultPayload"
           }
         }
       }
