@@ -10,6 +10,9 @@
     },
     {
       "name": "NotePurchaseAgreementService"
+    },
+    {
+      "name": "StatementService"
     }
   ],
   "consumes": [
@@ -226,6 +229,38 @@
           "NotePurchaseAgreement"
         ]
       }
+    },
+    "/v1/statements": {
+      "get": {
+        "summary": "Get All Note Purchase Agreement Document Records",
+        "description": "Gets note purchase agreement records with limited data.",
+        "operationId": "StatementService_GetStatements",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetStatementsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Statement"
+        ]
+      }
     }
   },
   "definitions": {
@@ -289,6 +324,17 @@
       "properties": {
         "payload": {
           "$ref": "#/definitions/v1RecordCollection"
+        }
+      }
+    },
+    "v1GetStatementsResponse": {
+      "type": "object",
+      "properties": {
+        "statements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Statement"
+          }
         }
       }
     },
@@ -367,6 +413,20 @@
       "properties": {
         "payload": {
           "$ref": "#/definitions/v1RecordResultPayload"
+        }
+      }
+    },
+    "v1Statement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "emailAddress": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
         }
       }
     },

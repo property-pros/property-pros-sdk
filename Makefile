@@ -49,13 +49,13 @@ update-patch:
 	tag=$$(git describe --tags --abbrev=0) && \
 	echo "tag: $$tag" && \
 	if [ -z "$$tag" ]; then \
-		tag="0.0.0"; \
+		tag="v0.0.0"; \
 	fi && \
 	IFS=. read major minor patch <<< "$$tag" && \
 	echo "patch: $$patch" && \
 	new_patch=$$((patch + 1)) && \
 	echo "new patch: $$new_patch" && \
-	new_tag="v$$major.$$minor.$$new_patch" && \
+	new_tag="$$major.$$minor.$$new_patch" && \
 	eval git tag -a $$new_tag -m "$$new_tag"
 
 deploy:

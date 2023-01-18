@@ -2,12 +2,35 @@ syntax = "proto3";
 
 package api.statement.v1;
 
-// import "google/api/annotations.proto";
-// import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 option go_package = "github.com/vireocloud/property-pros-sdk/api/statement/v1;statement";
 
 message Statement {
   string id = 1;
   string email_address = 2;
   string password = 3;
+}
+
+message GetStatementsRequest {
+  string user_id = 1;
+}
+
+message GetStatementsResponse {
+  repeated Statement statements = 1;
+}
+
+service StatementService {
+  rpc GetStatements(GetStatementsRequest) returns (GetStatementsResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /config
+      get: "/v1/statements"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get All Note Purchase Agreement Document Records"
+      description: "Gets note purchase agreement records with limited data."
+      tags: "Statement"
+    };
+  }
 }
