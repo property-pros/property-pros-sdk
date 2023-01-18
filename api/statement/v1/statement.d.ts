@@ -3,6 +3,7 @@ import _m0 from "protobufjs/minimal";
 export declare const protobufPackage = "api.statement.v1";
 export interface Statement {
     id: string;
+    userId: string;
     emailAddress: string;
     password: string;
 }

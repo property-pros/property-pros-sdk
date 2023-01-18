@@ -3,27 +3,11 @@ syntax = "proto3";
 package api.note_purchase_agreement.v1;
 
 import "api/auth/v1/auth.proto";
+import "api/common/v1/common.proto";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/vireocloud/property-pros-sdk/api/notepurchaseagreement/v1;notepurchaseagreement";
-
-message RecordRequestPayload {
-  string id = 1;
-}
-
-message RecordRequestCollection {
-  repeated RecordRequestPayload payload = 1;
-}
-
-message RecordCollection {
-  repeated RecordResultPayload payload = 1;
-}
-
-message RecordResultPayload {
-  string id = 1;
-  string created_on = 2;
-}
 
 message NotePurchaseAgreementRecord {
   string id = 1;
@@ -40,7 +24,7 @@ message NotePurchaseAgreementRecord {
 }
 
 message GetNotePurchaseAgreementRequest {
-  RecordRequestPayload payload = 1;
+  api.common.v1.RecordRequestPayload payload = 1;
 }
 
 message GetNotePurchaseAgreementResponse {
@@ -58,7 +42,7 @@ message GetNotePurchaseAgreementDocResponse {
 message GetNotePurchaseAgreementsRequest {}
 
 message GetNotePurchaseAgreementsResponse {
-  RecordCollection payload = 1;
+  api.common.v1.RecordCollection payload = 1;
 }
 
 message SaveNotePurchaseAgreementRequest {
@@ -66,7 +50,7 @@ message SaveNotePurchaseAgreementRequest {
 }
 
 message SaveNotePurchaseAgreementResponse {
-  RecordResultPayload payload = 1;
+  api.common.v1.RecordResultPayload payload = 1;
 }
 
 service NotePurchaseAgreementService {

@@ -422,6 +422,9 @@
         "id": {
           "type": "string"
         },
+        "userId": {
+          "type": "string"
+        },
         "emailAddress": {
           "type": "string"
         },

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package api.common.v1;
+
+option go_package = "github.com/vireocloud/property-pros-sdk/api/common/v1;common";
+
+message RecordRequestPayload {
+  string id = 1;
+}
+
+message RecordRequestCollection {
+  repeated RecordRequestPayload payload = 1;
+}
+
+message RecordCollection {
+  repeated RecordResultPayload payload = 1;
+}
+
+message RecordResultPayload {
+  string id = 1;
+  string created_on = 2;
+}

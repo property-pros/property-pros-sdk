@@ -6,6 +6,7 @@ export const protobufPackage = "api.statement.v1";
 
 export interface Statement {
   id: string;
+  userId: string;
   emailAddress: string;
   password: string;
 }
@@ -19,7 +20,7 @@ export interface GetStatementsResponse {
 }
 
 function createBaseStatement(): Statement {
-  return { id: "", emailAddress: "", password: "" };
+  return { id: "", userId: "", emailAddress: "", password: "" };
 }
 
 export const Statement = {
@@ -27,11 +28,14 @@ export const Statement = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
     if (message.emailAddress !== "") {
-      writer.uint32(18).string(message.emailAddress);
+      writer.uint32(26).string(message.emailAddress);
     }
     if (message.password !== "") {
-      writer.uint32(26).string(message.password);
+      writer.uint32(34).string(message.password);
     }
     return writer;
   },
@@ -47,9 +51,12 @@ export const Statement = {
           message.id = reader.string();
           break;
         case 2:
-          message.emailAddress = reader.string();
+          message.userId = reader.string();
           break;
         case 3:
+          message.emailAddress = reader.string();
+          break;
+        case 4:
           message.password = reader.string();
           break;
         default:
@@ -63,6 +70,7 @@ export const Statement = {
   fromJSON(object: any): Statement {
     return {
       id: isSet(object.id) ? String(object.id) : "",
+      userId: isSet(object.userId) ? String(object.userId) : "",
       emailAddress: isSet(object.emailAddress) ? String(object.emailAddress) : "",
       password: isSet(object.password) ? String(object.password) : "",
     };
@@ -71,6 +79,7 @@ export const Statement = {
   toJSON(message: Statement): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.userId !== undefined && (obj.userId = message.userId);
     message.emailAddress !== undefined && (obj.emailAddress = message.emailAddress);
     message.password !== undefined && (obj.password = message.password);
     return obj;
@@ -83,6 +92,7 @@ export const Statement = {
   fromPartial(object: DeepPartial<Statement>): Statement {
     const message = createBaseStatement();
     message.id = object.id ?? "";
+    message.userId = object.userId ?? "";
     message.emailAddress = object.emailAddress ?? "";
     message.password = object.password ?? "";
     return message;

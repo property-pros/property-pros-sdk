@@ -9,8 +9,9 @@ option go_package = "github.com/vireocloud/property-pros-sdk/api/statement/v1;st
 
 message Statement {
   string id = 1;
-  string email_address = 2;
-  string password = 3;
+  string user_id = 2;
+  string email_address = 3;
+  string password = 4;
 }
 
 message GetStatementsRequest {
