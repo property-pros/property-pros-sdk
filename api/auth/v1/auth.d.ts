@@ -62,7 +62,12 @@ export declare const AuthenticationServiceDefinition: {
                 fromPartial(object: DeepPartial<AuthenticateUserResponse>): AuthenticateUserResponse;
             };
             readonly responseStream: false;
-            readonly options: {};
+            readonly options: {
+                readonly _unknownFields: {
+                    readonly 8338: readonly [Uint8Array];
+                    readonly 578365826: readonly [Uint8Array];
+                };
+            };
         };
     };
 };

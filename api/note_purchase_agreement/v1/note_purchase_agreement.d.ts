@@ -136,7 +136,12 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse;
             };
             readonly responseStream: false;
-            readonly options: {};
+            readonly options: {
+                readonly _unknownFields: {
+                    readonly 8338: readonly [Uint8Array];
+                    readonly 578365826: readonly [Uint8Array];
+                };
+            };
         };
         readonly getNotePurchaseAgreement: {
             readonly name: "GetNotePurchaseAgreement";
@@ -158,7 +163,12 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementResponse>): GetNotePurchaseAgreementResponse;
             };
             readonly responseStream: false;
-            readonly options: {};
+            readonly options: {
+                readonly _unknownFields: {
+                    readonly 8338: readonly [Uint8Array];
+                    readonly 578365826: readonly [Uint8Array];
+                };
+            };
         };
         readonly saveNotePurchaseAgreement: {
             readonly name: "SaveNotePurchaseAgreement";
@@ -180,7 +190,12 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 fromPartial(object: DeepPartial<SaveNotePurchaseAgreementResponse>): SaveNotePurchaseAgreementResponse;
             };
             readonly responseStream: false;
-            readonly options: {};
+            readonly options: {
+                readonly _unknownFields: {
+                    readonly 8338: readonly [Uint8Array];
+                    readonly 578365826: readonly [Uint8Array];
+                };
+            };
         };
         readonly getNotePurchaseAgreementDoc: {
             readonly name: "GetNotePurchaseAgreementDoc";
@@ -202,7 +217,12 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
             };
             readonly responseStream: false;
-            readonly options: {};
+            readonly options: {
+                readonly _unknownFields: {
+                    readonly 8338: readonly [Uint8Array];
+                    readonly 578365826: readonly [Uint8Array];
+                };
+            };
         };
     };
 };
