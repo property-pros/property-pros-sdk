@@ -41,28 +41,45 @@ export const Statement = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Statement {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStatement();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag != 18) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag != 26) {
+            break;
+          }
+
           message.emailAddress = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag != 34) {
+            break;
+          }
+
           message.password = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -112,19 +129,24 @@ export const GetStatementsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetStatementsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.userId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -163,19 +185,24 @@ export const GetStatementsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetStatementsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.statements.push(Statement.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -218,7 +245,134 @@ export const StatementServiceDefinition = {
       requestStream: false,
       responseType: GetStatementsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          8338: [
+            new Uint8Array([
+              118,
+              10,
+              9,
+              83,
+              116,
+              97,
+              116,
+              101,
+              109,
+              101,
+              110,
+              116,
+              18,
+              48,
+              71,
+              101,
+              116,
+              32,
+              65,
+              108,
+              108,
+              32,
+              78,
+              111,
+              116,
+              101,
+              32,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              68,
+              111,
+              99,
+              117,
+              109,
+              101,
+              110,
+              116,
+              32,
+              82,
+              101,
+              99,
+              111,
+              114,
+              100,
+              115,
+              26,
+              55,
+              71,
+              101,
+              116,
+              115,
+              32,
+              110,
+              111,
+              116,
+              101,
+              32,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              114,
+              101,
+              99,
+              111,
+              114,
+              100,
+              115,
+              32,
+              119,
+              105,
+              116,
+              104,
+              32,
+              108,
+              105,
+              109,
+              105,
+              116,
+              101,
+              100,
+              32,
+              100,
+              97,
+              116,
+              97,
+              46,
+            ]),
+          ],
+          578365826: [new Uint8Array([16, 18, 14, 47, 118, 49, 47, 115, 116, 97, 116, 101, 109, 101, 110, 116, 115])],
+        },
+      },
     },
   },
 } as const;

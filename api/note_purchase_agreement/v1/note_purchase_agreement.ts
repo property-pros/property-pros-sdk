@@ -107,49 +107,94 @@ export const NotePurchaseAgreementRecord = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NotePurchaseAgreementRecord {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNotePurchaseAgreementRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag != 18) {
+            break;
+          }
+
           message.firstName = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag != 26) {
+            break;
+          }
+
           message.lastName = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag != 34) {
+            break;
+          }
+
           message.dateOfBirth = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag != 42) {
+            break;
+          }
+
           message.homeAddress = reader.string();
-          break;
+          continue;
         case 6:
+          if (tag != 50) {
+            break;
+          }
+
           message.user = User.decode(reader, reader.uint32());
-          break;
+          continue;
         case 7:
+          if (tag != 58) {
+            break;
+          }
+
           message.phoneNumber = reader.string();
-          break;
+          continue;
         case 8:
+          if (tag != 66) {
+            break;
+          }
+
           message.socialSecurity = reader.string();
-          break;
+          continue;
         case 9:
+          if (tag != 72) {
+            break;
+          }
+
           message.fundsCommitted = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 10:
+          if (tag != 82) {
+            break;
+          }
+
           message.fileContent = reader.bytes();
-          break;
+          continue;
         case 11:
+          if (tag != 90) {
+            break;
+          }
+
           message.createdOn = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -221,19 +266,24 @@ export const GetNotePurchaseAgreementRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetNotePurchaseAgreementRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.payload = RecordRequestPayload.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -275,19 +325,24 @@ export const GetNotePurchaseAgreementResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetNotePurchaseAgreementResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.payload = NotePurchaseAgreementRecord.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -329,19 +384,24 @@ export const GetNotePurchaseAgreementDocRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetNotePurchaseAgreementDocRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.payload = NotePurchaseAgreementRecord.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -383,19 +443,24 @@ export const GetNotePurchaseAgreementDocResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementDocResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetNotePurchaseAgreementDocResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.fileContent = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -432,16 +497,17 @@ export const GetNotePurchaseAgreementsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetNotePurchaseAgreementsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -478,19 +544,24 @@ export const GetNotePurchaseAgreementsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetNotePurchaseAgreementsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetNotePurchaseAgreementsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.payload = RecordCollection.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -532,19 +603,24 @@ export const SaveNotePurchaseAgreementRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SaveNotePurchaseAgreementRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSaveNotePurchaseAgreementRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.payload = NotePurchaseAgreementRecord.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -586,19 +662,24 @@ export const SaveNotePurchaseAgreementResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SaveNotePurchaseAgreementResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSaveNotePurchaseAgreementResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag != 10) {
+            break;
+          }
+
           message.payload = RecordResultPayload.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) == 4 || tag == 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -638,7 +719,179 @@ export const NotePurchaseAgreementServiceDefinition = {
       requestStream: false,
       responseType: GetNotePurchaseAgreementsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          8338: [
+            new Uint8Array([
+              130,
+              1,
+              10,
+              21,
+              78,
+              111,
+              116,
+              101,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              18,
+              48,
+              71,
+              101,
+              116,
+              32,
+              65,
+              108,
+              108,
+              32,
+              78,
+              111,
+              116,
+              101,
+              32,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              68,
+              111,
+              99,
+              117,
+              109,
+              101,
+              110,
+              116,
+              32,
+              82,
+              101,
+              99,
+              111,
+              114,
+              100,
+              115,
+              26,
+              55,
+              71,
+              101,
+              116,
+              115,
+              32,
+              110,
+              111,
+              116,
+              101,
+              32,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              114,
+              101,
+              99,
+              111,
+              114,
+              100,
+              115,
+              32,
+              119,
+              105,
+              116,
+              104,
+              32,
+              108,
+              105,
+              109,
+              105,
+              116,
+              101,
+              100,
+              32,
+              100,
+              97,
+              116,
+              97,
+              46,
+            ]),
+          ],
+          578365826: [
+            new Uint8Array([
+              28,
+              18,
+              26,
+              47,
+              118,
+              49,
+              47,
+              110,
+              111,
+              116,
+              101,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              115,
+            ]),
+          ],
+        },
+      },
     },
     getNotePurchaseAgreement: {
       name: "GetNotePurchaseAgreement",
@@ -646,7 +899,156 @@ export const NotePurchaseAgreementServiceDefinition = {
       requestStream: false,
       responseType: GetNotePurchaseAgreementResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          8338: [
+            new Uint8Array([
+              109,
+              10,
+              21,
+              78,
+              111,
+              116,
+              101,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              18,
+              34,
+              71,
+              101,
+              116,
+              32,
+              78,
+              111,
+              116,
+              101,
+              32,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              82,
+              101,
+              99,
+              111,
+              114,
+              100,
+              26,
+              48,
+              71,
+              101,
+              116,
+              115,
+              32,
+              97,
+              32,
+              110,
+              111,
+              116,
+              101,
+              32,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              102,
+              117,
+              108,
+              108,
+              32,
+              114,
+              101,
+              99,
+              111,
+              114,
+              100,
+              32,
+              100,
+              97,
+              116,
+              97,
+              46,
+            ]),
+          ],
+          578365826: [
+            new Uint8Array([
+              27,
+              18,
+              25,
+              47,
+              118,
+              49,
+              47,
+              110,
+              111,
+              116,
+              101,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+            ]),
+          ],
+        },
+      },
     },
     saveNotePurchaseAgreement: {
       name: "SaveNotePurchaseAgreement",
@@ -654,7 +1056,171 @@ export const NotePurchaseAgreementServiceDefinition = {
       requestStream: false,
       responseType: SaveNotePurchaseAgreementResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          8338: [
+            new Uint8Array([
+              124,
+              10,
+              21,
+              78,
+              111,
+              116,
+              101,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              18,
+              35,
+              83,
+              97,
+              118,
+              101,
+              32,
+              78,
+              111,
+              116,
+              101,
+              32,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              82,
+              101,
+              99,
+              111,
+              114,
+              100,
+              26,
+              62,
+              83,
+              97,
+              118,
+              101,
+              115,
+              32,
+              97,
+              32,
+              110,
+              111,
+              116,
+              101,
+              32,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              102,
+              105,
+              108,
+              108,
+              101,
+              100,
+              32,
+              111,
+              117,
+              116,
+              32,
+              119,
+              105,
+              116,
+              104,
+              32,
+              99,
+              117,
+              115,
+              116,
+              111,
+              109,
+              101,
+              114,
+              32,
+              100,
+              97,
+              116,
+              97,
+              46,
+            ]),
+          ],
+          578365826: [
+            new Uint8Array([
+              27,
+              34,
+              25,
+              47,
+              118,
+              49,
+              47,
+              110,
+              111,
+              116,
+              101,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+            ]),
+          ],
+        },
+      },
     },
     getNotePurchaseAgreementDoc: {
       name: "GetNotePurchaseAgreementDoc",
@@ -662,7 +1228,203 @@ export const NotePurchaseAgreementServiceDefinition = {
       requestStream: false,
       responseType: GetNotePurchaseAgreementDocResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          8338: [
+            new Uint8Array([
+              150,
+              1,
+              10,
+              21,
+              78,
+              111,
+              116,
+              101,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              18,
+              46,
+              71,
+              101,
+              116,
+              32,
+              78,
+              111,
+              116,
+              101,
+              32,
+              80,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              65,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              68,
+              111,
+              99,
+              117,
+              109,
+              101,
+              110,
+              116,
+              32,
+              70,
+              105,
+              108,
+              101,
+              32,
+              79,
+              110,
+              108,
+              121,
+              26,
+              77,
+              71,
+              101,
+              116,
+              115,
+              32,
+              97,
+              32,
+              110,
+              111,
+              116,
+              101,
+              32,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              32,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              32,
+              100,
+              111,
+              99,
+              117,
+              109,
+              101,
+              110,
+              116,
+              32,
+              102,
+              105,
+              108,
+              101,
+              32,
+              111,
+              110,
+              108,
+              121,
+              46,
+              32,
+              32,
+              78,
+              111,
+              32,
+              114,
+              101,
+              99,
+              111,
+              114,
+              100,
+              32,
+              100,
+              97,
+              116,
+              97,
+              32,
+              111,
+              116,
+              104,
+              101,
+              114,
+              119,
+              105,
+              115,
+              101,
+              46,
+            ]),
+          ],
+          578365826: [
+            new Uint8Array([
+              32,
+              18,
+              30,
+              47,
+              118,
+              49,
+              47,
+              110,
+              111,
+              116,
+              101,
+              112,
+              117,
+              114,
+              99,
+              104,
+              97,
+              115,
+              101,
+              97,
+              103,
+              114,
+              101,
+              101,
+              109,
+              101,
+              110,
+              116,
+              47,
+              102,
+              105,
+              108,
+              101,
+            ]),
+          ],
+        },
+      },
     },
   },
 } as const;
