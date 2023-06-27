@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StatementServiceClient interface {
 	GetStatements(ctx context.Context, in *GetStatementsRequest, opts ...grpc.CallOption) (*GetStatementsResponse, error)
+	GetStatementDoc(ctx context.Context, in *GetStatementDocRequest, opts ...grpc.CallOption) (*GetStatementDocResponse, error)
 }
 
 type statementServiceClient struct {
@@ -38,11 +39,21 @@ func (c *statementServiceClient) GetStatements(ctx context.Context, in *GetState
 	return out, nil
 }
 
+func (c *statementServiceClient) GetStatementDoc(ctx context.Context, in *GetStatementDocRequest, opts ...grpc.CallOption) (*GetStatementDocResponse, error) {
+	out := new(GetStatementDocResponse)
+	err := c.cc.Invoke(ctx, "/api.statement.v1.StatementService/GetStatementDoc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StatementServiceServer is the server API for StatementService service.
 // All implementations must embed UnimplementedStatementServiceServer
 // for forward compatibility
 type StatementServiceServer interface {
 	GetStatements(context.Context, *GetStatementsRequest) (*GetStatementsResponse, error)
+	GetStatementDoc(context.Context, *GetStatementDocRequest) (*GetStatementDocResponse, error)
 	mustEmbedUnimplementedStatementServiceServer()
 }
 
@@ -52,6 +63,9 @@ type UnimplementedStatementServiceServer struct {
 
 func (UnimplementedStatementServiceServer) GetStatements(context.Context, *GetStatementsRequest) (*GetStatementsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStatements not implemented")
+}
+func (UnimplementedStatementServiceServer) GetStatementDoc(context.Context, *GetStatementDocRequest) (*GetStatementDocResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStatementDoc not implemented")
 }
 func (UnimplementedStatementServiceServer) mustEmbedUnimplementedStatementServiceServer() {}
 
@@ -84,6 +98,24 @@ func _StatementService_GetStatements_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StatementService_GetStatementDoc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStatementDocRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StatementServiceServer).GetStatementDoc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.statement.v1.StatementService/GetStatementDoc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StatementServiceServer).GetStatementDoc(ctx, req.(*GetStatementDocRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StatementService_ServiceDesc is the grpc.ServiceDesc for StatementService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +126,10 @@ var StatementService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStatements",
 			Handler:    _StatementService_GetStatements_Handler,
+		},
+		{
+			MethodName: "GetStatementDoc",
+			Handler:    _StatementService_GetStatementDoc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

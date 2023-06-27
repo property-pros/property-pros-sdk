@@ -12,6 +12,16 @@ message Statement {
   string user_id = 2;
   string email_address = 3;
   string password = 4;
+  string start_period_date = 5;
+  string end_period_date = 6;
+  string balance = 7;
+  string total_income = 8;
+  string principle = 9;
+  bytes document = 10;
+}
+
+message StatementsPayload {
+  repeated Statement statements = 1;
 }
 
 message GetStatementsRequest {
@@ -19,7 +29,15 @@ message GetStatementsRequest {
 }
 
 message GetStatementsResponse {
-  repeated Statement statements = 1;
+  StatementsPayload payload = 1;
+}
+
+message GetStatementDocRequest {
+  Statement payload = 1;
+}
+
+message GetStatementDocResponse {
+  bytes document = 1;
 }
 
 service StatementService {
@@ -30,7 +48,18 @@ service StatementService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get All Note Purchase Agreement Document Records"
-      description: "Gets note purchase agreement records with limited data."
+      description: "Gets monthly statement records."
+      tags: "Statement"
+    };
+  }
+  rpc GetStatementDoc(GetStatementDocRequest) returns (GetStatementDocResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /config
+      get: "/v1/statementdoc"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get All Note Purchase Agreement Documents"
+      description: "Gets statement document file."
       tags: "Statement"
     };
   }

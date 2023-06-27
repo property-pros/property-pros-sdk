@@ -230,10 +230,97 @@
         ]
       }
     },
+    "/v1/statementdoc": {
+      "get": {
+        "summary": "Get All Note Purchase Agreement Documents",
+        "description": "Gets statement document file.",
+        "operationId": "StatementService_GetStatementDoc",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetStatementDocResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "payload.id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.emailAddress",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.password",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.startPeriodDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.endPeriodDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.balance",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.totalIncome",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.principle",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "payload.document",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          }
+        ],
+        "tags": [
+          "Statement"
+        ]
+      }
+    },
     "/v1/statements": {
       "get": {
         "summary": "Get All Note Purchase Agreement Document Records",
-        "description": "Gets note purchase agreement records with limited data.",
+        "description": "Gets monthly statement records.",
         "operationId": "StatementService_GetStatements",
         "responses": {
           "200": {
@@ -327,14 +414,20 @@
         }
       }
     },
+    "v1GetStatementDocResponse": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "v1GetStatementsResponse": {
       "type": "object",
       "properties": {
-        "statements": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1Statement"
-          }
+        "payload": {
+          "$ref": "#/definitions/v1StatementsPayload"
         }
       }
     },
@@ -430,6 +523,36 @@
         },
         "password": {
           "type": "string"
+        },
+        "startPeriodDate": {
+          "type": "string"
+        },
+        "endPeriodDate": {
+          "type": "string"
+        },
+        "balance": {
+          "type": "string"
+        },
+        "totalIncome": {
+          "type": "string"
+        },
+        "principle": {
+          "type": "string"
+        },
+        "document": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1StatementsPayload": {
+      "type": "object",
+      "properties": {
+        "statements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Statement"
+          }
         }
       }
     },
