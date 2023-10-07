@@ -1,32 +1,36 @@
 version: v1
 plugins:
   # go client definitions
-  - remote: buf.build/library/plugins/go:v1.27.1-1
+  - plugin: buf.build/protocolbuffers/go:v1.31.0
     out: ./api
     opt: paths=source_relative
 
   # go grpc handlers
-  - remote: buf.build/library/plugins/go-grpc:v1.1.0-2
+  - plugin: buf.build/grpc/go:v1.3.0
     out: ./api
     opt: paths=source_relative
 
   # go rest api handlers
-  - name: grpc-gateway
+  - plugin: buf.build/grpc-ecosystem/gateway:v2.16.2
     out: ./api
     opt:
       - paths=source_relative
       - generate_unbound_methods=true
+      - allow_repeated_fields_in_body=true
 
   # openapi for rest api
-  - remote: buf.build/grpc-ecosystem/plugins/openapiv2:v2.6.0-1
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.16.0
     out: ./api
-    opt: allow_merge=true,merge_file_name=openapi
-
+    opt: 
+      - allow_merge=true
+      - merge_file_name=openapi
+      - allow_repeated_fields_in_body=true
   # ts grpc client generation
-  - remote: buf.build/stephenh/plugins/ts-proto
+  - plugin: buf.build/community/stephenh-ts-proto:v1.156.0
     out: ./api
     opt:
       - outputServices=nice-grpc
       - outputServices=generic-definitions
+      - useAsyncIterable=true
       - useExactTypes=false
       - esModuleInterop=true

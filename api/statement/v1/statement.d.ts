@@ -13,14 +13,11 @@ export interface Statement {
     principle: string;
     document: Uint8Array;
 }
-export interface StatementsPayload {
-    statements: Statement[];
-}
 export interface GetStatementsRequest {
     userId: string;
 }
 export interface GetStatementsResponse {
-    payload: StatementsPayload | undefined;
+    payload: Statement[];
 }
 export interface GetStatementDocRequest {
     payload: Statement | undefined;
@@ -31,22 +28,18 @@ export interface GetStatementDocResponse {
 export declare const Statement: {
     encode(message: Statement, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): Statement;
+    encodeTransform(source: AsyncIterable<Statement | Statement[]> | Iterable<Statement | Statement[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<Statement>;
     fromJSON(object: any): Statement;
     toJSON(message: Statement): unknown;
     create(base?: DeepPartial<Statement>): Statement;
     fromPartial(object: DeepPartial<Statement>): Statement;
 };
-export declare const StatementsPayload: {
-    encode(message: StatementsPayload, writer?: _m0.Writer): _m0.Writer;
-    decode(input: _m0.Reader | Uint8Array, length?: number): StatementsPayload;
-    fromJSON(object: any): StatementsPayload;
-    toJSON(message: StatementsPayload): unknown;
-    create(base?: DeepPartial<StatementsPayload>): StatementsPayload;
-    fromPartial(object: DeepPartial<StatementsPayload>): StatementsPayload;
-};
 export declare const GetStatementsRequest: {
     encode(message: GetStatementsRequest, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementsRequest;
+    encodeTransform(source: AsyncIterable<GetStatementsRequest | GetStatementsRequest[]> | Iterable<GetStatementsRequest | GetStatementsRequest[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementsRequest>;
     fromJSON(object: any): GetStatementsRequest;
     toJSON(message: GetStatementsRequest): unknown;
     create(base?: DeepPartial<GetStatementsRequest>): GetStatementsRequest;
@@ -55,6 +48,8 @@ export declare const GetStatementsRequest: {
 export declare const GetStatementsResponse: {
     encode(message: GetStatementsResponse, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementsResponse;
+    encodeTransform(source: AsyncIterable<GetStatementsResponse | GetStatementsResponse[]> | Iterable<GetStatementsResponse | GetStatementsResponse[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementsResponse>;
     fromJSON(object: any): GetStatementsResponse;
     toJSON(message: GetStatementsResponse): unknown;
     create(base?: DeepPartial<GetStatementsResponse>): GetStatementsResponse;
@@ -63,6 +58,8 @@ export declare const GetStatementsResponse: {
 export declare const GetStatementDocRequest: {
     encode(message: GetStatementDocRequest, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementDocRequest;
+    encodeTransform(source: AsyncIterable<GetStatementDocRequest | GetStatementDocRequest[]> | Iterable<GetStatementDocRequest | GetStatementDocRequest[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementDocRequest>;
     fromJSON(object: any): GetStatementDocRequest;
     toJSON(message: GetStatementDocRequest): unknown;
     create(base?: DeepPartial<GetStatementDocRequest>): GetStatementDocRequest;
@@ -71,6 +68,8 @@ export declare const GetStatementDocRequest: {
 export declare const GetStatementDocResponse: {
     encode(message: GetStatementDocResponse, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementDocResponse;
+    encodeTransform(source: AsyncIterable<GetStatementDocResponse | GetStatementDocResponse[]> | Iterable<GetStatementDocResponse | GetStatementDocResponse[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementDocResponse>;
     fromJSON(object: any): GetStatementDocResponse;
     toJSON(message: GetStatementDocResponse): unknown;
     create(base?: DeepPartial<GetStatementDocResponse>): GetStatementDocResponse;
@@ -86,6 +85,8 @@ export declare const StatementServiceDefinition: {
             readonly requestType: {
                 encode(message: GetStatementsRequest, writer?: _m0.Writer): _m0.Writer;
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementsRequest;
+                encodeTransform(source: AsyncIterable<GetStatementsRequest | GetStatementsRequest[]> | Iterable<GetStatementsRequest | GetStatementsRequest[]>): AsyncIterable<Uint8Array>;
+                decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementsRequest>;
                 fromJSON(object: any): GetStatementsRequest;
                 toJSON(message: GetStatementsRequest): unknown;
                 create(base?: DeepPartial<GetStatementsRequest>): GetStatementsRequest;
@@ -95,6 +96,8 @@ export declare const StatementServiceDefinition: {
             readonly responseType: {
                 encode(message: GetStatementsResponse, writer?: _m0.Writer): _m0.Writer;
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementsResponse;
+                encodeTransform(source: AsyncIterable<GetStatementsResponse | GetStatementsResponse[]> | Iterable<GetStatementsResponse | GetStatementsResponse[]>): AsyncIterable<Uint8Array>;
+                decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementsResponse>;
                 fromJSON(object: any): GetStatementsResponse;
                 toJSON(message: GetStatementsResponse): unknown;
                 create(base?: DeepPartial<GetStatementsResponse>): GetStatementsResponse;
@@ -113,6 +116,8 @@ export declare const StatementServiceDefinition: {
             readonly requestType: {
                 encode(message: GetStatementDocRequest, writer?: _m0.Writer): _m0.Writer;
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementDocRequest;
+                encodeTransform(source: AsyncIterable<GetStatementDocRequest | GetStatementDocRequest[]> | Iterable<GetStatementDocRequest | GetStatementDocRequest[]>): AsyncIterable<Uint8Array>;
+                decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementDocRequest>;
                 fromJSON(object: any): GetStatementDocRequest;
                 toJSON(message: GetStatementDocRequest): unknown;
                 create(base?: DeepPartial<GetStatementDocRequest>): GetStatementDocRequest;
@@ -122,6 +127,8 @@ export declare const StatementServiceDefinition: {
             readonly responseType: {
                 encode(message: GetStatementDocResponse, writer?: _m0.Writer): _m0.Writer;
                 decode(input: _m0.Reader | Uint8Array, length?: number): GetStatementDocResponse;
+                encodeTransform(source: AsyncIterable<GetStatementDocResponse | GetStatementDocResponse[]> | Iterable<GetStatementDocResponse | GetStatementDocResponse[]>): AsyncIterable<Uint8Array>;
+                decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<GetStatementDocResponse>;
                 fromJSON(object: any): GetStatementDocResponse;
                 toJSON(message: GetStatementDocResponse): unknown;
                 create(base?: DeepPartial<GetStatementDocResponse>): GetStatementDocResponse;

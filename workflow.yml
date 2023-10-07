@@ -1,0 +1,77 @@
+name: CI
+
+on: 
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [closed]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Build
+        run: go build -v ./...
+      - name: Test
+        run: go test -v ./...
+      - name: Lint
+        run: golangci-lint run
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Check version
+        id: check_version
+        run: |
+          VERSION=v$(grep "version" package.json | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g')
+          echo "::set-output name=version::${VERSION}"
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.check_version.outputs.version }}
+          release_name: Release ${{ steps.check_version.outputs.version }}
+          draft: false
+          prerelease: false
+      - name: Upload binaries
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./property-pros-sdk
+          asset_name: property-pros-sdk-${{ steps.check_version.outputs.version }}-linux-amd64
+          asset_content_type: application/octet-stream
+
+  version:
+    needs: [build, release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Bump version and push tag
+        run: |
+          npm version patch
+          git push --follow-tags
+      - name: Merge to master
+        run: |
+          git checkout master
+          git merge --ff-only ${{ github.head_ref }}
+          git push

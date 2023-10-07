@@ -122,7 +122,7 @@ export const Struct = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
@@ -132,12 +132,44 @@ export const Struct = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Struct, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Struct | Struct[]> | Iterable<Struct | Struct[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Struct.encode(p).finish()];
+        }
+      } else {
+        yield* [Struct.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Struct>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Struct> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Struct.decode(p)];
+        }
+      } else {
+        yield* [Struct.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Struct {
@@ -153,11 +185,14 @@ export const Struct = {
 
   toJSON(message: Struct): unknown {
     const obj: any = {};
-    obj.fields = {};
     if (message.fields) {
-      Object.entries(message.fields).forEach(([k, v]) => {
-        obj.fields[k] = v;
-      });
+      const entries = Object.entries(message.fields);
+      if (entries.length > 0) {
+        obj.fields = {};
+        entries.forEach(([k, v]) => {
+          obj.fields[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -224,26 +259,60 @@ export const Struct_FieldsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Struct_FieldsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Struct_FieldsEntry | Struct_FieldsEntry[]>
+      | Iterable<Struct_FieldsEntry | Struct_FieldsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Struct_FieldsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Struct_FieldsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Struct_FieldsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Struct_FieldsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Struct_FieldsEntry.decode(p)];
+        }
+      } else {
+        yield* [Struct_FieldsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Struct_FieldsEntry {
@@ -252,8 +321,12 @@ export const Struct_FieldsEntry = {
 
   toJSON(message: Struct_FieldsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -311,54 +384,86 @@ export const Value = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.nullValue = reader.int32() as any;
           continue;
         case 2:
-          if (tag != 17) {
+          if (tag !== 17) {
             break;
           }
 
           message.numberValue = reader.double();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.stringValue = reader.string();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.boolValue = reader.bool();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.structValue = Struct.unwrap(Struct.decode(reader, reader.uint32()));
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.listValue = ListValue.unwrap(ListValue.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Value, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Value | Value[]> | Iterable<Value | Value[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Value.encode(p).finish()];
+        }
+      } else {
+        yield* [Value.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Value>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Value> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Value.decode(p)];
+        }
+      } else {
+        yield* [Value.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Value {
@@ -374,13 +479,24 @@ export const Value = {
 
   toJSON(message: Value): unknown {
     const obj: any = {};
-    message.nullValue !== undefined &&
-      (obj.nullValue = message.nullValue !== undefined ? nullValueToJSON(message.nullValue) : undefined);
-    message.numberValue !== undefined && (obj.numberValue = message.numberValue);
-    message.stringValue !== undefined && (obj.stringValue = message.stringValue);
-    message.boolValue !== undefined && (obj.boolValue = message.boolValue);
-    message.structValue !== undefined && (obj.structValue = message.structValue);
-    message.listValue !== undefined && (obj.listValue = message.listValue);
+    if (message.nullValue !== undefined) {
+      obj.nullValue = nullValueToJSON(message.nullValue);
+    }
+    if (message.numberValue !== undefined) {
+      obj.numberValue = message.numberValue;
+    }
+    if (message.stringValue !== undefined) {
+      obj.stringValue = message.stringValue;
+    }
+    if (message.boolValue !== undefined) {
+      obj.boolValue = message.boolValue;
+    }
+    if (message.structValue !== undefined) {
+      obj.structValue = message.structValue;
+    }
+    if (message.listValue !== undefined) {
+      obj.listValue = message.listValue;
+    }
     return obj;
   },
 
@@ -457,19 +573,51 @@ export const ListValue = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.values.push(Value.unwrap(Value.decode(reader, reader.uint32())));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<ListValue, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<ListValue | ListValue[]> | Iterable<ListValue | ListValue[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ListValue.encode(p).finish()];
+        }
+      } else {
+        yield* [ListValue.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, ListValue>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<ListValue> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ListValue.decode(p)];
+        }
+      } else {
+        yield* [ListValue.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): ListValue {
@@ -478,10 +626,8 @@ export const ListValue = {
 
   toJSON(message: ListValue): unknown {
     const obj: any = {};
-    if (message.values) {
-      obj.values = message.values.map((e) => e);
-    } else {
-      obj.values = [];
+    if (message.values?.length) {
+      obj.values = message.values;
     }
     return obj;
   },

@@ -1227,40 +1227,41 @@ export const Swagger = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.swagger = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.info = Info.decode(reader, reader.uint32());
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.host = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.basePath = reader.string();
           continue;
         case 5:
-          if (tag == 40) {
+          if (tag === 40) {
             message.schemes.push(reader.int32() as any);
+
             continue;
           }
 
-          if (tag == 42) {
+          if (tag === 42) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.schemes.push(reader.int32() as any);
@@ -1271,21 +1272,21 @@ export const Swagger = {
 
           break;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.consumes.push(reader.string());
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.produces.push(reader.string());
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
@@ -1295,35 +1296,35 @@ export const Swagger = {
           }
           continue;
         case 11:
-          if (tag != 90) {
+          if (tag !== 90) {
             break;
           }
 
           message.securityDefinitions = SecurityDefinitions.decode(reader, reader.uint32());
           continue;
         case 12:
-          if (tag != 98) {
+          if (tag !== 98) {
             break;
           }
 
           message.security.push(SecurityRequirement.decode(reader, reader.uint32()));
           continue;
         case 13:
-          if (tag != 106) {
+          if (tag !== 106) {
             break;
           }
 
           message.tags.push(Tag.decode(reader, reader.uint32()));
           continue;
         case 14:
-          if (tag != 114) {
+          if (tag !== 114) {
             break;
           }
 
           message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
           continue;
         case 15:
-          if (tag != 122) {
+          if (tag !== 122) {
             break;
           }
 
@@ -1333,12 +1334,44 @@ export const Swagger = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Swagger, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Swagger | Swagger[]> | Iterable<Swagger | Swagger[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Swagger.encode(p).finish()];
+        }
+      } else {
+        yield* [Swagger.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Swagger>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Swagger> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Swagger.decode(p)];
+        }
+      } else {
+        yield* [Swagger.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Swagger {
@@ -1373,51 +1406,56 @@ export const Swagger = {
 
   toJSON(message: Swagger): unknown {
     const obj: any = {};
-    message.swagger !== undefined && (obj.swagger = message.swagger);
-    message.info !== undefined && (obj.info = message.info ? Info.toJSON(message.info) : undefined);
-    message.host !== undefined && (obj.host = message.host);
-    message.basePath !== undefined && (obj.basePath = message.basePath);
-    if (message.schemes) {
+    if (message.swagger !== "") {
+      obj.swagger = message.swagger;
+    }
+    if (message.info !== undefined) {
+      obj.info = Info.toJSON(message.info);
+    }
+    if (message.host !== "") {
+      obj.host = message.host;
+    }
+    if (message.basePath !== "") {
+      obj.basePath = message.basePath;
+    }
+    if (message.schemes?.length) {
       obj.schemes = message.schemes.map((e) => schemeToJSON(e));
-    } else {
-      obj.schemes = [];
     }
-    if (message.consumes) {
-      obj.consumes = message.consumes.map((e) => e);
-    } else {
-      obj.consumes = [];
+    if (message.consumes?.length) {
+      obj.consumes = message.consumes;
     }
-    if (message.produces) {
-      obj.produces = message.produces.map((e) => e);
-    } else {
-      obj.produces = [];
+    if (message.produces?.length) {
+      obj.produces = message.produces;
     }
-    obj.responses = {};
     if (message.responses) {
-      Object.entries(message.responses).forEach(([k, v]) => {
-        obj.responses[k] = Response.toJSON(v);
-      });
+      const entries = Object.entries(message.responses);
+      if (entries.length > 0) {
+        obj.responses = {};
+        entries.forEach(([k, v]) => {
+          obj.responses[k] = Response.toJSON(v);
+        });
+      }
     }
-    message.securityDefinitions !== undefined && (obj.securityDefinitions = message.securityDefinitions
-      ? SecurityDefinitions.toJSON(message.securityDefinitions)
-      : undefined);
-    if (message.security) {
-      obj.security = message.security.map((e) => e ? SecurityRequirement.toJSON(e) : undefined);
-    } else {
-      obj.security = [];
+    if (message.securityDefinitions !== undefined) {
+      obj.securityDefinitions = SecurityDefinitions.toJSON(message.securityDefinitions);
     }
-    if (message.tags) {
-      obj.tags = message.tags.map((e) => e ? Tag.toJSON(e) : undefined);
-    } else {
-      obj.tags = [];
+    if (message.security?.length) {
+      obj.security = message.security.map((e) => SecurityRequirement.toJSON(e));
     }
-    message.externalDocs !== undefined &&
-      (obj.externalDocs = message.externalDocs ? ExternalDocumentation.toJSON(message.externalDocs) : undefined);
-    obj.extensions = {};
+    if (message.tags?.length) {
+      obj.tags = message.tags.map((e) => Tag.toJSON(e));
+    }
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
     if (message.extensions) {
-      Object.entries(message.extensions).forEach(([k, v]) => {
-        obj.extensions[k] = v;
-      });
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -1488,26 +1526,60 @@ export const Swagger_ResponsesEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Response.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Swagger_ResponsesEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Swagger_ResponsesEntry | Swagger_ResponsesEntry[]>
+      | Iterable<Swagger_ResponsesEntry | Swagger_ResponsesEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Swagger_ResponsesEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Swagger_ResponsesEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Swagger_ResponsesEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Swagger_ResponsesEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Swagger_ResponsesEntry.decode(p)];
+        }
+      } else {
+        yield* [Swagger_ResponsesEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Swagger_ResponsesEntry {
@@ -1519,8 +1591,12 @@ export const Swagger_ResponsesEntry = {
 
   toJSON(message: Swagger_ResponsesEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value ? Response.toJSON(message.value) : undefined);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = Response.toJSON(message.value);
+    }
     return obj;
   },
 
@@ -1561,26 +1637,60 @@ export const Swagger_ExtensionsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Swagger_ExtensionsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Swagger_ExtensionsEntry | Swagger_ExtensionsEntry[]>
+      | Iterable<Swagger_ExtensionsEntry | Swagger_ExtensionsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Swagger_ExtensionsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Swagger_ExtensionsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Swagger_ExtensionsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Swagger_ExtensionsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Swagger_ExtensionsEntry.decode(p)];
+        }
+      } else {
+        yield* [Swagger_ExtensionsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Swagger_ExtensionsEntry {
@@ -1589,8 +1699,12 @@ export const Swagger_ExtensionsEntry = {
 
   toJSON(message: Swagger_ExtensionsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -1680,56 +1794,56 @@ export const Operation = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.tags.push(reader.string());
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.summary = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.operationId = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.consumes.push(reader.string());
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.produces.push(reader.string());
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
@@ -1739,12 +1853,13 @@ export const Operation = {
           }
           continue;
         case 10:
-          if (tag == 80) {
+          if (tag === 80) {
             message.schemes.push(reader.int32() as any);
+
             continue;
           }
 
-          if (tag == 82) {
+          if (tag === 82) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.schemes.push(reader.int32() as any);
@@ -1755,21 +1870,21 @@ export const Operation = {
 
           break;
         case 11:
-          if (tag != 88) {
+          if (tag !== 88) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
         case 12:
-          if (tag != 98) {
+          if (tag !== 98) {
             break;
           }
 
           message.security.push(SecurityRequirement.decode(reader, reader.uint32()));
           continue;
         case 13:
-          if (tag != 106) {
+          if (tag !== 106) {
             break;
           }
 
@@ -1779,19 +1894,51 @@ export const Operation = {
           }
           continue;
         case 14:
-          if (tag != 114) {
+          if (tag !== 114) {
             break;
           }
 
           message.parameters = Parameters.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Operation, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Operation | Operation[]> | Iterable<Operation | Operation[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Operation.encode(p).finish()];
+        }
+      } else {
+        yield* [Operation.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Operation>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Operation> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Operation.decode(p)];
+        }
+      } else {
+        yield* [Operation.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Operation {
@@ -1824,51 +1971,57 @@ export const Operation = {
 
   toJSON(message: Operation): unknown {
     const obj: any = {};
-    if (message.tags) {
-      obj.tags = message.tags.map((e) => e);
-    } else {
-      obj.tags = [];
+    if (message.tags?.length) {
+      obj.tags = message.tags;
     }
-    message.summary !== undefined && (obj.summary = message.summary);
-    message.description !== undefined && (obj.description = message.description);
-    message.externalDocs !== undefined &&
-      (obj.externalDocs = message.externalDocs ? ExternalDocumentation.toJSON(message.externalDocs) : undefined);
-    message.operationId !== undefined && (obj.operationId = message.operationId);
-    if (message.consumes) {
-      obj.consumes = message.consumes.map((e) => e);
-    } else {
-      obj.consumes = [];
+    if (message.summary !== "") {
+      obj.summary = message.summary;
     }
-    if (message.produces) {
-      obj.produces = message.produces.map((e) => e);
-    } else {
-      obj.produces = [];
+    if (message.description !== "") {
+      obj.description = message.description;
     }
-    obj.responses = {};
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
+    if (message.operationId !== "") {
+      obj.operationId = message.operationId;
+    }
+    if (message.consumes?.length) {
+      obj.consumes = message.consumes;
+    }
+    if (message.produces?.length) {
+      obj.produces = message.produces;
+    }
     if (message.responses) {
-      Object.entries(message.responses).forEach(([k, v]) => {
-        obj.responses[k] = Response.toJSON(v);
-      });
+      const entries = Object.entries(message.responses);
+      if (entries.length > 0) {
+        obj.responses = {};
+        entries.forEach(([k, v]) => {
+          obj.responses[k] = Response.toJSON(v);
+        });
+      }
     }
-    if (message.schemes) {
+    if (message.schemes?.length) {
       obj.schemes = message.schemes.map((e) => schemeToJSON(e));
-    } else {
-      obj.schemes = [];
     }
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    if (message.security) {
-      obj.security = message.security.map((e) => e ? SecurityRequirement.toJSON(e) : undefined);
-    } else {
-      obj.security = [];
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
     }
-    obj.extensions = {};
+    if (message.security?.length) {
+      obj.security = message.security.map((e) => SecurityRequirement.toJSON(e));
+    }
     if (message.extensions) {
-      Object.entries(message.extensions).forEach(([k, v]) => {
-        obj.extensions[k] = v;
-      });
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
     }
-    message.parameters !== undefined &&
-      (obj.parameters = message.parameters ? Parameters.toJSON(message.parameters) : undefined);
+    if (message.parameters !== undefined) {
+      obj.parameters = Parameters.toJSON(message.parameters);
+    }
     return obj;
   },
 
@@ -1938,26 +2091,60 @@ export const Operation_ResponsesEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Response.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Operation_ResponsesEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Operation_ResponsesEntry | Operation_ResponsesEntry[]>
+      | Iterable<Operation_ResponsesEntry | Operation_ResponsesEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Operation_ResponsesEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Operation_ResponsesEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Operation_ResponsesEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Operation_ResponsesEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Operation_ResponsesEntry.decode(p)];
+        }
+      } else {
+        yield* [Operation_ResponsesEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Operation_ResponsesEntry {
@@ -1969,8 +2156,12 @@ export const Operation_ResponsesEntry = {
 
   toJSON(message: Operation_ResponsesEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value ? Response.toJSON(message.value) : undefined);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = Response.toJSON(message.value);
+    }
     return obj;
   },
 
@@ -2011,26 +2202,60 @@ export const Operation_ExtensionsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Operation_ExtensionsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Operation_ExtensionsEntry | Operation_ExtensionsEntry[]>
+      | Iterable<Operation_ExtensionsEntry | Operation_ExtensionsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Operation_ExtensionsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Operation_ExtensionsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Operation_ExtensionsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Operation_ExtensionsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Operation_ExtensionsEntry.decode(p)];
+        }
+      } else {
+        yield* [Operation_ExtensionsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Operation_ExtensionsEntry {
@@ -2039,8 +2264,12 @@ export const Operation_ExtensionsEntry = {
 
   toJSON(message: Operation_ExtensionsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -2076,19 +2305,51 @@ export const Parameters = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.headers.push(HeaderParameter.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Parameters, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Parameters | Parameters[]> | Iterable<Parameters | Parameters[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Parameters.encode(p).finish()];
+        }
+      } else {
+        yield* [Parameters.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Parameters>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Parameters> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Parameters.decode(p)];
+        }
+      } else {
+        yield* [Parameters.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Parameters {
@@ -2099,10 +2360,8 @@ export const Parameters = {
 
   toJSON(message: Parameters): unknown {
     const obj: any = {};
-    if (message.headers) {
-      obj.headers = message.headers.map((e) => e ? HeaderParameter.toJSON(e) : undefined);
-    } else {
-      obj.headers = [];
+    if (message.headers?.length) {
+      obj.headers = message.headers.map((e) => HeaderParameter.toJSON(e));
     }
     return obj;
   },
@@ -2150,47 +2409,79 @@ export const HeaderParameter = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.type = reader.int32() as any;
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.format = reader.string();
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.required = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<HeaderParameter, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<HeaderParameter | HeaderParameter[]> | Iterable<HeaderParameter | HeaderParameter[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [HeaderParameter.encode(p).finish()];
+        }
+      } else {
+        yield* [HeaderParameter.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, HeaderParameter>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<HeaderParameter> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [HeaderParameter.decode(p)];
+        }
+      } else {
+        yield* [HeaderParameter.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): HeaderParameter {
@@ -2205,11 +2496,21 @@ export const HeaderParameter = {
 
   toJSON(message: HeaderParameter): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined && (obj.description = message.description);
-    message.type !== undefined && (obj.type = headerParameter_TypeToJSON(message.type));
-    message.format !== undefined && (obj.format = message.format);
-    message.required !== undefined && (obj.required = message.required);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.type !== 0) {
+      obj.type = headerParameter_TypeToJSON(message.type);
+    }
+    if (message.format !== "") {
+      obj.format = message.format;
+    }
+    if (message.required === true) {
+      obj.required = message.required;
+    }
     return obj;
   },
 
@@ -2260,47 +2561,79 @@ export const Header = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.type = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.format = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.default = reader.string();
           continue;
         case 13:
-          if (tag != 106) {
+          if (tag !== 106) {
             break;
           }
 
           message.pattern = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Header, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Header | Header[]> | Iterable<Header | Header[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Header.encode(p).finish()];
+        }
+      } else {
+        yield* [Header.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Header>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Header> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Header.decode(p)];
+        }
+      } else {
+        yield* [Header.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Header {
@@ -2315,11 +2648,21 @@ export const Header = {
 
   toJSON(message: Header): unknown {
     const obj: any = {};
-    message.description !== undefined && (obj.description = message.description);
-    message.type !== undefined && (obj.type = message.type);
-    message.format !== undefined && (obj.format = message.format);
-    message.default !== undefined && (obj.default = message.default);
-    message.pattern !== undefined && (obj.pattern = message.pattern);
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.type !== "") {
+      obj.type = message.type;
+    }
+    if (message.format !== "") {
+      obj.format = message.format;
+    }
+    if (message.default !== "") {
+      obj.default = message.default;
+    }
+    if (message.pattern !== "") {
+      obj.pattern = message.pattern;
+    }
     return obj;
   },
 
@@ -2372,21 +2715,21 @@ export const Response = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.schema = Schema.decode(reader, reader.uint32());
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
@@ -2396,7 +2739,7 @@ export const Response = {
           }
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
@@ -2406,7 +2749,7 @@ export const Response = {
           }
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
@@ -2416,12 +2759,44 @@ export const Response = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Response, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Response | Response[]> | Iterable<Response | Response[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response.encode(p).finish()];
+        }
+      } else {
+        yield* [Response.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Response>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Response> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response.decode(p)];
+        }
+      } else {
+        yield* [Response.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Response {
@@ -2451,25 +2826,38 @@ export const Response = {
 
   toJSON(message: Response): unknown {
     const obj: any = {};
-    message.description !== undefined && (obj.description = message.description);
-    message.schema !== undefined && (obj.schema = message.schema ? Schema.toJSON(message.schema) : undefined);
-    obj.headers = {};
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.schema !== undefined) {
+      obj.schema = Schema.toJSON(message.schema);
+    }
     if (message.headers) {
-      Object.entries(message.headers).forEach(([k, v]) => {
-        obj.headers[k] = Header.toJSON(v);
-      });
+      const entries = Object.entries(message.headers);
+      if (entries.length > 0) {
+        obj.headers = {};
+        entries.forEach(([k, v]) => {
+          obj.headers[k] = Header.toJSON(v);
+        });
+      }
     }
-    obj.examples = {};
     if (message.examples) {
-      Object.entries(message.examples).forEach(([k, v]) => {
-        obj.examples[k] = v;
-      });
+      const entries = Object.entries(message.examples);
+      if (entries.length > 0) {
+        obj.examples = {};
+        entries.forEach(([k, v]) => {
+          obj.examples[k] = v;
+        });
+      }
     }
-    obj.extensions = {};
     if (message.extensions) {
-      Object.entries(message.extensions).forEach(([k, v]) => {
-        obj.extensions[k] = v;
-      });
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -2532,26 +2920,60 @@ export const Response_HeadersEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Header.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Response_HeadersEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Response_HeadersEntry | Response_HeadersEntry[]>
+      | Iterable<Response_HeadersEntry | Response_HeadersEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response_HeadersEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Response_HeadersEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Response_HeadersEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Response_HeadersEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response_HeadersEntry.decode(p)];
+        }
+      } else {
+        yield* [Response_HeadersEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Response_HeadersEntry {
@@ -2563,8 +2985,12 @@ export const Response_HeadersEntry = {
 
   toJSON(message: Response_HeadersEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value ? Header.toJSON(message.value) : undefined);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = Header.toJSON(message.value);
+    }
     return obj;
   },
 
@@ -2605,26 +3031,60 @@ export const Response_ExamplesEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Response_ExamplesEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Response_ExamplesEntry | Response_ExamplesEntry[]>
+      | Iterable<Response_ExamplesEntry | Response_ExamplesEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response_ExamplesEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Response_ExamplesEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Response_ExamplesEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Response_ExamplesEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response_ExamplesEntry.decode(p)];
+        }
+      } else {
+        yield* [Response_ExamplesEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Response_ExamplesEntry {
@@ -2633,8 +3093,12 @@ export const Response_ExamplesEntry = {
 
   toJSON(message: Response_ExamplesEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -2673,26 +3137,60 @@ export const Response_ExtensionsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Response_ExtensionsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Response_ExtensionsEntry | Response_ExtensionsEntry[]>
+      | Iterable<Response_ExtensionsEntry | Response_ExtensionsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response_ExtensionsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Response_ExtensionsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Response_ExtensionsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Response_ExtensionsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Response_ExtensionsEntry.decode(p)];
+        }
+      } else {
+        yield* [Response_ExtensionsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Response_ExtensionsEntry {
@@ -2701,8 +3199,12 @@ export const Response_ExtensionsEntry = {
 
   toJSON(message: Response_ExtensionsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -2766,49 +3268,49 @@ export const Info = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.title = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.termsOfService = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.contact = Contact.decode(reader, reader.uint32());
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.license = License.decode(reader, reader.uint32());
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.version = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
@@ -2818,12 +3320,42 @@ export const Info = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Info, Uint8Array>
+  async *encodeTransform(source: AsyncIterable<Info | Info[]> | Iterable<Info | Info[]>): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Info.encode(p).finish()];
+        }
+      } else {
+        yield* [Info.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Info>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Info> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Info.decode(p)];
+        }
+      } else {
+        yield* [Info.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Info {
@@ -2845,17 +3377,32 @@ export const Info = {
 
   toJSON(message: Info): unknown {
     const obj: any = {};
-    message.title !== undefined && (obj.title = message.title);
-    message.description !== undefined && (obj.description = message.description);
-    message.termsOfService !== undefined && (obj.termsOfService = message.termsOfService);
-    message.contact !== undefined && (obj.contact = message.contact ? Contact.toJSON(message.contact) : undefined);
-    message.license !== undefined && (obj.license = message.license ? License.toJSON(message.license) : undefined);
-    message.version !== undefined && (obj.version = message.version);
-    obj.extensions = {};
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.termsOfService !== "") {
+      obj.termsOfService = message.termsOfService;
+    }
+    if (message.contact !== undefined) {
+      obj.contact = Contact.toJSON(message.contact);
+    }
+    if (message.license !== undefined) {
+      obj.license = License.toJSON(message.license);
+    }
+    if (message.version !== "") {
+      obj.version = message.version;
+    }
     if (message.extensions) {
-      Object.entries(message.extensions).forEach(([k, v]) => {
-        obj.extensions[k] = v;
-      });
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -2912,26 +3459,60 @@ export const Info_ExtensionsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Info_ExtensionsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Info_ExtensionsEntry | Info_ExtensionsEntry[]>
+      | Iterable<Info_ExtensionsEntry | Info_ExtensionsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Info_ExtensionsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Info_ExtensionsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Info_ExtensionsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Info_ExtensionsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Info_ExtensionsEntry.decode(p)];
+        }
+      } else {
+        yield* [Info_ExtensionsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Info_ExtensionsEntry {
@@ -2940,8 +3521,12 @@ export const Info_ExtensionsEntry = {
 
   toJSON(message: Info_ExtensionsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -2983,33 +3568,65 @@ export const Contact = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.url = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.email = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Contact, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Contact | Contact[]> | Iterable<Contact | Contact[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Contact.encode(p).finish()];
+        }
+      } else {
+        yield* [Contact.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Contact>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Contact> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Contact.decode(p)];
+        }
+      } else {
+        yield* [Contact.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Contact {
@@ -3022,9 +3639,15 @@ export const Contact = {
 
   toJSON(message: Contact): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.url !== undefined && (obj.url = message.url);
-    message.email !== undefined && (obj.email = message.email);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
+    if (message.email !== "") {
+      obj.email = message.email;
+    }
     return obj;
   },
 
@@ -3064,26 +3687,58 @@ export const License = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.url = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<License, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<License | License[]> | Iterable<License | License[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [License.encode(p).finish()];
+        }
+      } else {
+        yield* [License.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, License>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<License> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [License.decode(p)];
+        }
+      } else {
+        yield* [License.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): License {
@@ -3092,8 +3747,12 @@ export const License = {
 
   toJSON(message: License): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.url !== undefined && (obj.url = message.url);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
     return obj;
   },
 
@@ -3132,26 +3791,60 @@ export const ExternalDocumentation = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.url = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<ExternalDocumentation, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<ExternalDocumentation | ExternalDocumentation[]>
+      | Iterable<ExternalDocumentation | ExternalDocumentation[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ExternalDocumentation.encode(p).finish()];
+        }
+      } else {
+        yield* [ExternalDocumentation.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, ExternalDocumentation>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<ExternalDocumentation> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ExternalDocumentation.decode(p)];
+        }
+      } else {
+        yield* [ExternalDocumentation.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): ExternalDocumentation {
@@ -3163,8 +3856,12 @@ export const ExternalDocumentation = {
 
   toJSON(message: ExternalDocumentation): unknown {
     const obj: any = {};
-    message.description !== undefined && (obj.description = message.description);
-    message.url !== undefined && (obj.url = message.url);
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
     return obj;
   },
 
@@ -3212,47 +3909,79 @@ export const Schema = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.jsonSchema = JSONSchema.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.discriminator = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.readOnly = reader.bool();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.example = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Schema, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Schema | Schema[]> | Iterable<Schema | Schema[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Schema.encode(p).finish()];
+        }
+      } else {
+        yield* [Schema.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Schema>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Schema> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Schema.decode(p)];
+        }
+      } else {
+        yield* [Schema.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Schema {
@@ -3267,13 +3996,21 @@ export const Schema = {
 
   toJSON(message: Schema): unknown {
     const obj: any = {};
-    message.jsonSchema !== undefined &&
-      (obj.jsonSchema = message.jsonSchema ? JSONSchema.toJSON(message.jsonSchema) : undefined);
-    message.discriminator !== undefined && (obj.discriminator = message.discriminator);
-    message.readOnly !== undefined && (obj.readOnly = message.readOnly);
-    message.externalDocs !== undefined &&
-      (obj.externalDocs = message.externalDocs ? ExternalDocumentation.toJSON(message.externalDocs) : undefined);
-    message.example !== undefined && (obj.example = message.example);
+    if (message.jsonSchema !== undefined) {
+      obj.jsonSchema = JSONSchema.toJSON(message.jsonSchema);
+    }
+    if (message.discriminator !== "") {
+      obj.discriminator = message.discriminator;
+    }
+    if (message.readOnly === true) {
+      obj.readOnly = message.readOnly;
+    }
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
+    if (message.example !== "") {
+      obj.example = message.example;
+    }
     return obj;
   },
 
@@ -3422,159 +4159,160 @@ export const JSONSchema = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.ref = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.title = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.default = reader.string();
           continue;
         case 8:
-          if (tag != 64) {
+          if (tag !== 64) {
             break;
           }
 
           message.readOnly = reader.bool();
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.example = reader.string();
           continue;
         case 10:
-          if (tag != 81) {
+          if (tag !== 81) {
             break;
           }
 
           message.multipleOf = reader.double();
           continue;
         case 11:
-          if (tag != 89) {
+          if (tag !== 89) {
             break;
           }
 
           message.maximum = reader.double();
           continue;
         case 12:
-          if (tag != 96) {
+          if (tag !== 96) {
             break;
           }
 
           message.exclusiveMaximum = reader.bool();
           continue;
         case 13:
-          if (tag != 105) {
+          if (tag !== 105) {
             break;
           }
 
           message.minimum = reader.double();
           continue;
         case 14:
-          if (tag != 112) {
+          if (tag !== 112) {
             break;
           }
 
           message.exclusiveMinimum = reader.bool();
           continue;
         case 15:
-          if (tag != 120) {
+          if (tag !== 120) {
             break;
           }
 
           message.maxLength = longToNumber(reader.uint64() as Long);
           continue;
         case 16:
-          if (tag != 128) {
+          if (tag !== 128) {
             break;
           }
 
           message.minLength = longToNumber(reader.uint64() as Long);
           continue;
         case 17:
-          if (tag != 138) {
+          if (tag !== 138) {
             break;
           }
 
           message.pattern = reader.string();
           continue;
         case 20:
-          if (tag != 160) {
+          if (tag !== 160) {
             break;
           }
 
           message.maxItems = longToNumber(reader.uint64() as Long);
           continue;
         case 21:
-          if (tag != 168) {
+          if (tag !== 168) {
             break;
           }
 
           message.minItems = longToNumber(reader.uint64() as Long);
           continue;
         case 22:
-          if (tag != 176) {
+          if (tag !== 176) {
             break;
           }
 
           message.uniqueItems = reader.bool();
           continue;
         case 24:
-          if (tag != 192) {
+          if (tag !== 192) {
             break;
           }
 
           message.maxProperties = longToNumber(reader.uint64() as Long);
           continue;
         case 25:
-          if (tag != 200) {
+          if (tag !== 200) {
             break;
           }
 
           message.minProperties = longToNumber(reader.uint64() as Long);
           continue;
         case 26:
-          if (tag != 210) {
+          if (tag !== 210) {
             break;
           }
 
           message.required.push(reader.string());
           continue;
         case 34:
-          if (tag != 274) {
+          if (tag !== 274) {
             break;
           }
 
           message.array.push(reader.string());
           continue;
         case 35:
-          if (tag == 280) {
+          if (tag === 280) {
             message.type.push(reader.int32() as any);
+
             continue;
           }
 
-          if (tag == 282) {
+          if (tag === 282) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.type.push(reader.int32() as any);
@@ -3585,28 +4323,28 @@ export const JSONSchema = {
 
           break;
         case 36:
-          if (tag != 290) {
+          if (tag !== 290) {
             break;
           }
 
           message.format = reader.string();
           continue;
         case 46:
-          if (tag != 370) {
+          if (tag !== 370) {
             break;
           }
 
           message.enum.push(reader.string());
           continue;
         case 1001:
-          if (tag != 8010) {
+          if (tag !== 8010) {
             break;
           }
 
           message.fieldConfiguration = JSONSchema_FieldConfiguration.decode(reader, reader.uint32());
           continue;
         case 48:
-          if (tag != 386) {
+          if (tag !== 386) {
             break;
           }
 
@@ -3616,12 +4354,44 @@ export const JSONSchema = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<JSONSchema, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<JSONSchema | JSONSchema[]> | Iterable<JSONSchema | JSONSchema[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [JSONSchema.encode(p).finish()];
+        }
+      } else {
+        yield* [JSONSchema.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, JSONSchema>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<JSONSchema> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [JSONSchema.decode(p)];
+        }
+      } else {
+        yield* [JSONSchema.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): JSONSchema {
@@ -3664,54 +4434,89 @@ export const JSONSchema = {
 
   toJSON(message: JSONSchema): unknown {
     const obj: any = {};
-    message.ref !== undefined && (obj.ref = message.ref);
-    message.title !== undefined && (obj.title = message.title);
-    message.description !== undefined && (obj.description = message.description);
-    message.default !== undefined && (obj.default = message.default);
-    message.readOnly !== undefined && (obj.readOnly = message.readOnly);
-    message.example !== undefined && (obj.example = message.example);
-    message.multipleOf !== undefined && (obj.multipleOf = message.multipleOf);
-    message.maximum !== undefined && (obj.maximum = message.maximum);
-    message.exclusiveMaximum !== undefined && (obj.exclusiveMaximum = message.exclusiveMaximum);
-    message.minimum !== undefined && (obj.minimum = message.minimum);
-    message.exclusiveMinimum !== undefined && (obj.exclusiveMinimum = message.exclusiveMinimum);
-    message.maxLength !== undefined && (obj.maxLength = Math.round(message.maxLength));
-    message.minLength !== undefined && (obj.minLength = Math.round(message.minLength));
-    message.pattern !== undefined && (obj.pattern = message.pattern);
-    message.maxItems !== undefined && (obj.maxItems = Math.round(message.maxItems));
-    message.minItems !== undefined && (obj.minItems = Math.round(message.minItems));
-    message.uniqueItems !== undefined && (obj.uniqueItems = message.uniqueItems);
-    message.maxProperties !== undefined && (obj.maxProperties = Math.round(message.maxProperties));
-    message.minProperties !== undefined && (obj.minProperties = Math.round(message.minProperties));
-    if (message.required) {
-      obj.required = message.required.map((e) => e);
-    } else {
-      obj.required = [];
+    if (message.ref !== "") {
+      obj.ref = message.ref;
     }
-    if (message.array) {
-      obj.array = message.array.map((e) => e);
-    } else {
-      obj.array = [];
+    if (message.title !== "") {
+      obj.title = message.title;
     }
-    if (message.type) {
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.default !== "") {
+      obj.default = message.default;
+    }
+    if (message.readOnly === true) {
+      obj.readOnly = message.readOnly;
+    }
+    if (message.example !== "") {
+      obj.example = message.example;
+    }
+    if (message.multipleOf !== 0) {
+      obj.multipleOf = message.multipleOf;
+    }
+    if (message.maximum !== 0) {
+      obj.maximum = message.maximum;
+    }
+    if (message.exclusiveMaximum === true) {
+      obj.exclusiveMaximum = message.exclusiveMaximum;
+    }
+    if (message.minimum !== 0) {
+      obj.minimum = message.minimum;
+    }
+    if (message.exclusiveMinimum === true) {
+      obj.exclusiveMinimum = message.exclusiveMinimum;
+    }
+    if (message.maxLength !== 0) {
+      obj.maxLength = Math.round(message.maxLength);
+    }
+    if (message.minLength !== 0) {
+      obj.minLength = Math.round(message.minLength);
+    }
+    if (message.pattern !== "") {
+      obj.pattern = message.pattern;
+    }
+    if (message.maxItems !== 0) {
+      obj.maxItems = Math.round(message.maxItems);
+    }
+    if (message.minItems !== 0) {
+      obj.minItems = Math.round(message.minItems);
+    }
+    if (message.uniqueItems === true) {
+      obj.uniqueItems = message.uniqueItems;
+    }
+    if (message.maxProperties !== 0) {
+      obj.maxProperties = Math.round(message.maxProperties);
+    }
+    if (message.minProperties !== 0) {
+      obj.minProperties = Math.round(message.minProperties);
+    }
+    if (message.required?.length) {
+      obj.required = message.required;
+    }
+    if (message.array?.length) {
+      obj.array = message.array;
+    }
+    if (message.type?.length) {
       obj.type = message.type.map((e) => jSONSchema_JSONSchemaSimpleTypesToJSON(e));
-    } else {
-      obj.type = [];
     }
-    message.format !== undefined && (obj.format = message.format);
-    if (message.enum) {
-      obj.enum = message.enum.map((e) => e);
-    } else {
-      obj.enum = [];
+    if (message.format !== "") {
+      obj.format = message.format;
     }
-    message.fieldConfiguration !== undefined && (obj.fieldConfiguration = message.fieldConfiguration
-      ? JSONSchema_FieldConfiguration.toJSON(message.fieldConfiguration)
-      : undefined);
-    obj.extensions = {};
+    if (message.enum?.length) {
+      obj.enum = message.enum;
+    }
+    if (message.fieldConfiguration !== undefined) {
+      obj.fieldConfiguration = JSONSchema_FieldConfiguration.toJSON(message.fieldConfiguration);
+    }
     if (message.extensions) {
-      Object.entries(message.extensions).forEach(([k, v]) => {
-        obj.extensions[k] = v;
-      });
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -3782,19 +4587,53 @@ export const JSONSchema_FieldConfiguration = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 47:
-          if (tag != 378) {
+          if (tag !== 378) {
             break;
           }
 
           message.pathParamName = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<JSONSchema_FieldConfiguration, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<JSONSchema_FieldConfiguration | JSONSchema_FieldConfiguration[]>
+      | Iterable<JSONSchema_FieldConfiguration | JSONSchema_FieldConfiguration[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [JSONSchema_FieldConfiguration.encode(p).finish()];
+        }
+      } else {
+        yield* [JSONSchema_FieldConfiguration.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, JSONSchema_FieldConfiguration>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<JSONSchema_FieldConfiguration> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [JSONSchema_FieldConfiguration.decode(p)];
+        }
+      } else {
+        yield* [JSONSchema_FieldConfiguration.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): JSONSchema_FieldConfiguration {
@@ -3803,7 +4642,9 @@ export const JSONSchema_FieldConfiguration = {
 
   toJSON(message: JSONSchema_FieldConfiguration): unknown {
     const obj: any = {};
-    message.pathParamName !== undefined && (obj.pathParamName = message.pathParamName);
+    if (message.pathParamName !== "") {
+      obj.pathParamName = message.pathParamName;
+    }
     return obj;
   },
 
@@ -3841,26 +4682,60 @@ export const JSONSchema_ExtensionsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<JSONSchema_ExtensionsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<JSONSchema_ExtensionsEntry | JSONSchema_ExtensionsEntry[]>
+      | Iterable<JSONSchema_ExtensionsEntry | JSONSchema_ExtensionsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [JSONSchema_ExtensionsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [JSONSchema_ExtensionsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, JSONSchema_ExtensionsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<JSONSchema_ExtensionsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [JSONSchema_ExtensionsEntry.decode(p)];
+        }
+      } else {
+        yield* [JSONSchema_ExtensionsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): JSONSchema_ExtensionsEntry {
@@ -3869,8 +4744,12 @@ export const JSONSchema_ExtensionsEntry = {
 
   toJSON(message: JSONSchema_ExtensionsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -3917,28 +4796,28 @@ export const Tag = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
@@ -3948,12 +4827,42 @@ export const Tag = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Tag, Uint8Array>
+  async *encodeTransform(source: AsyncIterable<Tag | Tag[]> | Iterable<Tag | Tag[]>): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Tag.encode(p).finish()];
+        }
+      } else {
+        yield* [Tag.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Tag>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Tag> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Tag.decode(p)];
+        }
+      } else {
+        yield* [Tag.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Tag {
@@ -3972,15 +4881,23 @@ export const Tag = {
 
   toJSON(message: Tag): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined && (obj.description = message.description);
-    message.externalDocs !== undefined &&
-      (obj.externalDocs = message.externalDocs ? ExternalDocumentation.toJSON(message.externalDocs) : undefined);
-    obj.extensions = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
     if (message.extensions) {
-      Object.entries(message.extensions).forEach(([k, v]) => {
-        obj.extensions[k] = v;
-      });
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -4032,26 +4949,60 @@ export const Tag_ExtensionsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Tag_ExtensionsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<Tag_ExtensionsEntry | Tag_ExtensionsEntry[]>
+      | Iterable<Tag_ExtensionsEntry | Tag_ExtensionsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Tag_ExtensionsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Tag_ExtensionsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Tag_ExtensionsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Tag_ExtensionsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Tag_ExtensionsEntry.decode(p)];
+        }
+      } else {
+        yield* [Tag_ExtensionsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Tag_ExtensionsEntry {
@@ -4060,8 +5011,12 @@ export const Tag_ExtensionsEntry = {
 
   toJSON(message: Tag_ExtensionsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -4097,7 +5052,7 @@ export const SecurityDefinitions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
@@ -4107,12 +5062,46 @@ export const SecurityDefinitions = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SecurityDefinitions, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SecurityDefinitions | SecurityDefinitions[]>
+      | Iterable<SecurityDefinitions | SecurityDefinitions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityDefinitions.encode(p).finish()];
+        }
+      } else {
+        yield* [SecurityDefinitions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SecurityDefinitions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SecurityDefinitions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityDefinitions.decode(p)];
+        }
+      } else {
+        yield* [SecurityDefinitions.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SecurityDefinitions {
@@ -4128,11 +5117,14 @@ export const SecurityDefinitions = {
 
   toJSON(message: SecurityDefinitions): unknown {
     const obj: any = {};
-    obj.security = {};
     if (message.security) {
-      Object.entries(message.security).forEach(([k, v]) => {
-        obj.security[k] = SecurityScheme.toJSON(v);
-      });
+      const entries = Object.entries(message.security);
+      if (entries.length > 0) {
+        obj.security = {};
+        entries.forEach(([k, v]) => {
+          obj.security[k] = SecurityScheme.toJSON(v);
+        });
+      }
     }
     return obj;
   },
@@ -4179,26 +5171,60 @@ export const SecurityDefinitions_SecurityEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = SecurityScheme.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SecurityDefinitions_SecurityEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SecurityDefinitions_SecurityEntry | SecurityDefinitions_SecurityEntry[]>
+      | Iterable<SecurityDefinitions_SecurityEntry | SecurityDefinitions_SecurityEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityDefinitions_SecurityEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [SecurityDefinitions_SecurityEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SecurityDefinitions_SecurityEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SecurityDefinitions_SecurityEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityDefinitions_SecurityEntry.decode(p)];
+        }
+      } else {
+        yield* [SecurityDefinitions_SecurityEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SecurityDefinitions_SecurityEntry {
@@ -4210,8 +5236,12 @@ export const SecurityDefinitions_SecurityEntry = {
 
   toJSON(message: SecurityDefinitions_SecurityEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value ? SecurityScheme.toJSON(message.value) : undefined);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = SecurityScheme.toJSON(message.value);
+    }
     return obj;
   },
 
@@ -4285,63 +5315,63 @@ export const SecurityScheme = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.type = reader.int32() as any;
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.in = reader.int32() as any;
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.flow = reader.int32() as any;
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.authorizationUrl = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.tokenUrl = reader.string();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.scopes = Scopes.decode(reader, reader.uint32());
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
@@ -4351,12 +5381,44 @@ export const SecurityScheme = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SecurityScheme, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<SecurityScheme | SecurityScheme[]> | Iterable<SecurityScheme | SecurityScheme[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityScheme.encode(p).finish()];
+        }
+      } else {
+        yield* [SecurityScheme.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SecurityScheme>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SecurityScheme> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityScheme.decode(p)];
+        }
+      } else {
+        yield* [SecurityScheme.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SecurityScheme {
@@ -4380,19 +5442,38 @@ export const SecurityScheme = {
 
   toJSON(message: SecurityScheme): unknown {
     const obj: any = {};
-    message.type !== undefined && (obj.type = securityScheme_TypeToJSON(message.type));
-    message.description !== undefined && (obj.description = message.description);
-    message.name !== undefined && (obj.name = message.name);
-    message.in !== undefined && (obj.in = securityScheme_InToJSON(message.in));
-    message.flow !== undefined && (obj.flow = securityScheme_FlowToJSON(message.flow));
-    message.authorizationUrl !== undefined && (obj.authorizationUrl = message.authorizationUrl);
-    message.tokenUrl !== undefined && (obj.tokenUrl = message.tokenUrl);
-    message.scopes !== undefined && (obj.scopes = message.scopes ? Scopes.toJSON(message.scopes) : undefined);
-    obj.extensions = {};
+    if (message.type !== 0) {
+      obj.type = securityScheme_TypeToJSON(message.type);
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.in !== 0) {
+      obj.in = securityScheme_InToJSON(message.in);
+    }
+    if (message.flow !== 0) {
+      obj.flow = securityScheme_FlowToJSON(message.flow);
+    }
+    if (message.authorizationUrl !== "") {
+      obj.authorizationUrl = message.authorizationUrl;
+    }
+    if (message.tokenUrl !== "") {
+      obj.tokenUrl = message.tokenUrl;
+    }
+    if (message.scopes !== undefined) {
+      obj.scopes = Scopes.toJSON(message.scopes);
+    }
     if (message.extensions) {
-      Object.entries(message.extensions).forEach(([k, v]) => {
-        obj.extensions[k] = v;
-      });
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -4449,26 +5530,60 @@ export const SecurityScheme_ExtensionsEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SecurityScheme_ExtensionsEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SecurityScheme_ExtensionsEntry | SecurityScheme_ExtensionsEntry[]>
+      | Iterable<SecurityScheme_ExtensionsEntry | SecurityScheme_ExtensionsEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityScheme_ExtensionsEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [SecurityScheme_ExtensionsEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SecurityScheme_ExtensionsEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SecurityScheme_ExtensionsEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityScheme_ExtensionsEntry.decode(p)];
+        }
+      } else {
+        yield* [SecurityScheme_ExtensionsEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SecurityScheme_ExtensionsEntry {
@@ -4477,8 +5592,12 @@ export const SecurityScheme_ExtensionsEntry = {
 
   toJSON(message: SecurityScheme_ExtensionsEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -4515,7 +5634,7 @@ export const SecurityRequirement = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
@@ -4525,12 +5644,46 @@ export const SecurityRequirement = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SecurityRequirement, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SecurityRequirement | SecurityRequirement[]>
+      | Iterable<SecurityRequirement | SecurityRequirement[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityRequirement.encode(p).finish()];
+        }
+      } else {
+        yield* [SecurityRequirement.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SecurityRequirement>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SecurityRequirement> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityRequirement.decode(p)];
+        }
+      } else {
+        yield* [SecurityRequirement.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SecurityRequirement {
@@ -4548,11 +5701,14 @@ export const SecurityRequirement = {
 
   toJSON(message: SecurityRequirement): unknown {
     const obj: any = {};
-    obj.securityRequirement = {};
     if (message.securityRequirement) {
-      Object.entries(message.securityRequirement).forEach(([k, v]) => {
-        obj.securityRequirement[k] = SecurityRequirement_SecurityRequirementValue.toJSON(v);
-      });
+      const entries = Object.entries(message.securityRequirement);
+      if (entries.length > 0) {
+        obj.securityRequirement = {};
+        entries.forEach(([k, v]) => {
+          obj.securityRequirement[k] = SecurityRequirement_SecurityRequirementValue.toJSON(v);
+        });
+      }
     }
     return obj;
   },
@@ -4595,19 +5751,53 @@ export const SecurityRequirement_SecurityRequirementValue = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.scope.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SecurityRequirement_SecurityRequirementValue, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SecurityRequirement_SecurityRequirementValue | SecurityRequirement_SecurityRequirementValue[]>
+      | Iterable<SecurityRequirement_SecurityRequirementValue | SecurityRequirement_SecurityRequirementValue[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityRequirement_SecurityRequirementValue.encode(p).finish()];
+        }
+      } else {
+        yield* [SecurityRequirement_SecurityRequirementValue.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SecurityRequirement_SecurityRequirementValue>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SecurityRequirement_SecurityRequirementValue> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityRequirement_SecurityRequirementValue.decode(p)];
+        }
+      } else {
+        yield* [SecurityRequirement_SecurityRequirementValue.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SecurityRequirement_SecurityRequirementValue {
@@ -4616,10 +5806,8 @@ export const SecurityRequirement_SecurityRequirementValue = {
 
   toJSON(message: SecurityRequirement_SecurityRequirementValue): unknown {
     const obj: any = {};
-    if (message.scope) {
-      obj.scope = message.scope.map((e) => e);
-    } else {
-      obj.scope = [];
+    if (message.scope?.length) {
+      obj.scope = message.scope;
     }
     return obj;
   },
@@ -4662,26 +5850,60 @@ export const SecurityRequirement_SecurityRequirementEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = SecurityRequirement_SecurityRequirementValue.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SecurityRequirement_SecurityRequirementEntry, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SecurityRequirement_SecurityRequirementEntry | SecurityRequirement_SecurityRequirementEntry[]>
+      | Iterable<SecurityRequirement_SecurityRequirementEntry | SecurityRequirement_SecurityRequirementEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityRequirement_SecurityRequirementEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [SecurityRequirement_SecurityRequirementEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SecurityRequirement_SecurityRequirementEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SecurityRequirement_SecurityRequirementEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SecurityRequirement_SecurityRequirementEntry.decode(p)];
+        }
+      } else {
+        yield* [SecurityRequirement_SecurityRequirementEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SecurityRequirement_SecurityRequirementEntry {
@@ -4693,9 +5915,12 @@ export const SecurityRequirement_SecurityRequirementEntry = {
 
   toJSON(message: SecurityRequirement_SecurityRequirementEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined &&
-      (obj.value = message.value ? SecurityRequirement_SecurityRequirementValue.toJSON(message.value) : undefined);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = SecurityRequirement_SecurityRequirementValue.toJSON(message.value);
+    }
     return obj;
   },
 
@@ -4737,7 +5962,7 @@ export const Scopes = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
@@ -4747,12 +5972,44 @@ export const Scopes = {
           }
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Scopes, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Scopes | Scopes[]> | Iterable<Scopes | Scopes[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Scopes.encode(p).finish()];
+        }
+      } else {
+        yield* [Scopes.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Scopes>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Scopes> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Scopes.decode(p)];
+        }
+      } else {
+        yield* [Scopes.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Scopes {
@@ -4768,11 +6025,14 @@ export const Scopes = {
 
   toJSON(message: Scopes): unknown {
     const obj: any = {};
-    obj.scope = {};
     if (message.scope) {
-      Object.entries(message.scope).forEach(([k, v]) => {
-        obj.scope[k] = v;
-      });
+      const entries = Object.entries(message.scope);
+      if (entries.length > 0) {
+        obj.scope = {};
+        entries.forEach(([k, v]) => {
+          obj.scope[k] = v;
+        });
+      }
     }
     return obj;
   },
@@ -4816,26 +6076,58 @@ export const Scopes_ScopeEntry = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.key = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Scopes_ScopeEntry, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Scopes_ScopeEntry | Scopes_ScopeEntry[]> | Iterable<Scopes_ScopeEntry | Scopes_ScopeEntry[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Scopes_ScopeEntry.encode(p).finish()];
+        }
+      } else {
+        yield* [Scopes_ScopeEntry.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Scopes_ScopeEntry>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Scopes_ScopeEntry> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Scopes_ScopeEntry.decode(p)];
+        }
+      } else {
+        yield* [Scopes_ScopeEntry.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Scopes_ScopeEntry {
@@ -4844,8 +6136,12 @@ export const Scopes_ScopeEntry = {
 
   toJSON(message: Scopes_ScopeEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -4861,10 +6157,10 @@ export const Scopes_ScopeEntry = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

@@ -20,16 +20,12 @@ message Statement {
   bytes document = 10;
 }
 
-message StatementsPayload {
-  repeated Statement statements = 1;
-}
-
 message GetStatementsRequest {
   string user_id = 1;
 }
 
 message GetStatementsResponse {
-  StatementsPayload payload = 1;
+  repeated Statement payload = 1;
 }
 
 message GetStatementDocRequest {
@@ -55,7 +51,7 @@ service StatementService {
   rpc GetStatementDoc(GetStatementDocRequest) returns (GetStatementDocResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /config
-      get: "/v1/statementdoc"
+      get: "/v1/statement/{payload.id}/file"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get All Note Purchase Agreement Documents"

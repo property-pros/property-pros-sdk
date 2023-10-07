@@ -17,16 +17,12 @@ export interface Statement {
   document: Uint8Array;
 }
 
-export interface StatementsPayload {
-  statements: Statement[];
-}
-
 export interface GetStatementsRequest {
   userId: string;
 }
 
 export interface GetStatementsResponse {
-  payload: StatementsPayload | undefined;
+  payload: Statement[];
 }
 
 export interface GetStatementDocRequest {
@@ -48,7 +44,7 @@ function createBaseStatement(): Statement {
     balance: "",
     totalIncome: "",
     principle: "",
-    document: new Uint8Array(),
+    document: new Uint8Array(0),
   };
 }
 
@@ -95,82 +91,114 @@ export const Statement = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.userId = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.emailAddress = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.password = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.startPeriodDate = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.endPeriodDate = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.balance = reader.string();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.totalIncome = reader.string();
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.principle = reader.string();
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
           message.document = reader.bytes();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<Statement, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<Statement | Statement[]> | Iterable<Statement | Statement[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Statement.encode(p).finish()];
+        }
+      } else {
+        yield* [Statement.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, Statement>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<Statement> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [Statement.decode(p)];
+        }
+      } else {
+        yield* [Statement.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): Statement {
@@ -184,23 +212,42 @@ export const Statement = {
       balance: isSet(object.balance) ? String(object.balance) : "",
       totalIncome: isSet(object.totalIncome) ? String(object.totalIncome) : "",
       principle: isSet(object.principle) ? String(object.principle) : "",
-      document: isSet(object.document) ? bytesFromBase64(object.document) : new Uint8Array(),
+      document: isSet(object.document) ? bytesFromBase64(object.document) : new Uint8Array(0),
     };
   },
 
   toJSON(message: Statement): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.userId !== undefined && (obj.userId = message.userId);
-    message.emailAddress !== undefined && (obj.emailAddress = message.emailAddress);
-    message.password !== undefined && (obj.password = message.password);
-    message.startPeriodDate !== undefined && (obj.startPeriodDate = message.startPeriodDate);
-    message.endPeriodDate !== undefined && (obj.endPeriodDate = message.endPeriodDate);
-    message.balance !== undefined && (obj.balance = message.balance);
-    message.totalIncome !== undefined && (obj.totalIncome = message.totalIncome);
-    message.principle !== undefined && (obj.principle = message.principle);
-    message.document !== undefined &&
-      (obj.document = base64FromBytes(message.document !== undefined ? message.document : new Uint8Array()));
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.emailAddress !== "") {
+      obj.emailAddress = message.emailAddress;
+    }
+    if (message.password !== "") {
+      obj.password = message.password;
+    }
+    if (message.startPeriodDate !== "") {
+      obj.startPeriodDate = message.startPeriodDate;
+    }
+    if (message.endPeriodDate !== "") {
+      obj.endPeriodDate = message.endPeriodDate;
+    }
+    if (message.balance !== "") {
+      obj.balance = message.balance;
+    }
+    if (message.totalIncome !== "") {
+      obj.totalIncome = message.totalIncome;
+    }
+    if (message.principle !== "") {
+      obj.principle = message.principle;
+    }
+    if (message.document.length !== 0) {
+      obj.document = base64FromBytes(message.document);
+    }
     return obj;
   },
 
@@ -219,69 +266,7 @@ export const Statement = {
     message.balance = object.balance ?? "";
     message.totalIncome = object.totalIncome ?? "";
     message.principle = object.principle ?? "";
-    message.document = object.document ?? new Uint8Array();
-    return message;
-  },
-};
-
-function createBaseStatementsPayload(): StatementsPayload {
-  return { statements: [] };
-}
-
-export const StatementsPayload = {
-  encode(message: StatementsPayload, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.statements) {
-      Statement.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): StatementsPayload {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStatementsPayload();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag != 10) {
-            break;
-          }
-
-          message.statements.push(Statement.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) == 4 || tag == 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): StatementsPayload {
-    return {
-      statements: Array.isArray(object?.statements) ? object.statements.map((e: any) => Statement.fromJSON(e)) : [],
-    };
-  },
-
-  toJSON(message: StatementsPayload): unknown {
-    const obj: any = {};
-    if (message.statements) {
-      obj.statements = message.statements.map((e) => e ? Statement.toJSON(e) : undefined);
-    } else {
-      obj.statements = [];
-    }
-    return obj;
-  },
-
-  create(base?: DeepPartial<StatementsPayload>): StatementsPayload {
-    return StatementsPayload.fromPartial(base ?? {});
-  },
-
-  fromPartial(object: DeepPartial<StatementsPayload>): StatementsPayload {
-    const message = createBaseStatementsPayload();
-    message.statements = object.statements?.map((e) => Statement.fromPartial(e)) || [];
+    message.document = object.document ?? new Uint8Array(0);
     return message;
   },
 };
@@ -306,19 +291,53 @@ export const GetStatementsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.userId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetStatementsRequest, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetStatementsRequest | GetStatementsRequest[]>
+      | Iterable<GetStatementsRequest | GetStatementsRequest[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementsRequest.encode(p).finish()];
+        }
+      } else {
+        yield* [GetStatementsRequest.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetStatementsRequest>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetStatementsRequest> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementsRequest.decode(p)];
+        }
+      } else {
+        yield* [GetStatementsRequest.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): GetStatementsRequest {
@@ -327,7 +346,9 @@ export const GetStatementsRequest = {
 
   toJSON(message: GetStatementsRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
@@ -343,13 +364,13 @@ export const GetStatementsRequest = {
 };
 
 function createBaseGetStatementsResponse(): GetStatementsResponse {
-  return { payload: undefined };
+  return { payload: [] };
 }
 
 export const GetStatementsResponse = {
   encode(message: GetStatementsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.payload !== undefined) {
-      StatementsPayload.encode(message.payload, writer.uint32(10).fork()).ldelim();
+    for (const v of message.payload) {
+      Statement.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -362,14 +383,14 @@ export const GetStatementsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
-          message.payload = StatementsPayload.decode(reader, reader.uint32());
+          message.payload.push(Statement.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -377,14 +398,49 @@ export const GetStatementsResponse = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetStatementsResponse, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetStatementsResponse | GetStatementsResponse[]>
+      | Iterable<GetStatementsResponse | GetStatementsResponse[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementsResponse.encode(p).finish()];
+        }
+      } else {
+        yield* [GetStatementsResponse.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetStatementsResponse>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetStatementsResponse> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementsResponse.decode(p)];
+        }
+      } else {
+        yield* [GetStatementsResponse.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): GetStatementsResponse {
-    return { payload: isSet(object.payload) ? StatementsPayload.fromJSON(object.payload) : undefined };
+    return { payload: Array.isArray(object?.payload) ? object.payload.map((e: any) => Statement.fromJSON(e)) : [] };
   },
 
   toJSON(message: GetStatementsResponse): unknown {
     const obj: any = {};
-    message.payload !== undefined &&
-      (obj.payload = message.payload ? StatementsPayload.toJSON(message.payload) : undefined);
+    if (message.payload?.length) {
+      obj.payload = message.payload.map((e) => Statement.toJSON(e));
+    }
     return obj;
   },
 
@@ -394,9 +450,7 @@ export const GetStatementsResponse = {
 
   fromPartial(object: DeepPartial<GetStatementsResponse>): GetStatementsResponse {
     const message = createBaseGetStatementsResponse();
-    message.payload = (object.payload !== undefined && object.payload !== null)
-      ? StatementsPayload.fromPartial(object.payload)
-      : undefined;
+    message.payload = object.payload?.map((e) => Statement.fromPartial(e)) || [];
     return message;
   },
 };
@@ -421,19 +475,53 @@ export const GetStatementDocRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload = Statement.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetStatementDocRequest, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetStatementDocRequest | GetStatementDocRequest[]>
+      | Iterable<GetStatementDocRequest | GetStatementDocRequest[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementDocRequest.encode(p).finish()];
+        }
+      } else {
+        yield* [GetStatementDocRequest.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetStatementDocRequest>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetStatementDocRequest> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementDocRequest.decode(p)];
+        }
+      } else {
+        yield* [GetStatementDocRequest.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): GetStatementDocRequest {
@@ -442,7 +530,9 @@ export const GetStatementDocRequest = {
 
   toJSON(message: GetStatementDocRequest): unknown {
     const obj: any = {};
-    message.payload !== undefined && (obj.payload = message.payload ? Statement.toJSON(message.payload) : undefined);
+    if (message.payload !== undefined) {
+      obj.payload = Statement.toJSON(message.payload);
+    }
     return obj;
   },
 
@@ -460,7 +550,7 @@ export const GetStatementDocRequest = {
 };
 
 function createBaseGetStatementDocResponse(): GetStatementDocResponse {
-  return { document: new Uint8Array() };
+  return { document: new Uint8Array(0) };
 }
 
 export const GetStatementDocResponse = {
@@ -479,14 +569,14 @@ export const GetStatementDocResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.document = reader.bytes();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -494,14 +584,49 @@ export const GetStatementDocResponse = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetStatementDocResponse, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetStatementDocResponse | GetStatementDocResponse[]>
+      | Iterable<GetStatementDocResponse | GetStatementDocResponse[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementDocResponse.encode(p).finish()];
+        }
+      } else {
+        yield* [GetStatementDocResponse.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetStatementDocResponse>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetStatementDocResponse> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetStatementDocResponse.decode(p)];
+        }
+      } else {
+        yield* [GetStatementDocResponse.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): GetStatementDocResponse {
-    return { document: isSet(object.document) ? bytesFromBase64(object.document) : new Uint8Array() };
+    return { document: isSet(object.document) ? bytesFromBase64(object.document) : new Uint8Array(0) };
   },
 
   toJSON(message: GetStatementDocResponse): unknown {
     const obj: any = {};
-    message.document !== undefined &&
-      (obj.document = base64FromBytes(message.document !== undefined ? message.document : new Uint8Array()));
+    if (message.document.length !== 0) {
+      obj.document = base64FromBytes(message.document);
+    }
     return obj;
   },
 
@@ -511,7 +636,7 @@ export const GetStatementDocResponse = {
 
   fromPartial(object: DeepPartial<GetStatementDocResponse>): GetStatementDocResponse {
     const message = createBaseGetStatementDocResponse();
-    message.document = object.document ?? new Uint8Array();
+    message.document = object.document ?? new Uint8Array(0);
     return message;
   },
 };
@@ -731,7 +856,42 @@ export const StatementServiceDefinition = {
             ]),
           ],
           578365826: [
-            new Uint8Array([18, 18, 16, 47, 118, 49, 47, 115, 116, 97, 116, 101, 109, 101, 110, 116, 100, 111, 99]),
+            new Uint8Array([
+              33,
+              18,
+              31,
+              47,
+              118,
+              49,
+              47,
+              115,
+              116,
+              97,
+              116,
+              101,
+              109,
+              101,
+              110,
+              116,
+              47,
+              123,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              46,
+              105,
+              100,
+              125,
+              47,
+              102,
+              105,
+              108,
+              101,
+            ]),
           ],
         },
       },
@@ -761,10 +921,10 @@ export interface StatementServiceClient<CallOptionsExt = {}> {
   ): Promise<GetStatementDocResponse>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

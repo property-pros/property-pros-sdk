@@ -25,9 +25,11 @@
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",
     "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",
+    "git": "^0.1.5",
     "google-protobuf": "^3.19.4",
     "ini": "^3.0.1",
     "nice-grpc-common": "^2.0.0",
+
     "protobufjs": "^7.1.2"
   }
 }

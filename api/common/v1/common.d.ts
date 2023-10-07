@@ -16,6 +16,8 @@ export interface RecordResultPayload {
 export declare const RecordRequestPayload: {
     encode(message: RecordRequestPayload, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): RecordRequestPayload;
+    encodeTransform(source: AsyncIterable<RecordRequestPayload | RecordRequestPayload[]> | Iterable<RecordRequestPayload | RecordRequestPayload[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<RecordRequestPayload>;
     fromJSON(object: any): RecordRequestPayload;
     toJSON(message: RecordRequestPayload): unknown;
     create(base?: DeepPartial<RecordRequestPayload>): RecordRequestPayload;
@@ -24,6 +26,8 @@ export declare const RecordRequestPayload: {
 export declare const RecordRequestCollection: {
     encode(message: RecordRequestCollection, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): RecordRequestCollection;
+    encodeTransform(source: AsyncIterable<RecordRequestCollection | RecordRequestCollection[]> | Iterable<RecordRequestCollection | RecordRequestCollection[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<RecordRequestCollection>;
     fromJSON(object: any): RecordRequestCollection;
     toJSON(message: RecordRequestCollection): unknown;
     create(base?: DeepPartial<RecordRequestCollection>): RecordRequestCollection;
@@ -32,6 +36,8 @@ export declare const RecordRequestCollection: {
 export declare const RecordCollection: {
     encode(message: RecordCollection, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): RecordCollection;
+    encodeTransform(source: AsyncIterable<RecordCollection | RecordCollection[]> | Iterable<RecordCollection | RecordCollection[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<RecordCollection>;
     fromJSON(object: any): RecordCollection;
     toJSON(message: RecordCollection): unknown;
     create(base?: DeepPartial<RecordCollection>): RecordCollection;
@@ -40,6 +46,8 @@ export declare const RecordCollection: {
 export declare const RecordResultPayload: {
     encode(message: RecordResultPayload, writer?: _m0.Writer): _m0.Writer;
     decode(input: _m0.Reader | Uint8Array, length?: number): RecordResultPayload;
+    encodeTransform(source: AsyncIterable<RecordResultPayload | RecordResultPayload[]> | Iterable<RecordResultPayload | RecordResultPayload[]>): AsyncIterable<Uint8Array>;
+    decodeTransform(source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>): AsyncIterable<RecordResultPayload>;
     fromJSON(object: any): RecordResultPayload;
     toJSON(message: RecordResultPayload): unknown;
     create(base?: DeepPartial<RecordResultPayload>): RecordResultPayload;
