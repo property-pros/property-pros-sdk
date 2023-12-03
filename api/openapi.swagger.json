@@ -41,12 +41,56 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AuthenticateUserRequest"
+            }
+          }
+        ],
         "tags": [
           "Authentication"
         ]
       }
     },
     "/v1/notepurchaseagreement": {
+      "post": {
+        "summary": "Save Note Purchase Agreement Record",
+        "description": "Saves a note purchase agreement filled out with customer data.",
+        "operationId": "NotePurchaseAgreementService_SaveNotePurchaseAgreement",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SaveNotePurchaseAgreementResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SaveNotePurchaseAgreementRequest"
+            }
+          }
+        ],
+        "tags": [
+          "NotePurchaseAgreement"
+        ]
+      }
+    },
+    "/v1/notepurchaseagreement/{payload.id}": {
       "get": {
         "summary": "Get Note Purchase Agreement Record",
         "description": "Gets a note purchase agreement full record data.",
@@ -68,48 +112,35 @@
         "parameters": [
           {
             "name": "payload.id",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
         "tags": [
           "NotePurchaseAgreement"
         ]
-      },
-      "post": {
-        "summary": "Save Note Purchase Agreement Record",
-        "description": "Saves a note purchase agreement filled out with customer data.",
-        "operationId": "NotePurchaseAgreementService_SaveNotePurchaseAgreement",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SaveNotePurchaseAgreementResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "NotePurchaseAgreement"
-        ]
       }
     },
-    "/v1/notepurchaseagreement/file": {
+    "/v1/notepurchaseagreement/{payload.id}/file": {
       "get": {
         "summary": "Get Note Purchase Agreement Document File Only",
         "description": "Gets a note purchase agreement document file only.  No record data otherwise.",
         "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreementDoc",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "A successful response.(streaming responses)",
             "schema": {
-              "$ref": "#/definitions/v1GetNotePurchaseAgreementDocResponse"
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1GetNotePurchaseAgreementDocResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of v1GetNotePurchaseAgreementDocResponse"
             }
           },
           "default": {
@@ -122,8 +153,8 @@
         "parameters": [
           {
             "name": "payload.id",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
@@ -225,12 +256,20 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "NotePurchaseAgreement"
         ]
       }
     },
-    "/v1/statementdoc": {
+    "/v1/statement/{payload.id}/file": {
       "get": {
         "summary": "Get All Note Purchase Agreement Documents",
         "description": "Gets statement document file.",
@@ -252,8 +291,8 @@
         "parameters": [
           {
             "name": "payload.id",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
@@ -373,8 +412,17 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "v1AuthenticateUserRequest": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
@@ -410,7 +458,11 @@
       "type": "object",
       "properties": {
         "payload": {
-          "$ref": "#/definitions/v1RecordCollection"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1RecordResultPayload"
+          }
         }
       }
     },
@@ -427,7 +479,11 @@
       "type": "object",
       "properties": {
         "payload": {
-          "$ref": "#/definitions/v1StatementsPayload"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Statement"
+          }
         }
       }
     },
@@ -471,17 +527,6 @@
         }
       }
     },
-    "v1RecordCollection": {
-      "type": "object",
-      "properties": {
-        "payload": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1RecordResultPayload"
-          }
-        }
-      }
-    },
     "v1RecordRequestPayload": {
       "type": "object",
       "properties": {
@@ -498,6 +543,14 @@
         },
         "createdOn": {
           "type": "string"
+        }
+      }
+    },
+    "v1SaveNotePurchaseAgreementRequest": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "$ref": "#/definitions/v1NotePurchaseAgreementRecord"
         }
       }
     },
@@ -542,17 +595,6 @@
         "document": {
           "type": "string",
           "format": "byte"
-        }
-      }
-    },
-    "v1StatementsPayload": {
-      "type": "object",
-      "properties": {
-        "statements": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1Statement"
-          }
         }
       }
     },

@@ -1,4 +1,4 @@
-FROM bufbuild/buf
+FROM bufbuild/buf:latest
 WORKDIR /app
 ADD . /app
 RUN apk add --update npm go && \

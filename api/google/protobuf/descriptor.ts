@@ -4,6 +4,98 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "google.protobuf";
 
+/** The full set of known editions. */
+export enum Edition {
+  /** EDITION_UNKNOWN - A placeholder for an unknown edition value. */
+  EDITION_UNKNOWN = 0,
+  /**
+   * EDITION_PROTO2 - Legacy syntax "editions".  These pre-date editions, but behave much like
+   * distinct editions.  These can't be used to specify the edition of proto
+   * files, but feature definitions must supply proto2/proto3 defaults for
+   * backwards compatibility.
+   */
+  EDITION_PROTO2 = 998,
+  EDITION_PROTO3 = 999,
+  /**
+   * EDITION_2023 - Editions that have been released.  The specific values are arbitrary and
+   * should not be depended on, but they will always be time-ordered for easy
+   * comparison.
+   */
+  EDITION_2023 = 1000,
+  /**
+   * EDITION_1_TEST_ONLY - Placeholder editions for testing feature resolution.  These should not be
+   * used or relyed on outside of tests.
+   */
+  EDITION_1_TEST_ONLY = 1,
+  EDITION_2_TEST_ONLY = 2,
+  EDITION_99997_TEST_ONLY = 99997,
+  EDITION_99998_TEST_ONLY = 99998,
+  EDITION_99999_TEST_ONLY = 99999,
+  UNRECOGNIZED = -1,
+}
+
+export function editionFromJSON(object: any): Edition {
+  switch (object) {
+    case 0:
+    case "EDITION_UNKNOWN":
+      return Edition.EDITION_UNKNOWN;
+    case 998:
+    case "EDITION_PROTO2":
+      return Edition.EDITION_PROTO2;
+    case 999:
+    case "EDITION_PROTO3":
+      return Edition.EDITION_PROTO3;
+    case 1000:
+    case "EDITION_2023":
+      return Edition.EDITION_2023;
+    case 1:
+    case "EDITION_1_TEST_ONLY":
+      return Edition.EDITION_1_TEST_ONLY;
+    case 2:
+    case "EDITION_2_TEST_ONLY":
+      return Edition.EDITION_2_TEST_ONLY;
+    case 99997:
+    case "EDITION_99997_TEST_ONLY":
+      return Edition.EDITION_99997_TEST_ONLY;
+    case 99998:
+    case "EDITION_99998_TEST_ONLY":
+      return Edition.EDITION_99998_TEST_ONLY;
+    case 99999:
+    case "EDITION_99999_TEST_ONLY":
+      return Edition.EDITION_99999_TEST_ONLY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Edition.UNRECOGNIZED;
+  }
+}
+
+export function editionToJSON(object: Edition): string {
+  switch (object) {
+    case Edition.EDITION_UNKNOWN:
+      return "EDITION_UNKNOWN";
+    case Edition.EDITION_PROTO2:
+      return "EDITION_PROTO2";
+    case Edition.EDITION_PROTO3:
+      return "EDITION_PROTO3";
+    case Edition.EDITION_2023:
+      return "EDITION_2023";
+    case Edition.EDITION_1_TEST_ONLY:
+      return "EDITION_1_TEST_ONLY";
+    case Edition.EDITION_2_TEST_ONLY:
+      return "EDITION_2_TEST_ONLY";
+    case Edition.EDITION_99997_TEST_ONLY:
+      return "EDITION_99997_TEST_ONLY";
+    case Edition.EDITION_99998_TEST_ONLY:
+      return "EDITION_99998_TEST_ONLY";
+    case Edition.EDITION_99999_TEST_ONLY:
+      return "EDITION_99999_TEST_ONLY";
+    case Edition.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 /**
  * The protocol compiler can output a FileDescriptorSet containing the .proto
  * files it parses.
@@ -51,8 +143,8 @@ export interface FileDescriptorProto {
    * If `edition` is present, this value must be "editions".
    */
   syntax: string;
-  /** The edition of the proto file, which is an opaque string. */
-  edition: string;
+  /** The edition of the proto file. */
+  edition: Edition;
 }
 
 /** Describes a message type. */
@@ -96,6 +188,84 @@ export interface DescriptorProto_ReservedRange {
 export interface ExtensionRangeOptions {
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
+  /**
+   * For external users: DO NOT USE. We are in the process of open sourcing
+   * extension declaration and executing internal cleanups before it can be
+   * used externally.
+   */
+  declaration: ExtensionRangeOptions_Declaration[];
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
+  /**
+   * The verification state of the range.
+   * TODO: flip the default to DECLARATION once all empty ranges
+   * are marked as UNVERIFIED.
+   */
+  verification: ExtensionRangeOptions_VerificationState;
+}
+
+/** The verification state of the extension range. */
+export enum ExtensionRangeOptions_VerificationState {
+  /** DECLARATION - All the extensions of the range must be declared. */
+  DECLARATION = 0,
+  UNVERIFIED = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function extensionRangeOptions_VerificationStateFromJSON(object: any): ExtensionRangeOptions_VerificationState {
+  switch (object) {
+    case 0:
+    case "DECLARATION":
+      return ExtensionRangeOptions_VerificationState.DECLARATION;
+    case 1:
+    case "UNVERIFIED":
+      return ExtensionRangeOptions_VerificationState.UNVERIFIED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return ExtensionRangeOptions_VerificationState.UNRECOGNIZED;
+  }
+}
+
+export function extensionRangeOptions_VerificationStateToJSON(object: ExtensionRangeOptions_VerificationState): string {
+  switch (object) {
+    case ExtensionRangeOptions_VerificationState.DECLARATION:
+      return "DECLARATION";
+    case ExtensionRangeOptions_VerificationState.UNVERIFIED:
+      return "UNVERIFIED";
+    case ExtensionRangeOptions_VerificationState.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export interface ExtensionRangeOptions_Declaration {
+  /** The extension number declared within the extension range. */
+  number: number;
+  /**
+   * The fully-qualified name of the extension field. There must be a leading
+   * dot in front of the full name.
+   */
+  fullName: string;
+  /**
+   * The fully-qualified type name of the extension field. Unlike
+   * Metadata.type, Declaration.type must have a leading dot for messages
+   * and enums.
+   */
+  type: string;
+  /**
+   * If true, indicates that the number is reserved in the extension range,
+   * and any extension field with the number will fail to compile. Set this
+   * when a declared extension field is deleted.
+   */
+  reserved: boolean;
+  /**
+   * If true, indicates that the extension must be defined as repeated.
+   * Otherwise the extension must be defined as optional.
+   */
+  repeated: boolean;
 }
 
 /** Describes a field within a message. */
@@ -193,9 +363,10 @@ export enum FieldDescriptorProto_Type {
   TYPE_STRING = 9,
   /**
    * TYPE_GROUP - Tag-delimited aggregate.
-   * Group type is deprecated and not supported in proto3. However, Proto3
+   * Group type is deprecated and not supported after google.protobuf. However, Proto3
    * implementations should still be able to parse the group wire format and
-   * treat group fields as unknown fields.
+   * treat group fields as unknown fields.  In Editions, the group wire format
+   * can be enabled via the `message_encoding` feature.
    */
   TYPE_GROUP = 10,
   /** TYPE_MESSAGE - Length-delimited aggregate. */
@@ -323,8 +494,13 @@ export function fieldDescriptorProto_TypeToJSON(object: FieldDescriptorProto_Typ
 export enum FieldDescriptorProto_Label {
   /** LABEL_OPTIONAL - 0 is reserved for errors */
   LABEL_OPTIONAL = 1,
-  LABEL_REQUIRED = 2,
   LABEL_REPEATED = 3,
+  /**
+   * LABEL_REQUIRED - The required label is only allowed in google.protobuf.  In proto3 and Editions
+   * it's explicitly prohibited.  In Editions, the `field_presence` feature
+   * can be used to get this behavior.
+   */
+  LABEL_REQUIRED = 2,
   UNRECOGNIZED = -1,
 }
 
@@ -333,12 +509,12 @@ export function fieldDescriptorProto_LabelFromJSON(object: any): FieldDescriptor
     case 1:
     case "LABEL_OPTIONAL":
       return FieldDescriptorProto_Label.LABEL_OPTIONAL;
-    case 2:
-    case "LABEL_REQUIRED":
-      return FieldDescriptorProto_Label.LABEL_REQUIRED;
     case 3:
     case "LABEL_REPEATED":
       return FieldDescriptorProto_Label.LABEL_REPEATED;
+    case 2:
+    case "LABEL_REQUIRED":
+      return FieldDescriptorProto_Label.LABEL_REQUIRED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -350,10 +526,10 @@ export function fieldDescriptorProto_LabelToJSON(object: FieldDescriptorProto_La
   switch (object) {
     case FieldDescriptorProto_Label.LABEL_OPTIONAL:
       return "LABEL_OPTIONAL";
-    case FieldDescriptorProto_Label.LABEL_REQUIRED:
-      return "LABEL_REQUIRED";
     case FieldDescriptorProto_Label.LABEL_REPEATED:
       return "LABEL_REPEATED";
+    case FieldDescriptorProto_Label.LABEL_REQUIRED:
+      return "LABEL_REQUIRED";
     case FieldDescriptorProto_Label.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -547,6 +723,10 @@ export interface FileOptions {
    * determining the ruby package.
    */
   rubyPackage: string;
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
   /**
    * The parser stores options it doesn't recognize here.
    * See the documentation for the "Options" section above.
@@ -665,12 +845,16 @@ export interface MessageOptions {
    * This should only be used as a temporary measure against broken builds due
    * to the change in behavior for JSON field name conflicts.
    *
-   * TODO(b/261750190) This is legacy behavior we plan to remove once downstream
+   * TODO This is legacy behavior we plan to remove once downstream
    * teams have had time to migrate.
    *
    * @deprecated
    */
   deprecatedLegacyJsonFieldConflicts: boolean;
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
@@ -679,8 +863,10 @@ export interface FieldOptions {
   /**
    * The ctype option instructs the C++ code generator to use a different
    * representation of the field than it normally would.  See the specific
-   * options below.  This option is not yet implemented in the open source
-   * release -- sorry, we'll try to include it in a future version!
+   * options below.  This option is only implemented to support use of
+   * [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
+   * type "bytes" in the open source release -- sorry, we'll try to include
+   * other types in a future version!
    */
   ctype: FieldOptions_CType;
   /**
@@ -688,7 +874,9 @@ export interface FieldOptions {
    * a more efficient representation on the wire. Rather than repeatedly
    * writing the tag and type for each element, the entire array is encoded as
    * a single length-delimited blob. In proto3, only explicit setting it to
-   * false will avoid using packed encoding.
+   * false will avoid using packed encoding.  This option is prohibited in
+   * Editions, but the `repeated_field_encoding` feature can be used to control
+   * the behavior.
    */
   packed: boolean;
   /**
@@ -759,7 +947,12 @@ export interface FieldOptions {
    */
   debugRedact: boolean;
   retention: FieldOptions_OptionRetention;
-  target: FieldOptions_OptionTargetType;
+  targets: FieldOptions_OptionTargetType[];
+  editionDefaults: FieldOptions_EditionDefault[];
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
@@ -767,6 +960,14 @@ export interface FieldOptions {
 export enum FieldOptions_CType {
   /** STRING - Default mode. */
   STRING = 0,
+  /**
+   * CORD - The option [ctype=CORD] may be applied to a non-repeated field of type
+   * "bytes". It indicates that in C++, the data should be stored in a Cord
+   * instead of a string.  For very large strings, this may reduce memory
+   * fragmentation. It may also allow better performance when parsing from a
+   * Cord, or when parsing with aliasing enabled, as the parsed Cord may then
+   * alias the original buffer.
+   */
   CORD = 1,
   STRING_PIECE = 2,
   UNRECOGNIZED = -1,
@@ -977,7 +1178,17 @@ export function fieldOptions_OptionTargetTypeToJSON(object: FieldOptions_OptionT
   }
 }
 
+export interface FieldOptions_EditionDefault {
+  edition: Edition;
+  /** Textproto value. */
+  value: string;
+}
+
 export interface OneofOptions {
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
@@ -1000,12 +1211,16 @@ export interface EnumOptions {
    * and strips underscored from the fields before comparison in proto3 only.
    * The new behavior takes `json_name` into account and applies to proto2 as
    * well.
-   * TODO(b/261750190) Remove this legacy behavior once downstream teams have
+   * TODO Remove this legacy behavior once downstream teams have
    * had time to migrate.
    *
    * @deprecated
    */
   deprecatedLegacyJsonFieldConflicts: boolean;
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
@@ -1018,11 +1233,25 @@ export interface EnumValueOptions {
    * this is a formalization for deprecating enum values.
    */
   deprecated: boolean;
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
+  /**
+   * Indicate that fields annotated with this enum value should not be printed
+   * out when using debug formats, e.g. when the field contains sensitive
+   * credentials.
+   */
+  debugRedact: boolean;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
 
 export interface ServiceOptions {
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
   /**
    * Is this service deprecated?
    * Depending on the target platform, this can emit Deprecated annotations
@@ -1043,6 +1272,10 @@ export interface MethodOptions {
    */
   deprecated: boolean;
   idempotencyLevel: MethodOptions_IdempotencyLevel;
+  /** Any features defined in the specific edition. */
+  features:
+    | FeatureSet
+    | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
@@ -1125,6 +1358,294 @@ export interface UninterpretedOption {
 export interface UninterpretedOption_NamePart {
   namePart: string;
   isExtension: boolean;
+}
+
+/**
+ * TODO Enums in C++ gencode (and potentially other languages) are
+ * not well scoped.  This means that each of the feature enums below can clash
+ * with each other.  The short names we've chosen maximize call-site
+ * readability, but leave us very open to this scenario.  A future feature will
+ * be designed and implemented to handle this, hopefully before we ever hit a
+ * conflict here.
+ */
+export interface FeatureSet {
+  fieldPresence: FeatureSet_FieldPresence;
+  enumType: FeatureSet_EnumType;
+  repeatedFieldEncoding: FeatureSet_RepeatedFieldEncoding;
+  utf8Validation: FeatureSet_Utf8Validation;
+  messageEncoding: FeatureSet_MessageEncoding;
+  jsonFormat: FeatureSet_JsonFormat;
+}
+
+export enum FeatureSet_FieldPresence {
+  FIELD_PRESENCE_UNKNOWN = 0,
+  EXPLICIT = 1,
+  IMPLICIT = 2,
+  LEGACY_REQUIRED = 3,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_FieldPresenceFromJSON(object: any): FeatureSet_FieldPresence {
+  switch (object) {
+    case 0:
+    case "FIELD_PRESENCE_UNKNOWN":
+      return FeatureSet_FieldPresence.FIELD_PRESENCE_UNKNOWN;
+    case 1:
+    case "EXPLICIT":
+      return FeatureSet_FieldPresence.EXPLICIT;
+    case 2:
+    case "IMPLICIT":
+      return FeatureSet_FieldPresence.IMPLICIT;
+    case 3:
+    case "LEGACY_REQUIRED":
+      return FeatureSet_FieldPresence.LEGACY_REQUIRED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_FieldPresence.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_FieldPresenceToJSON(object: FeatureSet_FieldPresence): string {
+  switch (object) {
+    case FeatureSet_FieldPresence.FIELD_PRESENCE_UNKNOWN:
+      return "FIELD_PRESENCE_UNKNOWN";
+    case FeatureSet_FieldPresence.EXPLICIT:
+      return "EXPLICIT";
+    case FeatureSet_FieldPresence.IMPLICIT:
+      return "IMPLICIT";
+    case FeatureSet_FieldPresence.LEGACY_REQUIRED:
+      return "LEGACY_REQUIRED";
+    case FeatureSet_FieldPresence.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum FeatureSet_EnumType {
+  ENUM_TYPE_UNKNOWN = 0,
+  OPEN = 1,
+  CLOSED = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_EnumTypeFromJSON(object: any): FeatureSet_EnumType {
+  switch (object) {
+    case 0:
+    case "ENUM_TYPE_UNKNOWN":
+      return FeatureSet_EnumType.ENUM_TYPE_UNKNOWN;
+    case 1:
+    case "OPEN":
+      return FeatureSet_EnumType.OPEN;
+    case 2:
+    case "CLOSED":
+      return FeatureSet_EnumType.CLOSED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_EnumType.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_EnumTypeToJSON(object: FeatureSet_EnumType): string {
+  switch (object) {
+    case FeatureSet_EnumType.ENUM_TYPE_UNKNOWN:
+      return "ENUM_TYPE_UNKNOWN";
+    case FeatureSet_EnumType.OPEN:
+      return "OPEN";
+    case FeatureSet_EnumType.CLOSED:
+      return "CLOSED";
+    case FeatureSet_EnumType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum FeatureSet_RepeatedFieldEncoding {
+  REPEATED_FIELD_ENCODING_UNKNOWN = 0,
+  PACKED = 1,
+  EXPANDED = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_RepeatedFieldEncodingFromJSON(object: any): FeatureSet_RepeatedFieldEncoding {
+  switch (object) {
+    case 0:
+    case "REPEATED_FIELD_ENCODING_UNKNOWN":
+      return FeatureSet_RepeatedFieldEncoding.REPEATED_FIELD_ENCODING_UNKNOWN;
+    case 1:
+    case "PACKED":
+      return FeatureSet_RepeatedFieldEncoding.PACKED;
+    case 2:
+    case "EXPANDED":
+      return FeatureSet_RepeatedFieldEncoding.EXPANDED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_RepeatedFieldEncoding.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_RepeatedFieldEncodingToJSON(object: FeatureSet_RepeatedFieldEncoding): string {
+  switch (object) {
+    case FeatureSet_RepeatedFieldEncoding.REPEATED_FIELD_ENCODING_UNKNOWN:
+      return "REPEATED_FIELD_ENCODING_UNKNOWN";
+    case FeatureSet_RepeatedFieldEncoding.PACKED:
+      return "PACKED";
+    case FeatureSet_RepeatedFieldEncoding.EXPANDED:
+      return "EXPANDED";
+    case FeatureSet_RepeatedFieldEncoding.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum FeatureSet_Utf8Validation {
+  UTF8_VALIDATION_UNKNOWN = 0,
+  NONE = 1,
+  VERIFY = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_Utf8ValidationFromJSON(object: any): FeatureSet_Utf8Validation {
+  switch (object) {
+    case 0:
+    case "UTF8_VALIDATION_UNKNOWN":
+      return FeatureSet_Utf8Validation.UTF8_VALIDATION_UNKNOWN;
+    case 1:
+    case "NONE":
+      return FeatureSet_Utf8Validation.NONE;
+    case 2:
+    case "VERIFY":
+      return FeatureSet_Utf8Validation.VERIFY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_Utf8Validation.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_Utf8ValidationToJSON(object: FeatureSet_Utf8Validation): string {
+  switch (object) {
+    case FeatureSet_Utf8Validation.UTF8_VALIDATION_UNKNOWN:
+      return "UTF8_VALIDATION_UNKNOWN";
+    case FeatureSet_Utf8Validation.NONE:
+      return "NONE";
+    case FeatureSet_Utf8Validation.VERIFY:
+      return "VERIFY";
+    case FeatureSet_Utf8Validation.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum FeatureSet_MessageEncoding {
+  MESSAGE_ENCODING_UNKNOWN = 0,
+  LENGTH_PREFIXED = 1,
+  DELIMITED = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_MessageEncodingFromJSON(object: any): FeatureSet_MessageEncoding {
+  switch (object) {
+    case 0:
+    case "MESSAGE_ENCODING_UNKNOWN":
+      return FeatureSet_MessageEncoding.MESSAGE_ENCODING_UNKNOWN;
+    case 1:
+    case "LENGTH_PREFIXED":
+      return FeatureSet_MessageEncoding.LENGTH_PREFIXED;
+    case 2:
+    case "DELIMITED":
+      return FeatureSet_MessageEncoding.DELIMITED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_MessageEncoding.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_MessageEncodingToJSON(object: FeatureSet_MessageEncoding): string {
+  switch (object) {
+    case FeatureSet_MessageEncoding.MESSAGE_ENCODING_UNKNOWN:
+      return "MESSAGE_ENCODING_UNKNOWN";
+    case FeatureSet_MessageEncoding.LENGTH_PREFIXED:
+      return "LENGTH_PREFIXED";
+    case FeatureSet_MessageEncoding.DELIMITED:
+      return "DELIMITED";
+    case FeatureSet_MessageEncoding.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum FeatureSet_JsonFormat {
+  JSON_FORMAT_UNKNOWN = 0,
+  ALLOW = 1,
+  LEGACY_BEST_EFFORT = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_JsonFormatFromJSON(object: any): FeatureSet_JsonFormat {
+  switch (object) {
+    case 0:
+    case "JSON_FORMAT_UNKNOWN":
+      return FeatureSet_JsonFormat.JSON_FORMAT_UNKNOWN;
+    case 1:
+    case "ALLOW":
+      return FeatureSet_JsonFormat.ALLOW;
+    case 2:
+    case "LEGACY_BEST_EFFORT":
+      return FeatureSet_JsonFormat.LEGACY_BEST_EFFORT;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_JsonFormat.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_JsonFormatToJSON(object: FeatureSet_JsonFormat): string {
+  switch (object) {
+    case FeatureSet_JsonFormat.JSON_FORMAT_UNKNOWN:
+      return "JSON_FORMAT_UNKNOWN";
+    case FeatureSet_JsonFormat.ALLOW:
+      return "ALLOW";
+    case FeatureSet_JsonFormat.LEGACY_BEST_EFFORT:
+      return "LEGACY_BEST_EFFORT";
+    case FeatureSet_JsonFormat.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+/**
+ * A compiled specification for the defaults of a set of features.  These
+ * messages are generated from FeatureSet extensions and can be used to seed
+ * feature resolution. The resolution with this object becomes a simple search
+ * for the closest matching edition, followed by proto merges.
+ */
+export interface FeatureSetDefaults {
+  defaults: FeatureSetDefaults_FeatureSetEditionDefault[];
+  /**
+   * The minimum supported edition (inclusive) when this was constructed.
+   * Editions before this will not have defaults.
+   */
+  minimumEdition: Edition;
+  /**
+   * The maximum known edition (inclusive) when this was constructed. Editions
+   * after this will not have reliable defaults.
+   */
+  maximumEdition: Edition;
+}
+
+/**
+ * A map from every known edition with a unique set of defaults to its
+ * defaults. Not all editions may be contained here.  For a given edition,
+ * the defaults at the closest matching edition ordered at or before it should
+ * be used.  This field must be in strict ascending order by edition.
+ */
+export interface FeatureSetDefaults_FeatureSetEditionDefault {
+  edition: Edition;
+  features: FeatureSet | undefined;
 }
 
 /**
@@ -1370,19 +1891,51 @@ export const FileDescriptorSet = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.file.push(FileDescriptorProto.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FileDescriptorSet, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<FileDescriptorSet | FileDescriptorSet[]> | Iterable<FileDescriptorSet | FileDescriptorSet[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FileDescriptorSet.encode(p).finish()];
+        }
+      } else {
+        yield* [FileDescriptorSet.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FileDescriptorSet>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FileDescriptorSet> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FileDescriptorSet.decode(p)];
+        }
+      } else {
+        yield* [FileDescriptorSet.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): FileDescriptorSet {
@@ -1391,10 +1944,8 @@ export const FileDescriptorSet = {
 
   toJSON(message: FileDescriptorSet): unknown {
     const obj: any = {};
-    if (message.file) {
-      obj.file = message.file.map((e) => e ? FileDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.file = [];
+    if (message.file?.length) {
+      obj.file = message.file.map((e) => FileDescriptorProto.toJSON(e));
     }
     return obj;
   },
@@ -1424,7 +1975,7 @@ function createBaseFileDescriptorProto(): FileDescriptorProto {
     options: undefined,
     sourceCodeInfo: undefined,
     syntax: "",
-    edition: "",
+    edition: 0,
   };
 }
 
@@ -1470,8 +2021,8 @@ export const FileDescriptorProto = {
     if (message.syntax !== "") {
       writer.uint32(98).string(message.syntax);
     }
-    if (message.edition !== "") {
-      writer.uint32(106).string(message.edition);
+    if (message.edition !== 0) {
+      writer.uint32(112).int32(message.edition);
     }
     return writer;
   },
@@ -1484,33 +2035,34 @@ export const FileDescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.package = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.dependency.push(reader.string());
           continue;
         case 10:
-          if (tag == 80) {
+          if (tag === 80) {
             message.publicDependency.push(reader.int32());
+
             continue;
           }
 
-          if (tag == 82) {
+          if (tag === 82) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.publicDependency.push(reader.int32());
@@ -1521,12 +2073,13 @@ export const FileDescriptorProto = {
 
           break;
         case 11:
-          if (tag == 88) {
+          if (tag === 88) {
             message.weakDependency.push(reader.int32());
+
             continue;
           }
 
-          if (tag == 90) {
+          if (tag === 90) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.weakDependency.push(reader.int32());
@@ -1537,68 +2090,102 @@ export const FileDescriptorProto = {
 
           break;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.messageType.push(DescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.enumType.push(EnumDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.service.push(ServiceDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.extension.push(FieldDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.options = FileOptions.decode(reader, reader.uint32());
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.sourceCodeInfo = SourceCodeInfo.decode(reader, reader.uint32());
           continue;
         case 12:
-          if (tag != 98) {
+          if (tag !== 98) {
             break;
           }
 
           message.syntax = reader.string();
           continue;
-        case 13:
-          if (tag != 106) {
+        case 14:
+          if (tag !== 112) {
             break;
           }
 
-          message.edition = reader.string();
+          message.edition = reader.int32() as any;
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FileDescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<FileDescriptorProto | FileDescriptorProto[]>
+      | Iterable<FileDescriptorProto | FileDescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FileDescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [FileDescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FileDescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FileDescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FileDescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [FileDescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): FileDescriptorProto {
@@ -1621,54 +2208,51 @@ export const FileDescriptorProto = {
       options: isSet(object.options) ? FileOptions.fromJSON(object.options) : undefined,
       sourceCodeInfo: isSet(object.sourceCodeInfo) ? SourceCodeInfo.fromJSON(object.sourceCodeInfo) : undefined,
       syntax: isSet(object.syntax) ? String(object.syntax) : "",
-      edition: isSet(object.edition) ? String(object.edition) : "",
+      edition: isSet(object.edition) ? editionFromJSON(object.edition) : 0,
     };
   },
 
   toJSON(message: FileDescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.package !== undefined && (obj.package = message.package);
-    if (message.dependency) {
-      obj.dependency = message.dependency.map((e) => e);
-    } else {
-      obj.dependency = [];
+    if (message.name !== "") {
+      obj.name = message.name;
     }
-    if (message.publicDependency) {
+    if (message.package !== "") {
+      obj.package = message.package;
+    }
+    if (message.dependency?.length) {
+      obj.dependency = message.dependency;
+    }
+    if (message.publicDependency?.length) {
       obj.publicDependency = message.publicDependency.map((e) => Math.round(e));
-    } else {
-      obj.publicDependency = [];
     }
-    if (message.weakDependency) {
+    if (message.weakDependency?.length) {
       obj.weakDependency = message.weakDependency.map((e) => Math.round(e));
-    } else {
-      obj.weakDependency = [];
     }
-    if (message.messageType) {
-      obj.messageType = message.messageType.map((e) => e ? DescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.messageType = [];
+    if (message.messageType?.length) {
+      obj.messageType = message.messageType.map((e) => DescriptorProto.toJSON(e));
     }
-    if (message.enumType) {
-      obj.enumType = message.enumType.map((e) => e ? EnumDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.enumType = [];
+    if (message.enumType?.length) {
+      obj.enumType = message.enumType.map((e) => EnumDescriptorProto.toJSON(e));
     }
-    if (message.service) {
-      obj.service = message.service.map((e) => e ? ServiceDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.service = [];
+    if (message.service?.length) {
+      obj.service = message.service.map((e) => ServiceDescriptorProto.toJSON(e));
     }
-    if (message.extension) {
-      obj.extension = message.extension.map((e) => e ? FieldDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.extension = [];
+    if (message.extension?.length) {
+      obj.extension = message.extension.map((e) => FieldDescriptorProto.toJSON(e));
     }
-    message.options !== undefined && (obj.options = message.options ? FileOptions.toJSON(message.options) : undefined);
-    message.sourceCodeInfo !== undefined &&
-      (obj.sourceCodeInfo = message.sourceCodeInfo ? SourceCodeInfo.toJSON(message.sourceCodeInfo) : undefined);
-    message.syntax !== undefined && (obj.syntax = message.syntax);
-    message.edition !== undefined && (obj.edition = message.edition);
+    if (message.options !== undefined) {
+      obj.options = FileOptions.toJSON(message.options);
+    }
+    if (message.sourceCodeInfo !== undefined) {
+      obj.sourceCodeInfo = SourceCodeInfo.toJSON(message.sourceCodeInfo);
+    }
+    if (message.syntax !== "") {
+      obj.syntax = message.syntax;
+    }
+    if (message.edition !== 0) {
+      obj.edition = editionToJSON(message.edition);
+    }
     return obj;
   },
 
@@ -1694,7 +2278,7 @@ export const FileDescriptorProto = {
       ? SourceCodeInfo.fromPartial(object.sourceCodeInfo)
       : undefined;
     message.syntax = object.syntax ?? "";
-    message.edition = object.edition ?? "";
+    message.edition = object.edition ?? 0;
     return message;
   },
 };
@@ -1757,82 +2341,114 @@ export const DescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.field.push(FieldDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.extension.push(FieldDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.nestedType.push(DescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.enumType.push(EnumDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.extensionRange.push(DescriptorProto_ExtensionRange.decode(reader, reader.uint32()));
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.oneofDecl.push(OneofDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.options = MessageOptions.decode(reader, reader.uint32());
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.reservedRange.push(DescriptorProto_ReservedRange.decode(reader, reader.uint32()));
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
           message.reservedName.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<DescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<DescriptorProto | DescriptorProto[]> | Iterable<DescriptorProto | DescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [DescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [DescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, DescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<DescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [DescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [DescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): DescriptorProto {
@@ -1862,48 +2478,35 @@ export const DescriptorProto = {
 
   toJSON(message: DescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    if (message.field) {
-      obj.field = message.field.map((e) => e ? FieldDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.field = [];
+    if (message.name !== "") {
+      obj.name = message.name;
     }
-    if (message.extension) {
-      obj.extension = message.extension.map((e) => e ? FieldDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.extension = [];
+    if (message.field?.length) {
+      obj.field = message.field.map((e) => FieldDescriptorProto.toJSON(e));
     }
-    if (message.nestedType) {
-      obj.nestedType = message.nestedType.map((e) => e ? DescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.nestedType = [];
+    if (message.extension?.length) {
+      obj.extension = message.extension.map((e) => FieldDescriptorProto.toJSON(e));
     }
-    if (message.enumType) {
-      obj.enumType = message.enumType.map((e) => e ? EnumDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.enumType = [];
+    if (message.nestedType?.length) {
+      obj.nestedType = message.nestedType.map((e) => DescriptorProto.toJSON(e));
     }
-    if (message.extensionRange) {
-      obj.extensionRange = message.extensionRange.map((e) => e ? DescriptorProto_ExtensionRange.toJSON(e) : undefined);
-    } else {
-      obj.extensionRange = [];
+    if (message.enumType?.length) {
+      obj.enumType = message.enumType.map((e) => EnumDescriptorProto.toJSON(e));
     }
-    if (message.oneofDecl) {
-      obj.oneofDecl = message.oneofDecl.map((e) => e ? OneofDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.oneofDecl = [];
+    if (message.extensionRange?.length) {
+      obj.extensionRange = message.extensionRange.map((e) => DescriptorProto_ExtensionRange.toJSON(e));
     }
-    message.options !== undefined &&
-      (obj.options = message.options ? MessageOptions.toJSON(message.options) : undefined);
-    if (message.reservedRange) {
-      obj.reservedRange = message.reservedRange.map((e) => e ? DescriptorProto_ReservedRange.toJSON(e) : undefined);
-    } else {
-      obj.reservedRange = [];
+    if (message.oneofDecl?.length) {
+      obj.oneofDecl = message.oneofDecl.map((e) => OneofDescriptorProto.toJSON(e));
     }
-    if (message.reservedName) {
-      obj.reservedName = message.reservedName.map((e) => e);
-    } else {
-      obj.reservedName = [];
+    if (message.options !== undefined) {
+      obj.options = MessageOptions.toJSON(message.options);
+    }
+    if (message.reservedRange?.length) {
+      obj.reservedRange = message.reservedRange.map((e) => DescriptorProto_ReservedRange.toJSON(e));
+    }
+    if (message.reservedName?.length) {
+      obj.reservedName = message.reservedName;
     }
     return obj;
   },
@@ -1956,33 +2559,67 @@ export const DescriptorProto_ExtensionRange = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.start = reader.int32();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.end = reader.int32();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.options = ExtensionRangeOptions.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<DescriptorProto_ExtensionRange, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<DescriptorProto_ExtensionRange | DescriptorProto_ExtensionRange[]>
+      | Iterable<DescriptorProto_ExtensionRange | DescriptorProto_ExtensionRange[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [DescriptorProto_ExtensionRange.encode(p).finish()];
+        }
+      } else {
+        yield* [DescriptorProto_ExtensionRange.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, DescriptorProto_ExtensionRange>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<DescriptorProto_ExtensionRange> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [DescriptorProto_ExtensionRange.decode(p)];
+        }
+      } else {
+        yield* [DescriptorProto_ExtensionRange.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): DescriptorProto_ExtensionRange {
@@ -1995,10 +2632,15 @@ export const DescriptorProto_ExtensionRange = {
 
   toJSON(message: DescriptorProto_ExtensionRange): unknown {
     const obj: any = {};
-    message.start !== undefined && (obj.start = Math.round(message.start));
-    message.end !== undefined && (obj.end = Math.round(message.end));
-    message.options !== undefined &&
-      (obj.options = message.options ? ExtensionRangeOptions.toJSON(message.options) : undefined);
+    if (message.start !== 0) {
+      obj.start = Math.round(message.start);
+    }
+    if (message.end !== 0) {
+      obj.end = Math.round(message.end);
+    }
+    if (message.options !== undefined) {
+      obj.options = ExtensionRangeOptions.toJSON(message.options);
+    }
     return obj;
   },
 
@@ -2040,26 +2682,60 @@ export const DescriptorProto_ReservedRange = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.start = reader.int32();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.end = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<DescriptorProto_ReservedRange, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<DescriptorProto_ReservedRange | DescriptorProto_ReservedRange[]>
+      | Iterable<DescriptorProto_ReservedRange | DescriptorProto_ReservedRange[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [DescriptorProto_ReservedRange.encode(p).finish()];
+        }
+      } else {
+        yield* [DescriptorProto_ReservedRange.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, DescriptorProto_ReservedRange>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<DescriptorProto_ReservedRange> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [DescriptorProto_ReservedRange.decode(p)];
+        }
+      } else {
+        yield* [DescriptorProto_ReservedRange.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): DescriptorProto_ReservedRange {
@@ -2068,8 +2744,12 @@ export const DescriptorProto_ReservedRange = {
 
   toJSON(message: DescriptorProto_ReservedRange): unknown {
     const obj: any = {};
-    message.start !== undefined && (obj.start = Math.round(message.start));
-    message.end !== undefined && (obj.end = Math.round(message.end));
+    if (message.start !== 0) {
+      obj.start = Math.round(message.start);
+    }
+    if (message.end !== 0) {
+      obj.end = Math.round(message.end);
+    }
     return obj;
   },
 
@@ -2086,13 +2766,22 @@ export const DescriptorProto_ReservedRange = {
 };
 
 function createBaseExtensionRangeOptions(): ExtensionRangeOptions {
-  return { uninterpretedOption: [] };
+  return { uninterpretedOption: [], declaration: [], features: undefined, verification: 0 };
 }
 
 export const ExtensionRangeOptions = {
   encode(message: ExtensionRangeOptions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
+    }
+    for (const v of message.declaration) {
+      ExtensionRangeOptions_Declaration.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(402).fork()).ldelim();
+    }
+    if (message.verification !== 0) {
+      writer.uint32(24).int32(message.verification);
     }
     return writer;
   },
@@ -2105,14 +2794,35 @@ export const ExtensionRangeOptions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.declaration.push(ExtensionRangeOptions_Declaration.decode(reader, reader.uint32()));
+          continue;
+        case 50:
+          if (tag !== 402) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.verification = reader.int32() as any;
+          continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2120,20 +2830,68 @@ export const ExtensionRangeOptions = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<ExtensionRangeOptions, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<ExtensionRangeOptions | ExtensionRangeOptions[]>
+      | Iterable<ExtensionRangeOptions | ExtensionRangeOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ExtensionRangeOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [ExtensionRangeOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, ExtensionRangeOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<ExtensionRangeOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ExtensionRangeOptions.decode(p)];
+        }
+      } else {
+        yield* [ExtensionRangeOptions.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): ExtensionRangeOptions {
     return {
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
+      declaration: Array.isArray(object?.declaration)
+        ? object.declaration.map((e: any) => ExtensionRangeOptions_Declaration.fromJSON(e))
+        : [],
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
+      verification: isSet(object.verification)
+        ? extensionRangeOptions_VerificationStateFromJSON(object.verification)
+        : 0,
     };
   },
 
   toJSON(message: ExtensionRangeOptions): unknown {
     const obj: any = {};
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
+    }
+    if (message.declaration?.length) {
+      obj.declaration = message.declaration.map((e) => ExtensionRangeOptions_Declaration.toJSON(e));
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.verification !== 0) {
+      obj.verification = extensionRangeOptions_VerificationStateToJSON(message.verification);
     }
     return obj;
   },
@@ -2145,6 +2903,165 @@ export const ExtensionRangeOptions = {
   fromPartial(object: DeepPartial<ExtensionRangeOptions>): ExtensionRangeOptions {
     const message = createBaseExtensionRangeOptions();
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
+    message.declaration = object.declaration?.map((e) => ExtensionRangeOptions_Declaration.fromPartial(e)) || [];
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
+    message.verification = object.verification ?? 0;
+    return message;
+  },
+};
+
+function createBaseExtensionRangeOptions_Declaration(): ExtensionRangeOptions_Declaration {
+  return { number: 0, fullName: "", type: "", reserved: false, repeated: false };
+}
+
+export const ExtensionRangeOptions_Declaration = {
+  encode(message: ExtensionRangeOptions_Declaration, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.number !== 0) {
+      writer.uint32(8).int32(message.number);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(18).string(message.fullName);
+    }
+    if (message.type !== "") {
+      writer.uint32(26).string(message.type);
+    }
+    if (message.reserved === true) {
+      writer.uint32(40).bool(message.reserved);
+    }
+    if (message.repeated === true) {
+      writer.uint32(48).bool(message.repeated);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ExtensionRangeOptions_Declaration {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExtensionRangeOptions_Declaration();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.number = reader.int32();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fullName = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.reserved = reader.bool();
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.repeated = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<ExtensionRangeOptions_Declaration, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<ExtensionRangeOptions_Declaration | ExtensionRangeOptions_Declaration[]>
+      | Iterable<ExtensionRangeOptions_Declaration | ExtensionRangeOptions_Declaration[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ExtensionRangeOptions_Declaration.encode(p).finish()];
+        }
+      } else {
+        yield* [ExtensionRangeOptions_Declaration.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, ExtensionRangeOptions_Declaration>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<ExtensionRangeOptions_Declaration> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ExtensionRangeOptions_Declaration.decode(p)];
+        }
+      } else {
+        yield* [ExtensionRangeOptions_Declaration.decode(pkt)];
+      }
+    }
+  },
+
+  fromJSON(object: any): ExtensionRangeOptions_Declaration {
+    return {
+      number: isSet(object.number) ? Number(object.number) : 0,
+      fullName: isSet(object.fullName) ? String(object.fullName) : "",
+      type: isSet(object.type) ? String(object.type) : "",
+      reserved: isSet(object.reserved) ? Boolean(object.reserved) : false,
+      repeated: isSet(object.repeated) ? Boolean(object.repeated) : false,
+    };
+  },
+
+  toJSON(message: ExtensionRangeOptions_Declaration): unknown {
+    const obj: any = {};
+    if (message.number !== 0) {
+      obj.number = Math.round(message.number);
+    }
+    if (message.fullName !== "") {
+      obj.fullName = message.fullName;
+    }
+    if (message.type !== "") {
+      obj.type = message.type;
+    }
+    if (message.reserved === true) {
+      obj.reserved = message.reserved;
+    }
+    if (message.repeated === true) {
+      obj.repeated = message.repeated;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ExtensionRangeOptions_Declaration>): ExtensionRangeOptions_Declaration {
+    return ExtensionRangeOptions_Declaration.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<ExtensionRangeOptions_Declaration>): ExtensionRangeOptions_Declaration {
+    const message = createBaseExtensionRangeOptions_Declaration();
+    message.number = object.number ?? 0;
+    message.fullName = object.fullName ?? "";
+    message.type = object.type ?? "";
+    message.reserved = object.reserved ?? false;
+    message.repeated = object.repeated ?? false;
     return message;
   },
 };
@@ -2211,89 +3128,123 @@ export const FieldDescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.number = reader.int32();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.label = reader.int32() as any;
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.type = reader.int32() as any;
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.typeName = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.extendee = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.defaultValue = reader.string();
           continue;
         case 9:
-          if (tag != 72) {
+          if (tag !== 72) {
             break;
           }
 
           message.oneofIndex = reader.int32();
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
           message.jsonName = reader.string();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.options = FieldOptions.decode(reader, reader.uint32());
           continue;
         case 17:
-          if (tag != 136) {
+          if (tag !== 136) {
             break;
           }
 
           message.proto3Optional = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FieldDescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<FieldDescriptorProto | FieldDescriptorProto[]>
+      | Iterable<FieldDescriptorProto | FieldDescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FieldDescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [FieldDescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FieldDescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FieldDescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FieldDescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [FieldDescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): FieldDescriptorProto {
@@ -2314,17 +3265,39 @@ export const FieldDescriptorProto = {
 
   toJSON(message: FieldDescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.number !== undefined && (obj.number = Math.round(message.number));
-    message.label !== undefined && (obj.label = fieldDescriptorProto_LabelToJSON(message.label));
-    message.type !== undefined && (obj.type = fieldDescriptorProto_TypeToJSON(message.type));
-    message.typeName !== undefined && (obj.typeName = message.typeName);
-    message.extendee !== undefined && (obj.extendee = message.extendee);
-    message.defaultValue !== undefined && (obj.defaultValue = message.defaultValue);
-    message.oneofIndex !== undefined && (obj.oneofIndex = Math.round(message.oneofIndex));
-    message.jsonName !== undefined && (obj.jsonName = message.jsonName);
-    message.options !== undefined && (obj.options = message.options ? FieldOptions.toJSON(message.options) : undefined);
-    message.proto3Optional !== undefined && (obj.proto3Optional = message.proto3Optional);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.number !== 0) {
+      obj.number = Math.round(message.number);
+    }
+    if (message.label !== 1) {
+      obj.label = fieldDescriptorProto_LabelToJSON(message.label);
+    }
+    if (message.type !== 1) {
+      obj.type = fieldDescriptorProto_TypeToJSON(message.type);
+    }
+    if (message.typeName !== "") {
+      obj.typeName = message.typeName;
+    }
+    if (message.extendee !== "") {
+      obj.extendee = message.extendee;
+    }
+    if (message.defaultValue !== "") {
+      obj.defaultValue = message.defaultValue;
+    }
+    if (message.oneofIndex !== 0) {
+      obj.oneofIndex = Math.round(message.oneofIndex);
+    }
+    if (message.jsonName !== "") {
+      obj.jsonName = message.jsonName;
+    }
+    if (message.options !== undefined) {
+      obj.options = FieldOptions.toJSON(message.options);
+    }
+    if (message.proto3Optional === true) {
+      obj.proto3Optional = message.proto3Optional;
+    }
     return obj;
   },
 
@@ -2374,26 +3347,60 @@ export const OneofDescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.options = OneofOptions.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<OneofDescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<OneofDescriptorProto | OneofDescriptorProto[]>
+      | Iterable<OneofDescriptorProto | OneofDescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [OneofDescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [OneofDescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, OneofDescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<OneofDescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [OneofDescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [OneofDescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): OneofDescriptorProto {
@@ -2405,8 +3412,12 @@ export const OneofDescriptorProto = {
 
   toJSON(message: OneofDescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.options !== undefined && (obj.options = message.options ? OneofOptions.toJSON(message.options) : undefined);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.options !== undefined) {
+      obj.options = OneofOptions.toJSON(message.options);
+    }
     return obj;
   },
 
@@ -2456,47 +3467,81 @@ export const EnumDescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value.push(EnumValueDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.options = EnumOptions.decode(reader, reader.uint32());
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.reservedRange.push(EnumDescriptorProto_EnumReservedRange.decode(reader, reader.uint32()));
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.reservedName.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<EnumDescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<EnumDescriptorProto | EnumDescriptorProto[]>
+      | Iterable<EnumDescriptorProto | EnumDescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumDescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [EnumDescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, EnumDescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<EnumDescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumDescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [EnumDescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): EnumDescriptorProto {
@@ -2513,24 +3558,20 @@ export const EnumDescriptorProto = {
 
   toJSON(message: EnumDescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    if (message.value) {
-      obj.value = message.value.map((e) => e ? EnumValueDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.value = [];
+    if (message.name !== "") {
+      obj.name = message.name;
     }
-    message.options !== undefined && (obj.options = message.options ? EnumOptions.toJSON(message.options) : undefined);
-    if (message.reservedRange) {
-      obj.reservedRange = message.reservedRange.map((e) =>
-        e ? EnumDescriptorProto_EnumReservedRange.toJSON(e) : undefined
-      );
-    } else {
-      obj.reservedRange = [];
+    if (message.value?.length) {
+      obj.value = message.value.map((e) => EnumValueDescriptorProto.toJSON(e));
     }
-    if (message.reservedName) {
-      obj.reservedName = message.reservedName.map((e) => e);
-    } else {
-      obj.reservedName = [];
+    if (message.options !== undefined) {
+      obj.options = EnumOptions.toJSON(message.options);
+    }
+    if (message.reservedRange?.length) {
+      obj.reservedRange = message.reservedRange.map((e) => EnumDescriptorProto_EnumReservedRange.toJSON(e));
+    }
+    if (message.reservedName?.length) {
+      obj.reservedName = message.reservedName;
     }
     return obj;
   },
@@ -2576,26 +3617,60 @@ export const EnumDescriptorProto_EnumReservedRange = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.start = reader.int32();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.end = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<EnumDescriptorProto_EnumReservedRange, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<EnumDescriptorProto_EnumReservedRange | EnumDescriptorProto_EnumReservedRange[]>
+      | Iterable<EnumDescriptorProto_EnumReservedRange | EnumDescriptorProto_EnumReservedRange[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumDescriptorProto_EnumReservedRange.encode(p).finish()];
+        }
+      } else {
+        yield* [EnumDescriptorProto_EnumReservedRange.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, EnumDescriptorProto_EnumReservedRange>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<EnumDescriptorProto_EnumReservedRange> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumDescriptorProto_EnumReservedRange.decode(p)];
+        }
+      } else {
+        yield* [EnumDescriptorProto_EnumReservedRange.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): EnumDescriptorProto_EnumReservedRange {
@@ -2604,8 +3679,12 @@ export const EnumDescriptorProto_EnumReservedRange = {
 
   toJSON(message: EnumDescriptorProto_EnumReservedRange): unknown {
     const obj: any = {};
-    message.start !== undefined && (obj.start = Math.round(message.start));
-    message.end !== undefined && (obj.end = Math.round(message.end));
+    if (message.start !== 0) {
+      obj.start = Math.round(message.start);
+    }
+    if (message.end !== 0) {
+      obj.end = Math.round(message.end);
+    }
     return obj;
   },
 
@@ -2647,33 +3726,67 @@ export const EnumValueDescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.number = reader.int32();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.options = EnumValueOptions.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<EnumValueDescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<EnumValueDescriptorProto | EnumValueDescriptorProto[]>
+      | Iterable<EnumValueDescriptorProto | EnumValueDescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumValueDescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [EnumValueDescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, EnumValueDescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<EnumValueDescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumValueDescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [EnumValueDescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): EnumValueDescriptorProto {
@@ -2686,10 +3799,15 @@ export const EnumValueDescriptorProto = {
 
   toJSON(message: EnumValueDescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.number !== undefined && (obj.number = Math.round(message.number));
-    message.options !== undefined &&
-      (obj.options = message.options ? EnumValueOptions.toJSON(message.options) : undefined);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.number !== 0) {
+      obj.number = Math.round(message.number);
+    }
+    if (message.options !== undefined) {
+      obj.options = EnumValueOptions.toJSON(message.options);
+    }
     return obj;
   },
 
@@ -2734,33 +3852,67 @@ export const ServiceDescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.method.push(MethodDescriptorProto.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.options = ServiceOptions.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<ServiceDescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<ServiceDescriptorProto | ServiceDescriptorProto[]>
+      | Iterable<ServiceDescriptorProto | ServiceDescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ServiceDescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [ServiceDescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, ServiceDescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<ServiceDescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ServiceDescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [ServiceDescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): ServiceDescriptorProto {
@@ -2773,14 +3925,15 @@ export const ServiceDescriptorProto = {
 
   toJSON(message: ServiceDescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    if (message.method) {
-      obj.method = message.method.map((e) => e ? MethodDescriptorProto.toJSON(e) : undefined);
-    } else {
-      obj.method = [];
+    if (message.name !== "") {
+      obj.name = message.name;
     }
-    message.options !== undefined &&
-      (obj.options = message.options ? ServiceOptions.toJSON(message.options) : undefined);
+    if (message.method?.length) {
+      obj.method = message.method.map((e) => MethodDescriptorProto.toJSON(e));
+    }
+    if (message.options !== undefined) {
+      obj.options = ServiceOptions.toJSON(message.options);
+    }
     return obj;
   },
 
@@ -2841,54 +3994,88 @@ export const MethodDescriptorProto = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.inputType = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.outputType = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.options = MethodOptions.decode(reader, reader.uint32());
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.clientStreaming = reader.bool();
           continue;
         case 6:
-          if (tag != 48) {
+          if (tag !== 48) {
             break;
           }
 
           message.serverStreaming = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<MethodDescriptorProto, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<MethodDescriptorProto | MethodDescriptorProto[]>
+      | Iterable<MethodDescriptorProto | MethodDescriptorProto[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [MethodDescriptorProto.encode(p).finish()];
+        }
+      } else {
+        yield* [MethodDescriptorProto.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, MethodDescriptorProto>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<MethodDescriptorProto> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [MethodDescriptorProto.decode(p)];
+        }
+      } else {
+        yield* [MethodDescriptorProto.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): MethodDescriptorProto {
@@ -2904,13 +4091,24 @@ export const MethodDescriptorProto = {
 
   toJSON(message: MethodDescriptorProto): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.inputType !== undefined && (obj.inputType = message.inputType);
-    message.outputType !== undefined && (obj.outputType = message.outputType);
-    message.options !== undefined &&
-      (obj.options = message.options ? MethodOptions.toJSON(message.options) : undefined);
-    message.clientStreaming !== undefined && (obj.clientStreaming = message.clientStreaming);
-    message.serverStreaming !== undefined && (obj.serverStreaming = message.serverStreaming);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.inputType !== "") {
+      obj.inputType = message.inputType;
+    }
+    if (message.outputType !== "") {
+      obj.outputType = message.outputType;
+    }
+    if (message.options !== undefined) {
+      obj.options = MethodOptions.toJSON(message.options);
+    }
+    if (message.clientStreaming === true) {
+      obj.clientStreaming = message.clientStreaming;
+    }
+    if (message.serverStreaming === true) {
+      obj.serverStreaming = message.serverStreaming;
+    }
     return obj;
   },
 
@@ -2954,6 +4152,7 @@ function createBaseFileOptions(): FileOptions {
     phpNamespace: "",
     phpMetadataNamespace: "",
     rubyPackage: "",
+    features: undefined,
     uninterpretedOption: [],
   };
 }
@@ -3020,6 +4219,9 @@ export const FileOptions = {
     if (message.rubyPackage !== "") {
       writer.uint32(362).string(message.rubyPackage);
     }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(402).fork()).ldelim();
+    }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
     }
@@ -3034,159 +4236,198 @@ export const FileOptions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.javaPackage = reader.string();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.javaOuterClassname = reader.string();
           continue;
         case 10:
-          if (tag != 80) {
+          if (tag !== 80) {
             break;
           }
 
           message.javaMultipleFiles = reader.bool();
           continue;
         case 20:
-          if (tag != 160) {
+          if (tag !== 160) {
             break;
           }
 
           message.javaGenerateEqualsAndHash = reader.bool();
           continue;
         case 27:
-          if (tag != 216) {
+          if (tag !== 216) {
             break;
           }
 
           message.javaStringCheckUtf8 = reader.bool();
           continue;
         case 9:
-          if (tag != 72) {
+          if (tag !== 72) {
             break;
           }
 
           message.optimizeFor = reader.int32() as any;
           continue;
         case 11:
-          if (tag != 90) {
+          if (tag !== 90) {
             break;
           }
 
           message.goPackage = reader.string();
           continue;
         case 16:
-          if (tag != 128) {
+          if (tag !== 128) {
             break;
           }
 
           message.ccGenericServices = reader.bool();
           continue;
         case 17:
-          if (tag != 136) {
+          if (tag !== 136) {
             break;
           }
 
           message.javaGenericServices = reader.bool();
           continue;
         case 18:
-          if (tag != 144) {
+          if (tag !== 144) {
             break;
           }
 
           message.pyGenericServices = reader.bool();
           continue;
         case 42:
-          if (tag != 336) {
+          if (tag !== 336) {
             break;
           }
 
           message.phpGenericServices = reader.bool();
           continue;
         case 23:
-          if (tag != 184) {
+          if (tag !== 184) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
         case 31:
-          if (tag != 248) {
+          if (tag !== 248) {
             break;
           }
 
           message.ccEnableArenas = reader.bool();
           continue;
         case 36:
-          if (tag != 290) {
+          if (tag !== 290) {
             break;
           }
 
           message.objcClassPrefix = reader.string();
           continue;
         case 37:
-          if (tag != 298) {
+          if (tag !== 298) {
             break;
           }
 
           message.csharpNamespace = reader.string();
           continue;
         case 39:
-          if (tag != 314) {
+          if (tag !== 314) {
             break;
           }
 
           message.swiftPrefix = reader.string();
           continue;
         case 40:
-          if (tag != 322) {
+          if (tag !== 322) {
             break;
           }
 
           message.phpClassPrefix = reader.string();
           continue;
         case 41:
-          if (tag != 330) {
+          if (tag !== 330) {
             break;
           }
 
           message.phpNamespace = reader.string();
           continue;
         case 44:
-          if (tag != 354) {
+          if (tag !== 354) {
             break;
           }
 
           message.phpMetadataNamespace = reader.string();
           continue;
         case 45:
-          if (tag != 362) {
+          if (tag !== 362) {
             break;
           }
 
           message.rubyPackage = reader.string();
           continue;
+        case 50:
+          if (tag !== 402) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FileOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<FileOptions | FileOptions[]> | Iterable<FileOptions | FileOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FileOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [FileOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FileOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FileOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FileOptions.decode(p)];
+        }
+      } else {
+        yield* [FileOptions.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): FileOptions {
@@ -3213,6 +4454,7 @@ export const FileOptions = {
       phpNamespace: isSet(object.phpNamespace) ? String(object.phpNamespace) : "",
       phpMetadataNamespace: isSet(object.phpMetadataNamespace) ? String(object.phpMetadataNamespace) : "",
       rubyPackage: isSet(object.rubyPackage) ? String(object.rubyPackage) : "",
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -3221,31 +4463,71 @@ export const FileOptions = {
 
   toJSON(message: FileOptions): unknown {
     const obj: any = {};
-    message.javaPackage !== undefined && (obj.javaPackage = message.javaPackage);
-    message.javaOuterClassname !== undefined && (obj.javaOuterClassname = message.javaOuterClassname);
-    message.javaMultipleFiles !== undefined && (obj.javaMultipleFiles = message.javaMultipleFiles);
-    message.javaGenerateEqualsAndHash !== undefined &&
-      (obj.javaGenerateEqualsAndHash = message.javaGenerateEqualsAndHash);
-    message.javaStringCheckUtf8 !== undefined && (obj.javaStringCheckUtf8 = message.javaStringCheckUtf8);
-    message.optimizeFor !== undefined && (obj.optimizeFor = fileOptions_OptimizeModeToJSON(message.optimizeFor));
-    message.goPackage !== undefined && (obj.goPackage = message.goPackage);
-    message.ccGenericServices !== undefined && (obj.ccGenericServices = message.ccGenericServices);
-    message.javaGenericServices !== undefined && (obj.javaGenericServices = message.javaGenericServices);
-    message.pyGenericServices !== undefined && (obj.pyGenericServices = message.pyGenericServices);
-    message.phpGenericServices !== undefined && (obj.phpGenericServices = message.phpGenericServices);
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    message.ccEnableArenas !== undefined && (obj.ccEnableArenas = message.ccEnableArenas);
-    message.objcClassPrefix !== undefined && (obj.objcClassPrefix = message.objcClassPrefix);
-    message.csharpNamespace !== undefined && (obj.csharpNamespace = message.csharpNamespace);
-    message.swiftPrefix !== undefined && (obj.swiftPrefix = message.swiftPrefix);
-    message.phpClassPrefix !== undefined && (obj.phpClassPrefix = message.phpClassPrefix);
-    message.phpNamespace !== undefined && (obj.phpNamespace = message.phpNamespace);
-    message.phpMetadataNamespace !== undefined && (obj.phpMetadataNamespace = message.phpMetadataNamespace);
-    message.rubyPackage !== undefined && (obj.rubyPackage = message.rubyPackage);
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.javaPackage !== "") {
+      obj.javaPackage = message.javaPackage;
+    }
+    if (message.javaOuterClassname !== "") {
+      obj.javaOuterClassname = message.javaOuterClassname;
+    }
+    if (message.javaMultipleFiles === true) {
+      obj.javaMultipleFiles = message.javaMultipleFiles;
+    }
+    if (message.javaGenerateEqualsAndHash === true) {
+      obj.javaGenerateEqualsAndHash = message.javaGenerateEqualsAndHash;
+    }
+    if (message.javaStringCheckUtf8 === true) {
+      obj.javaStringCheckUtf8 = message.javaStringCheckUtf8;
+    }
+    if (message.optimizeFor !== 1) {
+      obj.optimizeFor = fileOptions_OptimizeModeToJSON(message.optimizeFor);
+    }
+    if (message.goPackage !== "") {
+      obj.goPackage = message.goPackage;
+    }
+    if (message.ccGenericServices === true) {
+      obj.ccGenericServices = message.ccGenericServices;
+    }
+    if (message.javaGenericServices === true) {
+      obj.javaGenericServices = message.javaGenericServices;
+    }
+    if (message.pyGenericServices === true) {
+      obj.pyGenericServices = message.pyGenericServices;
+    }
+    if (message.phpGenericServices === true) {
+      obj.phpGenericServices = message.phpGenericServices;
+    }
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.ccEnableArenas === true) {
+      obj.ccEnableArenas = message.ccEnableArenas;
+    }
+    if (message.objcClassPrefix !== "") {
+      obj.objcClassPrefix = message.objcClassPrefix;
+    }
+    if (message.csharpNamespace !== "") {
+      obj.csharpNamespace = message.csharpNamespace;
+    }
+    if (message.swiftPrefix !== "") {
+      obj.swiftPrefix = message.swiftPrefix;
+    }
+    if (message.phpClassPrefix !== "") {
+      obj.phpClassPrefix = message.phpClassPrefix;
+    }
+    if (message.phpNamespace !== "") {
+      obj.phpNamespace = message.phpNamespace;
+    }
+    if (message.phpMetadataNamespace !== "") {
+      obj.phpMetadataNamespace = message.phpMetadataNamespace;
+    }
+    if (message.rubyPackage !== "") {
+      obj.rubyPackage = message.rubyPackage;
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -3276,6 +4558,9 @@ export const FileOptions = {
     message.phpNamespace = object.phpNamespace ?? "";
     message.phpMetadataNamespace = object.phpMetadataNamespace ?? "";
     message.rubyPackage = object.rubyPackage ?? "";
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
@@ -3288,6 +4573,7 @@ function createBaseMessageOptions(): MessageOptions {
     deprecated: false,
     mapEntry: false,
     deprecatedLegacyJsonFieldConflicts: false,
+    features: undefined,
     uninterpretedOption: [],
   };
 }
@@ -3309,6 +4595,9 @@ export const MessageOptions = {
     if (message.deprecatedLegacyJsonFieldConflicts === true) {
       writer.uint32(88).bool(message.deprecatedLegacyJsonFieldConflicts);
     }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(98).fork()).ldelim();
+    }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
     }
@@ -3323,54 +4612,93 @@ export const MessageOptions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.messageSetWireFormat = reader.bool();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.noStandardDescriptorAccessor = reader.bool();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
         case 7:
-          if (tag != 56) {
+          if (tag !== 56) {
             break;
           }
 
           message.mapEntry = reader.bool();
           continue;
         case 11:
-          if (tag != 88) {
+          if (tag !== 88) {
             break;
           }
 
           message.deprecatedLegacyJsonFieldConflicts = reader.bool();
           continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<MessageOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<MessageOptions | MessageOptions[]> | Iterable<MessageOptions | MessageOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [MessageOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [MessageOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, MessageOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<MessageOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [MessageOptions.decode(p)];
+        }
+      } else {
+        yield* [MessageOptions.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): MessageOptions {
@@ -3384,6 +4712,7 @@ export const MessageOptions = {
       deprecatedLegacyJsonFieldConflicts: isSet(object.deprecatedLegacyJsonFieldConflicts)
         ? Boolean(object.deprecatedLegacyJsonFieldConflicts)
         : false,
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -3392,17 +4721,26 @@ export const MessageOptions = {
 
   toJSON(message: MessageOptions): unknown {
     const obj: any = {};
-    message.messageSetWireFormat !== undefined && (obj.messageSetWireFormat = message.messageSetWireFormat);
-    message.noStandardDescriptorAccessor !== undefined &&
-      (obj.noStandardDescriptorAccessor = message.noStandardDescriptorAccessor);
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    message.mapEntry !== undefined && (obj.mapEntry = message.mapEntry);
-    message.deprecatedLegacyJsonFieldConflicts !== undefined &&
-      (obj.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts);
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.messageSetWireFormat === true) {
+      obj.messageSetWireFormat = message.messageSetWireFormat;
+    }
+    if (message.noStandardDescriptorAccessor === true) {
+      obj.noStandardDescriptorAccessor = message.noStandardDescriptorAccessor;
+    }
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.mapEntry === true) {
+      obj.mapEntry = message.mapEntry;
+    }
+    if (message.deprecatedLegacyJsonFieldConflicts === true) {
+      obj.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -3418,6 +4756,9 @@ export const MessageOptions = {
     message.deprecated = object.deprecated ?? false;
     message.mapEntry = object.mapEntry ?? false;
     message.deprecatedLegacyJsonFieldConflicts = object.deprecatedLegacyJsonFieldConflicts ?? false;
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
@@ -3434,7 +4775,9 @@ function createBaseFieldOptions(): FieldOptions {
     weak: false,
     debugRedact: false,
     retention: 0,
-    target: 0,
+    targets: [],
+    editionDefaults: [],
+    features: undefined,
     uninterpretedOption: [],
   };
 }
@@ -3468,8 +4811,16 @@ export const FieldOptions = {
     if (message.retention !== 0) {
       writer.uint32(136).int32(message.retention);
     }
-    if (message.target !== 0) {
-      writer.uint32(144).int32(message.target);
+    writer.uint32(154).fork();
+    for (const v of message.targets) {
+      writer.int32(v);
+    }
+    writer.ldelim();
+    for (const v of message.editionDefaults) {
+      FieldOptions_EditionDefault.encode(v!, writer.uint32(162).fork()).ldelim();
+    }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(170).fork()).ldelim();
     }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
@@ -3485,89 +4836,145 @@ export const FieldOptions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.ctype = reader.int32() as any;
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.packed = reader.bool();
           continue;
         case 6:
-          if (tag != 48) {
+          if (tag !== 48) {
             break;
           }
 
           message.jstype = reader.int32() as any;
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.lazy = reader.bool();
           continue;
         case 15:
-          if (tag != 120) {
+          if (tag !== 120) {
             break;
           }
 
           message.unverifiedLazy = reader.bool();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
         case 10:
-          if (tag != 80) {
+          if (tag !== 80) {
             break;
           }
 
           message.weak = reader.bool();
           continue;
         case 16:
-          if (tag != 128) {
+          if (tag !== 128) {
             break;
           }
 
           message.debugRedact = reader.bool();
           continue;
         case 17:
-          if (tag != 136) {
+          if (tag !== 136) {
             break;
           }
 
           message.retention = reader.int32() as any;
           continue;
-        case 18:
-          if (tag != 144) {
+        case 19:
+          if (tag === 152) {
+            message.targets.push(reader.int32() as any);
+
+            continue;
+          }
+
+          if (tag === 154) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.targets.push(reader.int32() as any);
+            }
+
+            continue;
+          }
+
+          break;
+        case 20:
+          if (tag !== 162) {
             break;
           }
 
-          message.target = reader.int32() as any;
+          message.editionDefaults.push(FieldOptions_EditionDefault.decode(reader, reader.uint32()));
+          continue;
+        case 21:
+          if (tag !== 170) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
           continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FieldOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<FieldOptions | FieldOptions[]> | Iterable<FieldOptions | FieldOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FieldOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [FieldOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FieldOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FieldOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FieldOptions.decode(p)];
+        }
+      } else {
+        yield* [FieldOptions.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): FieldOptions {
@@ -3581,7 +4988,13 @@ export const FieldOptions = {
       weak: isSet(object.weak) ? Boolean(object.weak) : false,
       debugRedact: isSet(object.debugRedact) ? Boolean(object.debugRedact) : false,
       retention: isSet(object.retention) ? fieldOptions_OptionRetentionFromJSON(object.retention) : 0,
-      target: isSet(object.target) ? fieldOptions_OptionTargetTypeFromJSON(object.target) : 0,
+      targets: Array.isArray(object?.targets)
+        ? object.targets.map((e: any) => fieldOptions_OptionTargetTypeFromJSON(e))
+        : [],
+      editionDefaults: Array.isArray(object?.editionDefaults)
+        ? object.editionDefaults.map((e: any) => FieldOptions_EditionDefault.fromJSON(e))
+        : [],
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -3590,20 +5003,44 @@ export const FieldOptions = {
 
   toJSON(message: FieldOptions): unknown {
     const obj: any = {};
-    message.ctype !== undefined && (obj.ctype = fieldOptions_CTypeToJSON(message.ctype));
-    message.packed !== undefined && (obj.packed = message.packed);
-    message.jstype !== undefined && (obj.jstype = fieldOptions_JSTypeToJSON(message.jstype));
-    message.lazy !== undefined && (obj.lazy = message.lazy);
-    message.unverifiedLazy !== undefined && (obj.unverifiedLazy = message.unverifiedLazy);
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    message.weak !== undefined && (obj.weak = message.weak);
-    message.debugRedact !== undefined && (obj.debugRedact = message.debugRedact);
-    message.retention !== undefined && (obj.retention = fieldOptions_OptionRetentionToJSON(message.retention));
-    message.target !== undefined && (obj.target = fieldOptions_OptionTargetTypeToJSON(message.target));
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.ctype !== 0) {
+      obj.ctype = fieldOptions_CTypeToJSON(message.ctype);
+    }
+    if (message.packed === true) {
+      obj.packed = message.packed;
+    }
+    if (message.jstype !== 0) {
+      obj.jstype = fieldOptions_JSTypeToJSON(message.jstype);
+    }
+    if (message.lazy === true) {
+      obj.lazy = message.lazy;
+    }
+    if (message.unverifiedLazy === true) {
+      obj.unverifiedLazy = message.unverifiedLazy;
+    }
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.weak === true) {
+      obj.weak = message.weak;
+    }
+    if (message.debugRedact === true) {
+      obj.debugRedact = message.debugRedact;
+    }
+    if (message.retention !== 0) {
+      obj.retention = fieldOptions_OptionRetentionToJSON(message.retention);
+    }
+    if (message.targets?.length) {
+      obj.targets = message.targets.map((e) => fieldOptions_OptionTargetTypeToJSON(e));
+    }
+    if (message.editionDefaults?.length) {
+      obj.editionDefaults = message.editionDefaults.map((e) => FieldOptions_EditionDefault.toJSON(e));
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -3623,18 +5060,134 @@ export const FieldOptions = {
     message.weak = object.weak ?? false;
     message.debugRedact = object.debugRedact ?? false;
     message.retention = object.retention ?? 0;
-    message.target = object.target ?? 0;
+    message.targets = object.targets?.map((e) => e) || [];
+    message.editionDefaults = object.editionDefaults?.map((e) => FieldOptions_EditionDefault.fromPartial(e)) || [];
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
 };
 
+function createBaseFieldOptions_EditionDefault(): FieldOptions_EditionDefault {
+  return { edition: 0, value: "" };
+}
+
+export const FieldOptions_EditionDefault = {
+  encode(message: FieldOptions_EditionDefault, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.edition !== 0) {
+      writer.uint32(24).int32(message.edition);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FieldOptions_EditionDefault {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFieldOptions_EditionDefault();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.edition = reader.int32() as any;
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FieldOptions_EditionDefault, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<FieldOptions_EditionDefault | FieldOptions_EditionDefault[]>
+      | Iterable<FieldOptions_EditionDefault | FieldOptions_EditionDefault[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FieldOptions_EditionDefault.encode(p).finish()];
+        }
+      } else {
+        yield* [FieldOptions_EditionDefault.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FieldOptions_EditionDefault>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FieldOptions_EditionDefault> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FieldOptions_EditionDefault.decode(p)];
+        }
+      } else {
+        yield* [FieldOptions_EditionDefault.decode(pkt)];
+      }
+    }
+  },
+
+  fromJSON(object: any): FieldOptions_EditionDefault {
+    return {
+      edition: isSet(object.edition) ? editionFromJSON(object.edition) : 0,
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: FieldOptions_EditionDefault): unknown {
+    const obj: any = {};
+    if (message.edition !== 0) {
+      obj.edition = editionToJSON(message.edition);
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<FieldOptions_EditionDefault>): FieldOptions_EditionDefault {
+    return FieldOptions_EditionDefault.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<FieldOptions_EditionDefault>): FieldOptions_EditionDefault {
+    const message = createBaseFieldOptions_EditionDefault();
+    message.edition = object.edition ?? 0;
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
 function createBaseOneofOptions(): OneofOptions {
-  return { uninterpretedOption: [] };
+  return { features: undefined, uninterpretedOption: [] };
 }
 
 export const OneofOptions = {
   encode(message: OneofOptions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(10).fork()).ldelim();
+    }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
     }
@@ -3648,15 +5201,22 @@ export const OneofOptions = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3664,8 +5224,41 @@ export const OneofOptions = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<OneofOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<OneofOptions | OneofOptions[]> | Iterable<OneofOptions | OneofOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [OneofOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [OneofOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, OneofOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<OneofOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [OneofOptions.decode(p)];
+        }
+      } else {
+        yield* [OneofOptions.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): OneofOptions {
     return {
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -3674,10 +5267,11 @@ export const OneofOptions = {
 
   toJSON(message: OneofOptions): unknown {
     const obj: any = {};
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -3688,13 +5282,22 @@ export const OneofOptions = {
 
   fromPartial(object: DeepPartial<OneofOptions>): OneofOptions {
     const message = createBaseOneofOptions();
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseEnumOptions(): EnumOptions {
-  return { allowAlias: false, deprecated: false, deprecatedLegacyJsonFieldConflicts: false, uninterpretedOption: [] };
+  return {
+    allowAlias: false,
+    deprecated: false,
+    deprecatedLegacyJsonFieldConflicts: false,
+    features: undefined,
+    uninterpretedOption: [],
+  };
 }
 
 export const EnumOptions = {
@@ -3707,6 +5310,9 @@ export const EnumOptions = {
     }
     if (message.deprecatedLegacyJsonFieldConflicts === true) {
       writer.uint32(48).bool(message.deprecatedLegacyJsonFieldConflicts);
+    }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(58).fork()).ldelim();
     }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
@@ -3722,40 +5328,79 @@ export const EnumOptions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.allowAlias = reader.bool();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
         case 6:
-          if (tag != 48) {
+          if (tag !== 48) {
             break;
           }
 
           message.deprecatedLegacyJsonFieldConflicts = reader.bool();
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<EnumOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<EnumOptions | EnumOptions[]> | Iterable<EnumOptions | EnumOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [EnumOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, EnumOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<EnumOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumOptions.decode(p)];
+        }
+      } else {
+        yield* [EnumOptions.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): EnumOptions {
@@ -3765,6 +5410,7 @@ export const EnumOptions = {
       deprecatedLegacyJsonFieldConflicts: isSet(object.deprecatedLegacyJsonFieldConflicts)
         ? Boolean(object.deprecatedLegacyJsonFieldConflicts)
         : false,
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -3773,14 +5419,20 @@ export const EnumOptions = {
 
   toJSON(message: EnumOptions): unknown {
     const obj: any = {};
-    message.allowAlias !== undefined && (obj.allowAlias = message.allowAlias);
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    message.deprecatedLegacyJsonFieldConflicts !== undefined &&
-      (obj.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts);
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.allowAlias === true) {
+      obj.allowAlias = message.allowAlias;
+    }
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.deprecatedLegacyJsonFieldConflicts === true) {
+      obj.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -3794,19 +5446,28 @@ export const EnumOptions = {
     message.allowAlias = object.allowAlias ?? false;
     message.deprecated = object.deprecated ?? false;
     message.deprecatedLegacyJsonFieldConflicts = object.deprecatedLegacyJsonFieldConflicts ?? false;
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseEnumValueOptions(): EnumValueOptions {
-  return { deprecated: false, uninterpretedOption: [] };
+  return { deprecated: false, features: undefined, debugRedact: false, uninterpretedOption: [] };
 }
 
 export const EnumValueOptions = {
   encode(message: EnumValueOptions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.deprecated === true) {
       writer.uint32(8).bool(message.deprecated);
+    }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.debugRedact === true) {
+      writer.uint32(24).bool(message.debugRedact);
     }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
@@ -3822,21 +5483,35 @@ export const EnumValueOptions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.debugRedact = reader.bool();
+          continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3844,9 +5519,43 @@ export const EnumValueOptions = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<EnumValueOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<EnumValueOptions | EnumValueOptions[]> | Iterable<EnumValueOptions | EnumValueOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumValueOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [EnumValueOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, EnumValueOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<EnumValueOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [EnumValueOptions.decode(p)];
+        }
+      } else {
+        yield* [EnumValueOptions.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): EnumValueOptions {
     return {
       deprecated: isSet(object.deprecated) ? Boolean(object.deprecated) : false,
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
+      debugRedact: isSet(object.debugRedact) ? Boolean(object.debugRedact) : false,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -3855,11 +5564,17 @@ export const EnumValueOptions = {
 
   toJSON(message: EnumValueOptions): unknown {
     const obj: any = {};
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.debugRedact === true) {
+      obj.debugRedact = message.debugRedact;
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -3871,17 +5586,24 @@ export const EnumValueOptions = {
   fromPartial(object: DeepPartial<EnumValueOptions>): EnumValueOptions {
     const message = createBaseEnumValueOptions();
     message.deprecated = object.deprecated ?? false;
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
+    message.debugRedact = object.debugRedact ?? false;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseServiceOptions(): ServiceOptions {
-  return { deprecated: false, uninterpretedOption: [] };
+  return { features: undefined, deprecated: false, uninterpretedOption: [] };
 }
 
 export const ServiceOptions = {
   encode(message: ServiceOptions, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(274).fork()).ldelim();
+    }
     if (message.deprecated === true) {
       writer.uint32(264).bool(message.deprecated);
     }
@@ -3898,22 +5620,29 @@ export const ServiceOptions = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 34:
+          if (tag !== 274) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
         case 33:
-          if (tag != 264) {
+          if (tag !== 264) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3921,8 +5650,41 @@ export const ServiceOptions = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<ServiceOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<ServiceOptions | ServiceOptions[]> | Iterable<ServiceOptions | ServiceOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ServiceOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [ServiceOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, ServiceOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<ServiceOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [ServiceOptions.decode(p)];
+        }
+      } else {
+        yield* [ServiceOptions.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): ServiceOptions {
     return {
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       deprecated: isSet(object.deprecated) ? Boolean(object.deprecated) : false,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
@@ -3932,11 +5694,14 @@ export const ServiceOptions = {
 
   toJSON(message: ServiceOptions): unknown {
     const obj: any = {};
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -3947,6 +5712,9 @@ export const ServiceOptions = {
 
   fromPartial(object: DeepPartial<ServiceOptions>): ServiceOptions {
     const message = createBaseServiceOptions();
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     message.deprecated = object.deprecated ?? false;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
@@ -3954,7 +5722,7 @@ export const ServiceOptions = {
 };
 
 function createBaseMethodOptions(): MethodOptions {
-  return { deprecated: false, idempotencyLevel: 0, uninterpretedOption: [] };
+  return { deprecated: false, idempotencyLevel: 0, features: undefined, uninterpretedOption: [] };
 }
 
 export const MethodOptions = {
@@ -3964,6 +5732,9 @@ export const MethodOptions = {
     }
     if (message.idempotencyLevel !== 0) {
       writer.uint32(272).int32(message.idempotencyLevel);
+    }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(282).fork()).ldelim();
     }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
@@ -3979,33 +5750,72 @@ export const MethodOptions = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 33:
-          if (tag != 264) {
+          if (tag !== 264) {
             break;
           }
 
           message.deprecated = reader.bool();
           continue;
         case 34:
-          if (tag != 272) {
+          if (tag !== 272) {
             break;
           }
 
           message.idempotencyLevel = reader.int32() as any;
           continue;
+        case 35:
+          if (tag !== 282) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
         case 999:
-          if (tag != 7994) {
+          if (tag !== 7994) {
             break;
           }
 
           message.uninterpretedOption.push(UninterpretedOption.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<MethodOptions, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<MethodOptions | MethodOptions[]> | Iterable<MethodOptions | MethodOptions[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [MethodOptions.encode(p).finish()];
+        }
+      } else {
+        yield* [MethodOptions.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, MethodOptions>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<MethodOptions> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [MethodOptions.decode(p)];
+        }
+      } else {
+        yield* [MethodOptions.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): MethodOptions {
@@ -4014,6 +5824,7 @@ export const MethodOptions = {
       idempotencyLevel: isSet(object.idempotencyLevel)
         ? methodOptions_IdempotencyLevelFromJSON(object.idempotencyLevel)
         : 0,
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       uninterpretedOption: Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -4022,13 +5833,17 @@ export const MethodOptions = {
 
   toJSON(message: MethodOptions): unknown {
     const obj: any = {};
-    message.deprecated !== undefined && (obj.deprecated = message.deprecated);
-    message.idempotencyLevel !== undefined &&
-      (obj.idempotencyLevel = methodOptions_IdempotencyLevelToJSON(message.idempotencyLevel));
-    if (message.uninterpretedOption) {
-      obj.uninterpretedOption = message.uninterpretedOption.map((e) => e ? UninterpretedOption.toJSON(e) : undefined);
-    } else {
-      obj.uninterpretedOption = [];
+    if (message.deprecated === true) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.idempotencyLevel !== 0) {
+      obj.idempotencyLevel = methodOptions_IdempotencyLevelToJSON(message.idempotencyLevel);
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    if (message.uninterpretedOption?.length) {
+      obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
     return obj;
   },
@@ -4041,6 +5856,9 @@ export const MethodOptions = {
     const message = createBaseMethodOptions();
     message.deprecated = object.deprecated ?? false;
     message.idempotencyLevel = object.idempotencyLevel ?? 0;
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
@@ -4053,7 +5871,7 @@ function createBaseUninterpretedOption(): UninterpretedOption {
     positiveIntValue: 0,
     negativeIntValue: 0,
     doubleValue: 0,
-    stringValue: new Uint8Array(),
+    stringValue: new Uint8Array(0),
     aggregateValue: "",
   };
 }
@@ -4092,61 +5910,95 @@ export const UninterpretedOption = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.name.push(UninterpretedOption_NamePart.decode(reader, reader.uint32()));
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.identifierValue = reader.string();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.positiveIntValue = longToNumber(reader.uint64() as Long);
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.negativeIntValue = longToNumber(reader.int64() as Long);
           continue;
         case 6:
-          if (tag != 49) {
+          if (tag !== 49) {
             break;
           }
 
           message.doubleValue = reader.double();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.stringValue = reader.bytes();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.aggregateValue = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<UninterpretedOption, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<UninterpretedOption | UninterpretedOption[]>
+      | Iterable<UninterpretedOption | UninterpretedOption[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [UninterpretedOption.encode(p).finish()];
+        }
+      } else {
+        yield* [UninterpretedOption.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, UninterpretedOption>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<UninterpretedOption> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [UninterpretedOption.decode(p)];
+        }
+      } else {
+        yield* [UninterpretedOption.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): UninterpretedOption {
@@ -4156,25 +6008,34 @@ export const UninterpretedOption = {
       positiveIntValue: isSet(object.positiveIntValue) ? Number(object.positiveIntValue) : 0,
       negativeIntValue: isSet(object.negativeIntValue) ? Number(object.negativeIntValue) : 0,
       doubleValue: isSet(object.doubleValue) ? Number(object.doubleValue) : 0,
-      stringValue: isSet(object.stringValue) ? bytesFromBase64(object.stringValue) : new Uint8Array(),
+      stringValue: isSet(object.stringValue) ? bytesFromBase64(object.stringValue) : new Uint8Array(0),
       aggregateValue: isSet(object.aggregateValue) ? String(object.aggregateValue) : "",
     };
   },
 
   toJSON(message: UninterpretedOption): unknown {
     const obj: any = {};
-    if (message.name) {
-      obj.name = message.name.map((e) => e ? UninterpretedOption_NamePart.toJSON(e) : undefined);
-    } else {
-      obj.name = [];
+    if (message.name?.length) {
+      obj.name = message.name.map((e) => UninterpretedOption_NamePart.toJSON(e));
     }
-    message.identifierValue !== undefined && (obj.identifierValue = message.identifierValue);
-    message.positiveIntValue !== undefined && (obj.positiveIntValue = Math.round(message.positiveIntValue));
-    message.negativeIntValue !== undefined && (obj.negativeIntValue = Math.round(message.negativeIntValue));
-    message.doubleValue !== undefined && (obj.doubleValue = message.doubleValue);
-    message.stringValue !== undefined &&
-      (obj.stringValue = base64FromBytes(message.stringValue !== undefined ? message.stringValue : new Uint8Array()));
-    message.aggregateValue !== undefined && (obj.aggregateValue = message.aggregateValue);
+    if (message.identifierValue !== "") {
+      obj.identifierValue = message.identifierValue;
+    }
+    if (message.positiveIntValue !== 0) {
+      obj.positiveIntValue = Math.round(message.positiveIntValue);
+    }
+    if (message.negativeIntValue !== 0) {
+      obj.negativeIntValue = Math.round(message.negativeIntValue);
+    }
+    if (message.doubleValue !== 0) {
+      obj.doubleValue = message.doubleValue;
+    }
+    if (message.stringValue.length !== 0) {
+      obj.stringValue = base64FromBytes(message.stringValue);
+    }
+    if (message.aggregateValue !== "") {
+      obj.aggregateValue = message.aggregateValue;
+    }
     return obj;
   },
 
@@ -4189,7 +6050,7 @@ export const UninterpretedOption = {
     message.positiveIntValue = object.positiveIntValue ?? 0;
     message.negativeIntValue = object.negativeIntValue ?? 0;
     message.doubleValue = object.doubleValue ?? 0;
-    message.stringValue = object.stringValue ?? new Uint8Array();
+    message.stringValue = object.stringValue ?? new Uint8Array(0);
     message.aggregateValue = object.aggregateValue ?? "";
     return message;
   },
@@ -4218,26 +6079,60 @@ export const UninterpretedOption_NamePart = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.namePart = reader.string();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.isExtension = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<UninterpretedOption_NamePart, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<UninterpretedOption_NamePart | UninterpretedOption_NamePart[]>
+      | Iterable<UninterpretedOption_NamePart | UninterpretedOption_NamePart[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [UninterpretedOption_NamePart.encode(p).finish()];
+        }
+      } else {
+        yield* [UninterpretedOption_NamePart.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, UninterpretedOption_NamePart>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<UninterpretedOption_NamePart> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [UninterpretedOption_NamePart.decode(p)];
+        }
+      } else {
+        yield* [UninterpretedOption_NamePart.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): UninterpretedOption_NamePart {
@@ -4249,8 +6144,12 @@ export const UninterpretedOption_NamePart = {
 
   toJSON(message: UninterpretedOption_NamePart): unknown {
     const obj: any = {};
-    message.namePart !== undefined && (obj.namePart = message.namePart);
-    message.isExtension !== undefined && (obj.isExtension = message.isExtension);
+    if (message.namePart !== "") {
+      obj.namePart = message.namePart;
+    }
+    if (message.isExtension === true) {
+      obj.isExtension = message.isExtension;
+    }
     return obj;
   },
 
@@ -4262,6 +6161,421 @@ export const UninterpretedOption_NamePart = {
     const message = createBaseUninterpretedOption_NamePart();
     message.namePart = object.namePart ?? "";
     message.isExtension = object.isExtension ?? false;
+    return message;
+  },
+};
+
+function createBaseFeatureSet(): FeatureSet {
+  return {
+    fieldPresence: 0,
+    enumType: 0,
+    repeatedFieldEncoding: 0,
+    utf8Validation: 0,
+    messageEncoding: 0,
+    jsonFormat: 0,
+  };
+}
+
+export const FeatureSet = {
+  encode(message: FeatureSet, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.fieldPresence !== 0) {
+      writer.uint32(8).int32(message.fieldPresence);
+    }
+    if (message.enumType !== 0) {
+      writer.uint32(16).int32(message.enumType);
+    }
+    if (message.repeatedFieldEncoding !== 0) {
+      writer.uint32(24).int32(message.repeatedFieldEncoding);
+    }
+    if (message.utf8Validation !== 0) {
+      writer.uint32(32).int32(message.utf8Validation);
+    }
+    if (message.messageEncoding !== 0) {
+      writer.uint32(40).int32(message.messageEncoding);
+    }
+    if (message.jsonFormat !== 0) {
+      writer.uint32(48).int32(message.jsonFormat);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FeatureSet {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeatureSet();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.fieldPresence = reader.int32() as any;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.enumType = reader.int32() as any;
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.repeatedFieldEncoding = reader.int32() as any;
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.utf8Validation = reader.int32() as any;
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.messageEncoding = reader.int32() as any;
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.jsonFormat = reader.int32() as any;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FeatureSet, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<FeatureSet | FeatureSet[]> | Iterable<FeatureSet | FeatureSet[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FeatureSet.encode(p).finish()];
+        }
+      } else {
+        yield* [FeatureSet.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FeatureSet>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FeatureSet> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FeatureSet.decode(p)];
+        }
+      } else {
+        yield* [FeatureSet.decode(pkt)];
+      }
+    }
+  },
+
+  fromJSON(object: any): FeatureSet {
+    return {
+      fieldPresence: isSet(object.fieldPresence) ? featureSet_FieldPresenceFromJSON(object.fieldPresence) : 0,
+      enumType: isSet(object.enumType) ? featureSet_EnumTypeFromJSON(object.enumType) : 0,
+      repeatedFieldEncoding: isSet(object.repeatedFieldEncoding)
+        ? featureSet_RepeatedFieldEncodingFromJSON(object.repeatedFieldEncoding)
+        : 0,
+      utf8Validation: isSet(object.utf8Validation) ? featureSet_Utf8ValidationFromJSON(object.utf8Validation) : 0,
+      messageEncoding: isSet(object.messageEncoding) ? featureSet_MessageEncodingFromJSON(object.messageEncoding) : 0,
+      jsonFormat: isSet(object.jsonFormat) ? featureSet_JsonFormatFromJSON(object.jsonFormat) : 0,
+    };
+  },
+
+  toJSON(message: FeatureSet): unknown {
+    const obj: any = {};
+    if (message.fieldPresence !== 0) {
+      obj.fieldPresence = featureSet_FieldPresenceToJSON(message.fieldPresence);
+    }
+    if (message.enumType !== 0) {
+      obj.enumType = featureSet_EnumTypeToJSON(message.enumType);
+    }
+    if (message.repeatedFieldEncoding !== 0) {
+      obj.repeatedFieldEncoding = featureSet_RepeatedFieldEncodingToJSON(message.repeatedFieldEncoding);
+    }
+    if (message.utf8Validation !== 0) {
+      obj.utf8Validation = featureSet_Utf8ValidationToJSON(message.utf8Validation);
+    }
+    if (message.messageEncoding !== 0) {
+      obj.messageEncoding = featureSet_MessageEncodingToJSON(message.messageEncoding);
+    }
+    if (message.jsonFormat !== 0) {
+      obj.jsonFormat = featureSet_JsonFormatToJSON(message.jsonFormat);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<FeatureSet>): FeatureSet {
+    return FeatureSet.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<FeatureSet>): FeatureSet {
+    const message = createBaseFeatureSet();
+    message.fieldPresence = object.fieldPresence ?? 0;
+    message.enumType = object.enumType ?? 0;
+    message.repeatedFieldEncoding = object.repeatedFieldEncoding ?? 0;
+    message.utf8Validation = object.utf8Validation ?? 0;
+    message.messageEncoding = object.messageEncoding ?? 0;
+    message.jsonFormat = object.jsonFormat ?? 0;
+    return message;
+  },
+};
+
+function createBaseFeatureSetDefaults(): FeatureSetDefaults {
+  return { defaults: [], minimumEdition: 0, maximumEdition: 0 };
+}
+
+export const FeatureSetDefaults = {
+  encode(message: FeatureSetDefaults, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.defaults) {
+      FeatureSetDefaults_FeatureSetEditionDefault.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.minimumEdition !== 0) {
+      writer.uint32(32).int32(message.minimumEdition);
+    }
+    if (message.maximumEdition !== 0) {
+      writer.uint32(40).int32(message.maximumEdition);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FeatureSetDefaults {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeatureSetDefaults();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.defaults.push(FeatureSetDefaults_FeatureSetEditionDefault.decode(reader, reader.uint32()));
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.minimumEdition = reader.int32() as any;
+          continue;
+        case 5:
+          if (tag !== 40) {
+            break;
+          }
+
+          message.maximumEdition = reader.int32() as any;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FeatureSetDefaults, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<FeatureSetDefaults | FeatureSetDefaults[]>
+      | Iterable<FeatureSetDefaults | FeatureSetDefaults[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FeatureSetDefaults.encode(p).finish()];
+        }
+      } else {
+        yield* [FeatureSetDefaults.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FeatureSetDefaults>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FeatureSetDefaults> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FeatureSetDefaults.decode(p)];
+        }
+      } else {
+        yield* [FeatureSetDefaults.decode(pkt)];
+      }
+    }
+  },
+
+  fromJSON(object: any): FeatureSetDefaults {
+    return {
+      defaults: Array.isArray(object?.defaults)
+        ? object.defaults.map((e: any) => FeatureSetDefaults_FeatureSetEditionDefault.fromJSON(e))
+        : [],
+      minimumEdition: isSet(object.minimumEdition) ? editionFromJSON(object.minimumEdition) : 0,
+      maximumEdition: isSet(object.maximumEdition) ? editionFromJSON(object.maximumEdition) : 0,
+    };
+  },
+
+  toJSON(message: FeatureSetDefaults): unknown {
+    const obj: any = {};
+    if (message.defaults?.length) {
+      obj.defaults = message.defaults.map((e) => FeatureSetDefaults_FeatureSetEditionDefault.toJSON(e));
+    }
+    if (message.minimumEdition !== 0) {
+      obj.minimumEdition = editionToJSON(message.minimumEdition);
+    }
+    if (message.maximumEdition !== 0) {
+      obj.maximumEdition = editionToJSON(message.maximumEdition);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<FeatureSetDefaults>): FeatureSetDefaults {
+    return FeatureSetDefaults.fromPartial(base ?? {});
+  },
+
+  fromPartial(object: DeepPartial<FeatureSetDefaults>): FeatureSetDefaults {
+    const message = createBaseFeatureSetDefaults();
+    message.defaults = object.defaults?.map((e) => FeatureSetDefaults_FeatureSetEditionDefault.fromPartial(e)) || [];
+    message.minimumEdition = object.minimumEdition ?? 0;
+    message.maximumEdition = object.maximumEdition ?? 0;
+    return message;
+  },
+};
+
+function createBaseFeatureSetDefaults_FeatureSetEditionDefault(): FeatureSetDefaults_FeatureSetEditionDefault {
+  return { edition: 0, features: undefined };
+}
+
+export const FeatureSetDefaults_FeatureSetEditionDefault = {
+  encode(message: FeatureSetDefaults_FeatureSetEditionDefault, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.edition !== 0) {
+      writer.uint32(24).int32(message.edition);
+    }
+    if (message.features !== undefined) {
+      FeatureSet.encode(message.features, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FeatureSetDefaults_FeatureSetEditionDefault {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeatureSetDefaults_FeatureSetEditionDefault();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.edition = reader.int32() as any;
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.features = FeatureSet.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<FeatureSetDefaults_FeatureSetEditionDefault, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<FeatureSetDefaults_FeatureSetEditionDefault | FeatureSetDefaults_FeatureSetEditionDefault[]>
+      | Iterable<FeatureSetDefaults_FeatureSetEditionDefault | FeatureSetDefaults_FeatureSetEditionDefault[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FeatureSetDefaults_FeatureSetEditionDefault.encode(p).finish()];
+        }
+      } else {
+        yield* [FeatureSetDefaults_FeatureSetEditionDefault.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, FeatureSetDefaults_FeatureSetEditionDefault>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<FeatureSetDefaults_FeatureSetEditionDefault> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [FeatureSetDefaults_FeatureSetEditionDefault.decode(p)];
+        }
+      } else {
+        yield* [FeatureSetDefaults_FeatureSetEditionDefault.decode(pkt)];
+      }
+    }
+  },
+
+  fromJSON(object: any): FeatureSetDefaults_FeatureSetEditionDefault {
+    return {
+      edition: isSet(object.edition) ? editionFromJSON(object.edition) : 0,
+      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
+    };
+  },
+
+  toJSON(message: FeatureSetDefaults_FeatureSetEditionDefault): unknown {
+    const obj: any = {};
+    if (message.edition !== 0) {
+      obj.edition = editionToJSON(message.edition);
+    }
+    if (message.features !== undefined) {
+      obj.features = FeatureSet.toJSON(message.features);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<FeatureSetDefaults_FeatureSetEditionDefault>): FeatureSetDefaults_FeatureSetEditionDefault {
+    return FeatureSetDefaults_FeatureSetEditionDefault.fromPartial(base ?? {});
+  },
+
+  fromPartial(
+    object: DeepPartial<FeatureSetDefaults_FeatureSetEditionDefault>,
+  ): FeatureSetDefaults_FeatureSetEditionDefault {
+    const message = createBaseFeatureSetDefaults_FeatureSetEditionDefault();
+    message.edition = object.edition ?? 0;
+    message.features = (object.features !== undefined && object.features !== null)
+      ? FeatureSet.fromPartial(object.features)
+      : undefined;
     return message;
   },
 };
@@ -4286,19 +6600,51 @@ export const SourceCodeInfo = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.location.push(SourceCodeInfo_Location.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SourceCodeInfo, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<SourceCodeInfo | SourceCodeInfo[]> | Iterable<SourceCodeInfo | SourceCodeInfo[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SourceCodeInfo.encode(p).finish()];
+        }
+      } else {
+        yield* [SourceCodeInfo.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SourceCodeInfo>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SourceCodeInfo> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SourceCodeInfo.decode(p)];
+        }
+      } else {
+        yield* [SourceCodeInfo.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SourceCodeInfo {
@@ -4311,10 +6657,8 @@ export const SourceCodeInfo = {
 
   toJSON(message: SourceCodeInfo): unknown {
     const obj: any = {};
-    if (message.location) {
-      obj.location = message.location.map((e) => e ? SourceCodeInfo_Location.toJSON(e) : undefined);
-    } else {
-      obj.location = [];
+    if (message.location?.length) {
+      obj.location = message.location.map((e) => SourceCodeInfo_Location.toJSON(e));
     }
     return obj;
   },
@@ -4366,12 +6710,13 @@ export const SourceCodeInfo_Location = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag == 8) {
+          if (tag === 8) {
             message.path.push(reader.int32());
+
             continue;
           }
 
-          if (tag == 10) {
+          if (tag === 10) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.path.push(reader.int32());
@@ -4382,12 +6727,13 @@ export const SourceCodeInfo_Location = {
 
           break;
         case 2:
-          if (tag == 16) {
+          if (tag === 16) {
             message.span.push(reader.int32());
+
             continue;
           }
 
-          if (tag == 18) {
+          if (tag === 18) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.span.push(reader.int32());
@@ -4398,33 +6744,67 @@ export const SourceCodeInfo_Location = {
 
           break;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.leadingComments = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.trailingComments = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.leadingDetachedComments.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SourceCodeInfo_Location, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SourceCodeInfo_Location | SourceCodeInfo_Location[]>
+      | Iterable<SourceCodeInfo_Location | SourceCodeInfo_Location[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SourceCodeInfo_Location.encode(p).finish()];
+        }
+      } else {
+        yield* [SourceCodeInfo_Location.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SourceCodeInfo_Location>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SourceCodeInfo_Location> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SourceCodeInfo_Location.decode(p)];
+        }
+      } else {
+        yield* [SourceCodeInfo_Location.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SourceCodeInfo_Location {
@@ -4441,22 +6821,20 @@ export const SourceCodeInfo_Location = {
 
   toJSON(message: SourceCodeInfo_Location): unknown {
     const obj: any = {};
-    if (message.path) {
+    if (message.path?.length) {
       obj.path = message.path.map((e) => Math.round(e));
-    } else {
-      obj.path = [];
     }
-    if (message.span) {
+    if (message.span?.length) {
       obj.span = message.span.map((e) => Math.round(e));
-    } else {
-      obj.span = [];
     }
-    message.leadingComments !== undefined && (obj.leadingComments = message.leadingComments);
-    message.trailingComments !== undefined && (obj.trailingComments = message.trailingComments);
-    if (message.leadingDetachedComments) {
-      obj.leadingDetachedComments = message.leadingDetachedComments.map((e) => e);
-    } else {
-      obj.leadingDetachedComments = [];
+    if (message.leadingComments !== "") {
+      obj.leadingComments = message.leadingComments;
+    }
+    if (message.trailingComments !== "") {
+      obj.trailingComments = message.trailingComments;
+    }
+    if (message.leadingDetachedComments?.length) {
+      obj.leadingDetachedComments = message.leadingDetachedComments;
     }
     return obj;
   },
@@ -4496,19 +6874,51 @@ export const GeneratedCodeInfo = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.annotation.push(GeneratedCodeInfo_Annotation.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<GeneratedCodeInfo, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<GeneratedCodeInfo | GeneratedCodeInfo[]> | Iterable<GeneratedCodeInfo | GeneratedCodeInfo[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GeneratedCodeInfo.encode(p).finish()];
+        }
+      } else {
+        yield* [GeneratedCodeInfo.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GeneratedCodeInfo>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GeneratedCodeInfo> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GeneratedCodeInfo.decode(p)];
+        }
+      } else {
+        yield* [GeneratedCodeInfo.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): GeneratedCodeInfo {
@@ -4521,10 +6931,8 @@ export const GeneratedCodeInfo = {
 
   toJSON(message: GeneratedCodeInfo): unknown {
     const obj: any = {};
-    if (message.annotation) {
-      obj.annotation = message.annotation.map((e) => e ? GeneratedCodeInfo_Annotation.toJSON(e) : undefined);
-    } else {
-      obj.annotation = [];
+    if (message.annotation?.length) {
+      obj.annotation = message.annotation.map((e) => GeneratedCodeInfo_Annotation.toJSON(e));
     }
     return obj;
   },
@@ -4574,12 +6982,13 @@ export const GeneratedCodeInfo_Annotation = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag == 8) {
+          if (tag === 8) {
             message.path.push(reader.int32());
+
             continue;
           }
 
-          if (tag == 10) {
+          if (tag === 10) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.path.push(reader.int32());
@@ -4590,40 +6999,74 @@ export const GeneratedCodeInfo_Annotation = {
 
           break;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.sourceFile = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.begin = reader.int32();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.end = reader.int32();
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.semantic = reader.int32() as any;
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<GeneratedCodeInfo_Annotation, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GeneratedCodeInfo_Annotation | GeneratedCodeInfo_Annotation[]>
+      | Iterable<GeneratedCodeInfo_Annotation | GeneratedCodeInfo_Annotation[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GeneratedCodeInfo_Annotation.encode(p).finish()];
+        }
+      } else {
+        yield* [GeneratedCodeInfo_Annotation.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GeneratedCodeInfo_Annotation>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GeneratedCodeInfo_Annotation> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GeneratedCodeInfo_Annotation.decode(p)];
+        }
+      } else {
+        yield* [GeneratedCodeInfo_Annotation.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): GeneratedCodeInfo_Annotation {
@@ -4638,15 +7081,21 @@ export const GeneratedCodeInfo_Annotation = {
 
   toJSON(message: GeneratedCodeInfo_Annotation): unknown {
     const obj: any = {};
-    if (message.path) {
+    if (message.path?.length) {
       obj.path = message.path.map((e) => Math.round(e));
-    } else {
-      obj.path = [];
     }
-    message.sourceFile !== undefined && (obj.sourceFile = message.sourceFile);
-    message.begin !== undefined && (obj.begin = Math.round(message.begin));
-    message.end !== undefined && (obj.end = Math.round(message.end));
-    message.semantic !== undefined && (obj.semantic = generatedCodeInfo_Annotation_SemanticToJSON(message.semantic));
+    if (message.sourceFile !== "") {
+      obj.sourceFile = message.sourceFile;
+    }
+    if (message.begin !== 0) {
+      obj.begin = Math.round(message.begin);
+    }
+    if (message.end !== 0) {
+      obj.end = Math.round(message.end);
+    }
+    if (message.semantic !== 0) {
+      obj.semantic = generatedCodeInfo_Annotation_SemanticToJSON(message.semantic);
+    }
     return obj;
   },
 
@@ -4665,10 +7114,10 @@ export const GeneratedCodeInfo_Annotation = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

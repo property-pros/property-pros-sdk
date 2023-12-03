@@ -31,9 +31,20 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
+var (
+	filter_NotePurchaseAgreementService_GetNotePurchaseAgreements_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
 func request_NotePurchaseAgreementService_GetNotePurchaseAgreements_0(ctx context.Context, marshaler runtime.Marshaler, client NotePurchaseAgreementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetNotePurchaseAgreementsRequest
 	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NotePurchaseAgreementService_GetNotePurchaseAgreements_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 
 	msg, err := client.GetNotePurchaseAgreements(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -44,18 +55,42 @@ func local_request_NotePurchaseAgreementService_GetNotePurchaseAgreements_0(ctx 
 	var protoReq GetNotePurchaseAgreementsRequest
 	var metadata runtime.ServerMetadata
 
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NotePurchaseAgreementService_GetNotePurchaseAgreements_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
 	msg, err := server.GetNotePurchaseAgreements(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 var (
-	filter_NotePurchaseAgreementService_GetNotePurchaseAgreement_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_NotePurchaseAgreementService_GetNotePurchaseAgreement_0 = &utilities.DoubleArray{Encoding: map[string]int{"payload": 0, "id": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
 )
 
 func request_NotePurchaseAgreementService_GetNotePurchaseAgreement_0(ctx context.Context, marshaler runtime.Marshaler, client NotePurchaseAgreementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetNotePurchaseAgreementRequest
 	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["payload.id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "payload.id")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "payload.id", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "payload.id", err)
+	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -73,6 +108,23 @@ func local_request_NotePurchaseAgreementService_GetNotePurchaseAgreement_0(ctx c
 	var protoReq GetNotePurchaseAgreementRequest
 	var metadata runtime.ServerMetadata
 
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["payload.id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "payload.id")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "payload.id", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "payload.id", err)
+	}
+
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -85,18 +137,15 @@ func local_request_NotePurchaseAgreementService_GetNotePurchaseAgreement_0(ctx c
 
 }
 
-var (
-	filter_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
 func request_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0(ctx context.Context, marshaler runtime.Marshaler, client NotePurchaseAgreementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SaveNotePurchaseAgreementRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -109,10 +158,11 @@ func local_request_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0(ctx 
 	var protoReq SaveNotePurchaseAgreementRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -122,12 +172,29 @@ func local_request_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0(ctx 
 }
 
 var (
-	filter_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0 = &utilities.DoubleArray{Encoding: map[string]int{"payload": 0, "id": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
 )
 
-func request_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(ctx context.Context, marshaler runtime.Marshaler, client NotePurchaseAgreementServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(ctx context.Context, marshaler runtime.Marshaler, client NotePurchaseAgreementServiceClient, req *http.Request, pathParams map[string]string) (NotePurchaseAgreementService_GetNotePurchaseAgreementDocClient, runtime.ServerMetadata, error) {
 	var protoReq GetNotePurchaseAgreementDocRequest
 	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["payload.id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "payload.id")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "payload.id", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "payload.id", err)
+	}
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -136,24 +203,16 @@ func request_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(ctx cont
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetNotePurchaseAgreementDoc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(ctx context.Context, marshaler runtime.Marshaler, server NotePurchaseAgreementServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetNotePurchaseAgreementDocRequest
-	var metadata runtime.ServerMetadata
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	stream, err := client.GetNotePurchaseAgreementDoc(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
 	}
-
-	msg, err := server.GetNotePurchaseAgreementDoc(ctx, &protoReq)
-	return msg, metadata, err
+	metadata.HeaderMD = header
+	return stream, metadata, nil
 
 }
 
@@ -196,7 +255,7 @@ func RegisterNotePurchaseAgreementServiceHandlerServer(ctx context.Context, mux 
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreement", runtime.WithHTTPPathPattern("/v1/notepurchaseagreement"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreement", runtime.WithHTTPPathPattern("/v1/notepurchaseagreement/{payload.id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -239,28 +298,10 @@ func RegisterNotePurchaseAgreementServiceHandlerServer(ctx context.Context, mux 
 	})
 
 	mux.Handle("GET", pattern_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreementDoc", runtime.WithHTTPPathPattern("/v1/notepurchaseagreement/file"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
 	})
 
 	return nil
@@ -332,7 +373,7 @@ func RegisterNotePurchaseAgreementServiceHandlerClient(ctx context.Context, mux 
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreement", runtime.WithHTTPPathPattern("/v1/notepurchaseagreement"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreement", runtime.WithHTTPPathPattern("/v1/notepurchaseagreement/{payload.id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -376,7 +417,7 @@ func RegisterNotePurchaseAgreementServiceHandlerClient(ctx context.Context, mux 
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreementDoc", runtime.WithHTTPPathPattern("/v1/notepurchaseagreement/file"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.note_purchase_agreement.v1.NotePurchaseAgreementService/GetNotePurchaseAgreementDoc", runtime.WithHTTPPathPattern("/v1/notepurchaseagreement/{payload.id}/file"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -388,7 +429,7 @@ func RegisterNotePurchaseAgreementServiceHandlerClient(ctx context.Context, mux 
 			return
 		}
 
-		forward_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -398,11 +439,11 @@ func RegisterNotePurchaseAgreementServiceHandlerClient(ctx context.Context, mux 
 var (
 	pattern_NotePurchaseAgreementService_GetNotePurchaseAgreements_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "notepurchaseagreements"}, ""))
 
-	pattern_NotePurchaseAgreementService_GetNotePurchaseAgreement_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "notepurchaseagreement"}, ""))
+	pattern_NotePurchaseAgreementService_GetNotePurchaseAgreement_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "notepurchaseagreement", "payload.id"}, ""))
 
 	pattern_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "notepurchaseagreement"}, ""))
 
-	pattern_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "notepurchaseagreement", "file"}, ""))
+	pattern_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "notepurchaseagreement", "payload.id", "file"}, ""))
 )
 
 var (
@@ -412,5 +453,5 @@ var (
 
 	forward_NotePurchaseAgreementService_SaveNotePurchaseAgreement_0 = runtime.ForwardResponseMessage
 
-	forward_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0 = runtime.ForwardResponseMessage
+	forward_NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_0 = runtime.ForwardResponseStream
 )

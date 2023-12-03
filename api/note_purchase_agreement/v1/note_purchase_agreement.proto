@@ -39,10 +39,12 @@ message GetNotePurchaseAgreementDocResponse {
   bytes file_content = 1;
 }
 
-message GetNotePurchaseAgreementsRequest {}
+message GetNotePurchaseAgreementsRequest {
+  string user_id = 1;
+}
 
 message GetNotePurchaseAgreementsResponse {
-  api.common.v1.RecordCollection payload = 1;
+  repeated api.common.v1.RecordResultPayload payload = 1;
 }
 
 message SaveNotePurchaseAgreementRequest {
@@ -69,7 +71,7 @@ service NotePurchaseAgreementService {
   rpc GetNotePurchaseAgreement(GetNotePurchaseAgreementRequest) returns (GetNotePurchaseAgreementResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /config
-      get: "/v1/notepurchaseagreement"
+      get: "/v1/notepurchaseagreement/{payload.id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get Note Purchase Agreement Record"
@@ -81,7 +83,8 @@ service NotePurchaseAgreementService {
   rpc SaveNotePurchaseAgreement(SaveNotePurchaseAgreementRequest) returns (SaveNotePurchaseAgreementResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /config
-      post: "/v1/notepurchaseagreement"
+      post: "/v1/notepurchaseagreement",
+      body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Save Note Purchase Agreement Record"
@@ -90,10 +93,10 @@ service NotePurchaseAgreementService {
     };
   }
 
-  rpc GetNotePurchaseAgreementDoc(GetNotePurchaseAgreementDocRequest) returns (GetNotePurchaseAgreementDocResponse) {
+  rpc GetNotePurchaseAgreementDoc(GetNotePurchaseAgreementDocRequest) returns (stream GetNotePurchaseAgreementDocResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /config
-      get: "/v1/notepurchaseagreement/file"
+      get: "/v1/notepurchaseagreement/{payload.id}/file"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get Note Purchase Agreement Document File Only"
