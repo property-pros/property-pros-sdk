@@ -1592,7 +1592,7 @@ export const NotePurchaseAgreementServiceDefinition = {
       requestType: GetNotePurchaseAgreementDocRequest,
       requestStream: false,
       responseType: GetNotePurchaseAgreementDocResponse,
-      responseStream: false,
+      responseStream: true,
       options: {
         _unknownFields: {
           8338: [
@@ -1823,7 +1823,7 @@ export interface NotePurchaseAgreementServiceImplementation<CallContextExt = {}>
   getNotePurchaseAgreementDoc(
     request: GetNotePurchaseAgreementDocRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
+  ): ServerStreamingMethodResult<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
 }
 
 export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
@@ -1842,7 +1842,7 @@ export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
   getNotePurchaseAgreementDoc(
     request: DeepPartial<GetNotePurchaseAgreementDocRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<GetNotePurchaseAgreementDocResponse>;
+  ): AsyncIterable<GetNotePurchaseAgreementDocResponse>;
 }
 
 declare const self: any | undefined;
@@ -1911,3 +1911,5 @@ if (_m0.util.Long !== Long) {
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
+
+export type ServerStreamingMethodResult<Response> = { [Symbol.asyncIterator](): AsyncIterator<Response, void> };

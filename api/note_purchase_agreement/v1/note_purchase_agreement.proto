@@ -93,7 +93,7 @@ service NotePurchaseAgreementService {
     };
   }
 
-  rpc GetNotePurchaseAgreementDoc(GetNotePurchaseAgreementDocRequest) returns (GetNotePurchaseAgreementDocResponse) {
+  rpc GetNotePurchaseAgreementDoc(GetNotePurchaseAgreementDocRequest) returns (stream GetNotePurchaseAgreementDocResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /config
       get: "/v1/notepurchaseagreement/{payload.id}/file"

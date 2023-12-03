@@ -32,7 +32,7 @@ type NotePurchaseAgreementServiceClient interface {
 	GetNotePurchaseAgreements(ctx context.Context, in *GetNotePurchaseAgreementsRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementsResponse, error)
 	GetNotePurchaseAgreement(ctx context.Context, in *GetNotePurchaseAgreementRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementResponse, error)
 	SaveNotePurchaseAgreement(ctx context.Context, in *SaveNotePurchaseAgreementRequest, opts ...grpc.CallOption) (*SaveNotePurchaseAgreementResponse, error)
-	GetNotePurchaseAgreementDoc(ctx context.Context, in *GetNotePurchaseAgreementDocRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementDocResponse, error)
+	GetNotePurchaseAgreementDoc(ctx context.Context, in *GetNotePurchaseAgreementDocRequest, opts ...grpc.CallOption) (NotePurchaseAgreementService_GetNotePurchaseAgreementDocClient, error)
 }
 
 type notePurchaseAgreementServiceClient struct {
@@ -70,13 +70,36 @@ func (c *notePurchaseAgreementServiceClient) SaveNotePurchaseAgreement(ctx conte
 	return out, nil
 }
 
-func (c *notePurchaseAgreementServiceClient) GetNotePurchaseAgreementDoc(ctx context.Context, in *GetNotePurchaseAgreementDocRequest, opts ...grpc.CallOption) (*GetNotePurchaseAgreementDocResponse, error) {
-	out := new(GetNotePurchaseAgreementDocResponse)
-	err := c.cc.Invoke(ctx, NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_FullMethodName, in, out, opts...)
+func (c *notePurchaseAgreementServiceClient) GetNotePurchaseAgreementDoc(ctx context.Context, in *GetNotePurchaseAgreementDocRequest, opts ...grpc.CallOption) (NotePurchaseAgreementService_GetNotePurchaseAgreementDocClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NotePurchaseAgreementService_ServiceDesc.Streams[0], NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &notePurchaseAgreementServiceGetNotePurchaseAgreementDocClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type NotePurchaseAgreementService_GetNotePurchaseAgreementDocClient interface {
+	Recv() (*GetNotePurchaseAgreementDocResponse, error)
+	grpc.ClientStream
+}
+
+type notePurchaseAgreementServiceGetNotePurchaseAgreementDocClient struct {
+	grpc.ClientStream
+}
+
+func (x *notePurchaseAgreementServiceGetNotePurchaseAgreementDocClient) Recv() (*GetNotePurchaseAgreementDocResponse, error) {
+	m := new(GetNotePurchaseAgreementDocResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // NotePurchaseAgreementServiceServer is the server API for NotePurchaseAgreementService service.
@@ -86,7 +109,7 @@ type NotePurchaseAgreementServiceServer interface {
 	GetNotePurchaseAgreements(context.Context, *GetNotePurchaseAgreementsRequest) (*GetNotePurchaseAgreementsResponse, error)
 	GetNotePurchaseAgreement(context.Context, *GetNotePurchaseAgreementRequest) (*GetNotePurchaseAgreementResponse, error)
 	SaveNotePurchaseAgreement(context.Context, *SaveNotePurchaseAgreementRequest) (*SaveNotePurchaseAgreementResponse, error)
-	GetNotePurchaseAgreementDoc(context.Context, *GetNotePurchaseAgreementDocRequest) (*GetNotePurchaseAgreementDocResponse, error)
+	GetNotePurchaseAgreementDoc(*GetNotePurchaseAgreementDocRequest, NotePurchaseAgreementService_GetNotePurchaseAgreementDocServer) error
 	mustEmbedUnimplementedNotePurchaseAgreementServiceServer()
 }
 
@@ -103,8 +126,8 @@ func (UnimplementedNotePurchaseAgreementServiceServer) GetNotePurchaseAgreement(
 func (UnimplementedNotePurchaseAgreementServiceServer) SaveNotePurchaseAgreement(context.Context, *SaveNotePurchaseAgreementRequest) (*SaveNotePurchaseAgreementResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveNotePurchaseAgreement not implemented")
 }
-func (UnimplementedNotePurchaseAgreementServiceServer) GetNotePurchaseAgreementDoc(context.Context, *GetNotePurchaseAgreementDocRequest) (*GetNotePurchaseAgreementDocResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNotePurchaseAgreementDoc not implemented")
+func (UnimplementedNotePurchaseAgreementServiceServer) GetNotePurchaseAgreementDoc(*GetNotePurchaseAgreementDocRequest, NotePurchaseAgreementService_GetNotePurchaseAgreementDocServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetNotePurchaseAgreementDoc not implemented")
 }
 func (UnimplementedNotePurchaseAgreementServiceServer) mustEmbedUnimplementedNotePurchaseAgreementServiceServer() {
 }
@@ -174,22 +197,25 @@ func _NotePurchaseAgreementService_SaveNotePurchaseAgreement_Handler(srv interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetNotePurchaseAgreementDocRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetNotePurchaseAgreementDocRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(NotePurchaseAgreementServiceServer).GetNotePurchaseAgreementDoc(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotePurchaseAgreementServiceServer).GetNotePurchaseAgreementDoc(ctx, req.(*GetNotePurchaseAgreementDocRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(NotePurchaseAgreementServiceServer).GetNotePurchaseAgreementDoc(m, &notePurchaseAgreementServiceGetNotePurchaseAgreementDocServer{stream})
+}
+
+type NotePurchaseAgreementService_GetNotePurchaseAgreementDocServer interface {
+	Send(*GetNotePurchaseAgreementDocResponse) error
+	grpc.ServerStream
+}
+
+type notePurchaseAgreementServiceGetNotePurchaseAgreementDocServer struct {
+	grpc.ServerStream
+}
+
+func (x *notePurchaseAgreementServiceGetNotePurchaseAgreementDocServer) Send(m *GetNotePurchaseAgreementDocResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // NotePurchaseAgreementService_ServiceDesc is the grpc.ServiceDesc for NotePurchaseAgreementService service.
@@ -211,11 +237,13 @@ var NotePurchaseAgreementService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "SaveNotePurchaseAgreement",
 			Handler:    _NotePurchaseAgreementService_SaveNotePurchaseAgreement_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "GetNotePurchaseAgreementDoc",
-			Handler:    _NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_Handler,
+			StreamName:    "GetNotePurchaseAgreementDoc",
+			Handler:       _NotePurchaseAgreementService_GetNotePurchaseAgreementDoc_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "api/note_purchase_agreement/v1/note_purchase_agreement.proto",
 }

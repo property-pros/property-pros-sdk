@@ -251,7 +251,7 @@ export declare const NotePurchaseAgreementServiceDefinition: {
                 create(base?: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
                 fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse;
             };
-            readonly responseStream: false;
+            readonly responseStream: true;
             readonly options: {
                 readonly _unknownFields: {
                     readonly 8338: readonly [Uint8Array];
@@ -265,16 +265,19 @@ export interface NotePurchaseAgreementServiceImplementation<CallContextExt = {}>
     getNotePurchaseAgreements(request: GetNotePurchaseAgreementsRequest, context: CallContext & CallContextExt): Promise<DeepPartial<GetNotePurchaseAgreementsResponse>>;
     getNotePurchaseAgreement(request: GetNotePurchaseAgreementRequest, context: CallContext & CallContextExt): Promise<DeepPartial<GetNotePurchaseAgreementResponse>>;
     saveNotePurchaseAgreement(request: SaveNotePurchaseAgreementRequest, context: CallContext & CallContextExt): Promise<DeepPartial<SaveNotePurchaseAgreementResponse>>;
-    getNotePurchaseAgreementDoc(request: GetNotePurchaseAgreementDocRequest, context: CallContext & CallContextExt): Promise<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
+    getNotePurchaseAgreementDoc(request: GetNotePurchaseAgreementDocRequest, context: CallContext & CallContextExt): ServerStreamingMethodResult<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
 }
 export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
     getNotePurchaseAgreements(request: DeepPartial<GetNotePurchaseAgreementsRequest>, options?: CallOptions & CallOptionsExt): Promise<GetNotePurchaseAgreementsResponse>;
     getNotePurchaseAgreement(request: DeepPartial<GetNotePurchaseAgreementRequest>, options?: CallOptions & CallOptionsExt): Promise<GetNotePurchaseAgreementResponse>;
     saveNotePurchaseAgreement(request: DeepPartial<SaveNotePurchaseAgreementRequest>, options?: CallOptions & CallOptionsExt): Promise<SaveNotePurchaseAgreementResponse>;
-    getNotePurchaseAgreementDoc(request: DeepPartial<GetNotePurchaseAgreementDocRequest>, options?: CallOptions & CallOptionsExt): Promise<GetNotePurchaseAgreementDocResponse>;
+    getNotePurchaseAgreementDoc(request: DeepPartial<GetNotePurchaseAgreementDocRequest>, options?: CallOptions & CallOptionsExt): AsyncIterable<GetNotePurchaseAgreementDocResponse>;
 }
 declare type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 export declare type DeepPartial<T> = T extends Builtin ? T : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>> : T extends {} ? {
     [K in keyof T]?: DeepPartial<T[K]>;
 } : Partial<T>;
+export declare type ServerStreamingMethodResult<Response> = {
+    [Symbol.asyncIterator](): AsyncIterator<Response, void>;
+};
 export {};

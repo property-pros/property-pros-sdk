@@ -129,9 +129,18 @@
         "operationId": "NotePurchaseAgreementService_GetNotePurchaseAgreementDoc",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "A successful response.(streaming responses)",
             "schema": {
-              "$ref": "#/definitions/v1GetNotePurchaseAgreementDocResponse"
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1GetNotePurchaseAgreementDocResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of v1GetNotePurchaseAgreementDocResponse"
             }
           },
           "default": {
