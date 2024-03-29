@@ -9,6 +9,9 @@
       "name": "AuthenticationService"
     },
     {
+      "name": "FinanceService"
+    },
+    {
       "name": "NotePurchaseAgreementService"
     },
     {
@@ -53,6 +56,68 @@
         ],
         "tags": [
           "Authentication"
+        ]
+      }
+    },
+    "/v1/finance": {
+      "get": {
+        "operationId": "FinanceService_GetFinancialItems",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetFinancialItemsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "description": "Required. The name of the financial data to retrieve.\nFormat: financialData/{company_symbol}.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "FinanceService"
+        ]
+      },
+      "post": {
+        "summary": "Returns a list of financial data points for a given company.",
+        "operationId": "FinanceService_SaveFinancialItem",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SaveFinancialItemResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SaveFinancialItemRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FinanceService"
         ]
       }
     },
@@ -390,6 +455,37 @@
     }
   },
   "definitions": {
+    "financev1Location": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number",
+          "format": "double"
+        },
+        "lon": {
+          "type": "number",
+          "format": "double"
+        },
+        "storeNumber": {
+          "type": "string"
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -436,6 +532,68 @@
           "type": "string"
         }
       }
+    },
+    "v1Balance": {
+      "type": "object",
+      "properties": {
+        "available": {
+          "type": "number",
+          "format": "double"
+        },
+        "current": {
+          "type": "number",
+          "format": "double"
+        },
+        "isoCurrencyCode": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "number",
+          "format": "double"
+        },
+        "unofficialCurrencyCode": {
+          "type": "string"
+        }
+      }
+    },
+    "v1FinancialData": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "itemId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Account"
+          }
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Transaction"
+          }
+        }
+      },
+      "description": "Financial data for a given company."
+    },
+    "v1GetFinancialItemsResponse": {
+      "type": "object",
+      "properties": {
+        "financialData": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1FinancialData"
+          }
+        }
+      },
+      "description": "A response containing financial data for a given company."
     },
     "v1GetNotePurchaseAgreementDocResponse": {
       "type": "object",
@@ -595,6 +753,81 @@
         "document": {
           "type": "string",
           "format": "byte"
+        }
+      }
+    },
+    "v1Transaction": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double"
+        },
+        "isoCurrencyCode": {
+          "type": "string"
+        },
+        "unofficialCurrencyCode": {
+          "type": "string"
+        },
+        "category": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "categoryId": {
+          "type": "string"
+        },
+        "checkNumber": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "datetime": {
+          "type": "string"
+        },
+        "authorizedDate": {
+          "type": "string"
+        },
+        "authorizedDatetime": {
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/financev1Location"
+        },
+        "name": {
+          "type": "string"
+        },
+        "merchantName": {
+          "type": "string"
+        },
+        "paymentMeta": {
+          "$ref": "#/definitions/v1PaymentMeta"
+        },
+        "paymentChannel": {
+          "type": "string"
+        },
+        "pending": {
+          "type": "boolean"
+        },
+        "pendingTransactionId": {
+          "type": "string"
+        },
+        "accountOwner": {
+          "type": "string"
+        },
+        "transactionId": {
+          "type": "string"
+        },
+        "transactionCode": {
+          "type": "string"
+        },
+        "transactionType": {
+          "type": "string"
         }
       }
     },
