@@ -40,19 +40,53 @@ export const RecordRequestPayload = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<RecordRequestPayload, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<RecordRequestPayload | RecordRequestPayload[]>
+      | Iterable<RecordRequestPayload | RecordRequestPayload[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordRequestPayload.encode(p).finish()];
+        }
+      } else {
+        yield* [RecordRequestPayload.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, RecordRequestPayload>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<RecordRequestPayload> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordRequestPayload.decode(p)];
+        }
+      } else {
+        yield* [RecordRequestPayload.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): RecordRequestPayload {
@@ -61,7 +95,9 @@ export const RecordRequestPayload = {
 
   toJSON(message: RecordRequestPayload): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
     return obj;
   },
 
@@ -96,19 +132,53 @@ export const RecordRequestCollection = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload.push(RecordRequestPayload.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<RecordRequestCollection, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<RecordRequestCollection | RecordRequestCollection[]>
+      | Iterable<RecordRequestCollection | RecordRequestCollection[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordRequestCollection.encode(p).finish()];
+        }
+      } else {
+        yield* [RecordRequestCollection.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, RecordRequestCollection>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<RecordRequestCollection> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordRequestCollection.decode(p)];
+        }
+      } else {
+        yield* [RecordRequestCollection.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): RecordRequestCollection {
@@ -119,10 +189,8 @@ export const RecordRequestCollection = {
 
   toJSON(message: RecordRequestCollection): unknown {
     const obj: any = {};
-    if (message.payload) {
-      obj.payload = message.payload.map((e) => e ? RecordRequestPayload.toJSON(e) : undefined);
-    } else {
-      obj.payload = [];
+    if (message.payload?.length) {
+      obj.payload = message.payload.map((e) => RecordRequestPayload.toJSON(e));
     }
     return obj;
   },
@@ -158,19 +226,51 @@ export const RecordCollection = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload.push(RecordResultPayload.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<RecordCollection, Uint8Array>
+  async *encodeTransform(
+    source: AsyncIterable<RecordCollection | RecordCollection[]> | Iterable<RecordCollection | RecordCollection[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordCollection.encode(p).finish()];
+        }
+      } else {
+        yield* [RecordCollection.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, RecordCollection>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<RecordCollection> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordCollection.decode(p)];
+        }
+      } else {
+        yield* [RecordCollection.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): RecordCollection {
@@ -181,10 +281,8 @@ export const RecordCollection = {
 
   toJSON(message: RecordCollection): unknown {
     const obj: any = {};
-    if (message.payload) {
-      obj.payload = message.payload.map((e) => e ? RecordResultPayload.toJSON(e) : undefined);
-    } else {
-      obj.payload = [];
+    if (message.payload?.length) {
+      obj.payload = message.payload.map((e) => RecordResultPayload.toJSON(e));
     }
     return obj;
   },
@@ -223,26 +321,60 @@ export const RecordResultPayload = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.createdOn = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<RecordResultPayload, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<RecordResultPayload | RecordResultPayload[]>
+      | Iterable<RecordResultPayload | RecordResultPayload[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordResultPayload.encode(p).finish()];
+        }
+      } else {
+        yield* [RecordResultPayload.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, RecordResultPayload>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<RecordResultPayload> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [RecordResultPayload.decode(p)];
+        }
+      } else {
+        yield* [RecordResultPayload.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): RecordResultPayload {
@@ -254,8 +386,12 @@ export const RecordResultPayload = {
 
   toJSON(message: RecordResultPayload): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.createdOn !== undefined && (obj.createdOn = message.createdOn);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.createdOn !== "") {
+      obj.createdOn = message.createdOn;
+    }
     return obj;
   },
 

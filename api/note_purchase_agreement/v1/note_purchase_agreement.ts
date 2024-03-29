@@ -3,7 +3,7 @@ import Long from "long";
 import type { CallContext, CallOptions } from "nice-grpc-common";
 import _m0 from "protobufjs/minimal";
 import { User } from "../../auth/v1/auth";
-import { RecordCollection, RecordRequestPayload, RecordResultPayload } from "../../common/v1/common";
+import { RecordRequestPayload, RecordResultPayload } from "../../common/v1/common";
 
 export const protobufPackage = "api.note_purchase_agreement.v1";
 
@@ -38,10 +38,11 @@ export interface GetNotePurchaseAgreementDocResponse {
 }
 
 export interface GetNotePurchaseAgreementsRequest {
+  userId: string;
 }
 
 export interface GetNotePurchaseAgreementsResponse {
-  payload: RecordCollection | undefined;
+  payload: RecordResultPayload[];
 }
 
 export interface SaveNotePurchaseAgreementRequest {
@@ -63,7 +64,7 @@ function createBaseNotePurchaseAgreementRecord(): NotePurchaseAgreementRecord {
     phoneNumber: "",
     socialSecurity: "",
     fundsCommitted: 0,
-    fileContent: new Uint8Array(),
+    fileContent: new Uint8Array(0),
     createdOn: "",
   };
 }
@@ -114,89 +115,123 @@ export const NotePurchaseAgreementRecord = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.firstName = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.lastName = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.dateOfBirth = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.homeAddress = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.user = User.decode(reader, reader.uint32());
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.phoneNumber = reader.string();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.socialSecurity = reader.string();
           continue;
         case 9:
-          if (tag != 72) {
+          if (tag !== 72) {
             break;
           }
 
           message.fundsCommitted = longToNumber(reader.uint64() as Long);
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
           message.fileContent = reader.bytes();
           continue;
         case 11:
-          if (tag != 90) {
+          if (tag !== 90) {
             break;
           }
 
           message.createdOn = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<NotePurchaseAgreementRecord, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<NotePurchaseAgreementRecord | NotePurchaseAgreementRecord[]>
+      | Iterable<NotePurchaseAgreementRecord | NotePurchaseAgreementRecord[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [NotePurchaseAgreementRecord.encode(p).finish()];
+        }
+      } else {
+        yield* [NotePurchaseAgreementRecord.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, NotePurchaseAgreementRecord>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<NotePurchaseAgreementRecord> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [NotePurchaseAgreementRecord.decode(p)];
+        }
+      } else {
+        yield* [NotePurchaseAgreementRecord.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): NotePurchaseAgreementRecord {
@@ -210,25 +245,46 @@ export const NotePurchaseAgreementRecord = {
       phoneNumber: isSet(object.phoneNumber) ? String(object.phoneNumber) : "",
       socialSecurity: isSet(object.socialSecurity) ? String(object.socialSecurity) : "",
       fundsCommitted: isSet(object.fundsCommitted) ? Number(object.fundsCommitted) : 0,
-      fileContent: isSet(object.fileContent) ? bytesFromBase64(object.fileContent) : new Uint8Array(),
+      fileContent: isSet(object.fileContent) ? bytesFromBase64(object.fileContent) : new Uint8Array(0),
       createdOn: isSet(object.createdOn) ? String(object.createdOn) : "",
     };
   },
 
   toJSON(message: NotePurchaseAgreementRecord): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.firstName !== undefined && (obj.firstName = message.firstName);
-    message.lastName !== undefined && (obj.lastName = message.lastName);
-    message.dateOfBirth !== undefined && (obj.dateOfBirth = message.dateOfBirth);
-    message.homeAddress !== undefined && (obj.homeAddress = message.homeAddress);
-    message.user !== undefined && (obj.user = message.user ? User.toJSON(message.user) : undefined);
-    message.phoneNumber !== undefined && (obj.phoneNumber = message.phoneNumber);
-    message.socialSecurity !== undefined && (obj.socialSecurity = message.socialSecurity);
-    message.fundsCommitted !== undefined && (obj.fundsCommitted = Math.round(message.fundsCommitted));
-    message.fileContent !== undefined &&
-      (obj.fileContent = base64FromBytes(message.fileContent !== undefined ? message.fileContent : new Uint8Array()));
-    message.createdOn !== undefined && (obj.createdOn = message.createdOn);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.firstName !== "") {
+      obj.firstName = message.firstName;
+    }
+    if (message.lastName !== "") {
+      obj.lastName = message.lastName;
+    }
+    if (message.dateOfBirth !== "") {
+      obj.dateOfBirth = message.dateOfBirth;
+    }
+    if (message.homeAddress !== "") {
+      obj.homeAddress = message.homeAddress;
+    }
+    if (message.user !== undefined) {
+      obj.user = User.toJSON(message.user);
+    }
+    if (message.phoneNumber !== "") {
+      obj.phoneNumber = message.phoneNumber;
+    }
+    if (message.socialSecurity !== "") {
+      obj.socialSecurity = message.socialSecurity;
+    }
+    if (message.fundsCommitted !== 0) {
+      obj.fundsCommitted = Math.round(message.fundsCommitted);
+    }
+    if (message.fileContent.length !== 0) {
+      obj.fileContent = base64FromBytes(message.fileContent);
+    }
+    if (message.createdOn !== "") {
+      obj.createdOn = message.createdOn;
+    }
     return obj;
   },
 
@@ -247,7 +303,7 @@ export const NotePurchaseAgreementRecord = {
     message.phoneNumber = object.phoneNumber ?? "";
     message.socialSecurity = object.socialSecurity ?? "";
     message.fundsCommitted = object.fundsCommitted ?? 0;
-    message.fileContent = object.fileContent ?? new Uint8Array();
+    message.fileContent = object.fileContent ?? new Uint8Array(0);
     message.createdOn = object.createdOn ?? "";
     return message;
   },
@@ -273,19 +329,53 @@ export const GetNotePurchaseAgreementRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload = RecordRequestPayload.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetNotePurchaseAgreementRequest, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetNotePurchaseAgreementRequest | GetNotePurchaseAgreementRequest[]>
+      | Iterable<GetNotePurchaseAgreementRequest | GetNotePurchaseAgreementRequest[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementRequest.encode(p).finish()];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementRequest.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetNotePurchaseAgreementRequest>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetNotePurchaseAgreementRequest> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementRequest.decode(p)];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementRequest.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): GetNotePurchaseAgreementRequest {
@@ -294,8 +384,9 @@ export const GetNotePurchaseAgreementRequest = {
 
   toJSON(message: GetNotePurchaseAgreementRequest): unknown {
     const obj: any = {};
-    message.payload !== undefined &&
-      (obj.payload = message.payload ? RecordRequestPayload.toJSON(message.payload) : undefined);
+    if (message.payload !== undefined) {
+      obj.payload = RecordRequestPayload.toJSON(message.payload);
+    }
     return obj;
   },
 
@@ -332,19 +423,53 @@ export const GetNotePurchaseAgreementResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload = NotePurchaseAgreementRecord.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetNotePurchaseAgreementResponse, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetNotePurchaseAgreementResponse | GetNotePurchaseAgreementResponse[]>
+      | Iterable<GetNotePurchaseAgreementResponse | GetNotePurchaseAgreementResponse[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementResponse.encode(p).finish()];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementResponse.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetNotePurchaseAgreementResponse>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetNotePurchaseAgreementResponse> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementResponse.decode(p)];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementResponse.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): GetNotePurchaseAgreementResponse {
@@ -353,8 +478,9 @@ export const GetNotePurchaseAgreementResponse = {
 
   toJSON(message: GetNotePurchaseAgreementResponse): unknown {
     const obj: any = {};
-    message.payload !== undefined &&
-      (obj.payload = message.payload ? NotePurchaseAgreementRecord.toJSON(message.payload) : undefined);
+    if (message.payload !== undefined) {
+      obj.payload = NotePurchaseAgreementRecord.toJSON(message.payload);
+    }
     return obj;
   },
 
@@ -391,19 +517,53 @@ export const GetNotePurchaseAgreementDocRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload = NotePurchaseAgreementRecord.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetNotePurchaseAgreementDocRequest, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetNotePurchaseAgreementDocRequest | GetNotePurchaseAgreementDocRequest[]>
+      | Iterable<GetNotePurchaseAgreementDocRequest | GetNotePurchaseAgreementDocRequest[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementDocRequest.encode(p).finish()];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementDocRequest.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetNotePurchaseAgreementDocRequest>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetNotePurchaseAgreementDocRequest> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementDocRequest.decode(p)];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementDocRequest.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): GetNotePurchaseAgreementDocRequest {
@@ -412,8 +572,9 @@ export const GetNotePurchaseAgreementDocRequest = {
 
   toJSON(message: GetNotePurchaseAgreementDocRequest): unknown {
     const obj: any = {};
-    message.payload !== undefined &&
-      (obj.payload = message.payload ? NotePurchaseAgreementRecord.toJSON(message.payload) : undefined);
+    if (message.payload !== undefined) {
+      obj.payload = NotePurchaseAgreementRecord.toJSON(message.payload);
+    }
     return obj;
   },
 
@@ -431,7 +592,7 @@ export const GetNotePurchaseAgreementDocRequest = {
 };
 
 function createBaseGetNotePurchaseAgreementDocResponse(): GetNotePurchaseAgreementDocResponse {
-  return { fileContent: new Uint8Array() };
+  return { fileContent: new Uint8Array(0) };
 }
 
 export const GetNotePurchaseAgreementDocResponse = {
@@ -450,14 +611,14 @@ export const GetNotePurchaseAgreementDocResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.fileContent = reader.bytes();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -465,14 +626,49 @@ export const GetNotePurchaseAgreementDocResponse = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetNotePurchaseAgreementDocResponse, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetNotePurchaseAgreementDocResponse | GetNotePurchaseAgreementDocResponse[]>
+      | Iterable<GetNotePurchaseAgreementDocResponse | GetNotePurchaseAgreementDocResponse[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementDocResponse.encode(p).finish()];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementDocResponse.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetNotePurchaseAgreementDocResponse>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetNotePurchaseAgreementDocResponse> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementDocResponse.decode(p)];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementDocResponse.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): GetNotePurchaseAgreementDocResponse {
-    return { fileContent: isSet(object.fileContent) ? bytesFromBase64(object.fileContent) : new Uint8Array() };
+    return { fileContent: isSet(object.fileContent) ? bytesFromBase64(object.fileContent) : new Uint8Array(0) };
   },
 
   toJSON(message: GetNotePurchaseAgreementDocResponse): unknown {
     const obj: any = {};
-    message.fileContent !== undefined &&
-      (obj.fileContent = base64FromBytes(message.fileContent !== undefined ? message.fileContent : new Uint8Array()));
+    if (message.fileContent.length !== 0) {
+      obj.fileContent = base64FromBytes(message.fileContent);
+    }
     return obj;
   },
 
@@ -482,17 +678,20 @@ export const GetNotePurchaseAgreementDocResponse = {
 
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementDocResponse>): GetNotePurchaseAgreementDocResponse {
     const message = createBaseGetNotePurchaseAgreementDocResponse();
-    message.fileContent = object.fileContent ?? new Uint8Array();
+    message.fileContent = object.fileContent ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGetNotePurchaseAgreementsRequest(): GetNotePurchaseAgreementsRequest {
-  return {};
+  return { userId: "" };
 }
 
 export const GetNotePurchaseAgreementsRequest = {
-  encode(_: GetNotePurchaseAgreementsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: GetNotePurchaseAgreementsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
     return writer;
   },
 
@@ -503,8 +702,15 @@ export const GetNotePurchaseAgreementsRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -512,12 +718,49 @@ export const GetNotePurchaseAgreementsRequest = {
     return message;
   },
 
-  fromJSON(_: any): GetNotePurchaseAgreementsRequest {
-    return {};
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetNotePurchaseAgreementsRequest, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetNotePurchaseAgreementsRequest | GetNotePurchaseAgreementsRequest[]>
+      | Iterable<GetNotePurchaseAgreementsRequest | GetNotePurchaseAgreementsRequest[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementsRequest.encode(p).finish()];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementsRequest.encode(pkt).finish()];
+      }
+    }
   },
 
-  toJSON(_: GetNotePurchaseAgreementsRequest): unknown {
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetNotePurchaseAgreementsRequest>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetNotePurchaseAgreementsRequest> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementsRequest.decode(p)];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementsRequest.decode(pkt)];
+      }
+    }
+  },
+
+  fromJSON(object: any): GetNotePurchaseAgreementsRequest {
+    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+  },
+
+  toJSON(message: GetNotePurchaseAgreementsRequest): unknown {
     const obj: any = {};
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
     return obj;
   },
 
@@ -525,20 +768,21 @@ export const GetNotePurchaseAgreementsRequest = {
     return GetNotePurchaseAgreementsRequest.fromPartial(base ?? {});
   },
 
-  fromPartial(_: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest {
+  fromPartial(object: DeepPartial<GetNotePurchaseAgreementsRequest>): GetNotePurchaseAgreementsRequest {
     const message = createBaseGetNotePurchaseAgreementsRequest();
+    message.userId = object.userId ?? "";
     return message;
   },
 };
 
 function createBaseGetNotePurchaseAgreementsResponse(): GetNotePurchaseAgreementsResponse {
-  return { payload: undefined };
+  return { payload: [] };
 }
 
 export const GetNotePurchaseAgreementsResponse = {
   encode(message: GetNotePurchaseAgreementsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.payload !== undefined) {
-      RecordCollection.encode(message.payload, writer.uint32(10).fork()).ldelim();
+    for (const v of message.payload) {
+      RecordResultPayload.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -551,14 +795,14 @@ export const GetNotePurchaseAgreementsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
-          message.payload = RecordCollection.decode(reader, reader.uint32());
+          message.payload.push(RecordResultPayload.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -566,14 +810,51 @@ export const GetNotePurchaseAgreementsResponse = {
     return message;
   },
 
+  // encodeTransform encodes a source of message objects.
+  // Transform<GetNotePurchaseAgreementsResponse, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<GetNotePurchaseAgreementsResponse | GetNotePurchaseAgreementsResponse[]>
+      | Iterable<GetNotePurchaseAgreementsResponse | GetNotePurchaseAgreementsResponse[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementsResponse.encode(p).finish()];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementsResponse.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, GetNotePurchaseAgreementsResponse>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<GetNotePurchaseAgreementsResponse> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [GetNotePurchaseAgreementsResponse.decode(p)];
+        }
+      } else {
+        yield* [GetNotePurchaseAgreementsResponse.decode(pkt)];
+      }
+    }
+  },
+
   fromJSON(object: any): GetNotePurchaseAgreementsResponse {
-    return { payload: isSet(object.payload) ? RecordCollection.fromJSON(object.payload) : undefined };
+    return {
+      payload: Array.isArray(object?.payload) ? object.payload.map((e: any) => RecordResultPayload.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: GetNotePurchaseAgreementsResponse): unknown {
     const obj: any = {};
-    message.payload !== undefined &&
-      (obj.payload = message.payload ? RecordCollection.toJSON(message.payload) : undefined);
+    if (message.payload?.length) {
+      obj.payload = message.payload.map((e) => RecordResultPayload.toJSON(e));
+    }
     return obj;
   },
 
@@ -583,9 +864,7 @@ export const GetNotePurchaseAgreementsResponse = {
 
   fromPartial(object: DeepPartial<GetNotePurchaseAgreementsResponse>): GetNotePurchaseAgreementsResponse {
     const message = createBaseGetNotePurchaseAgreementsResponse();
-    message.payload = (object.payload !== undefined && object.payload !== null)
-      ? RecordCollection.fromPartial(object.payload)
-      : undefined;
+    message.payload = object.payload?.map((e) => RecordResultPayload.fromPartial(e)) || [];
     return message;
   },
 };
@@ -610,19 +889,53 @@ export const SaveNotePurchaseAgreementRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload = NotePurchaseAgreementRecord.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SaveNotePurchaseAgreementRequest, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SaveNotePurchaseAgreementRequest | SaveNotePurchaseAgreementRequest[]>
+      | Iterable<SaveNotePurchaseAgreementRequest | SaveNotePurchaseAgreementRequest[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SaveNotePurchaseAgreementRequest.encode(p).finish()];
+        }
+      } else {
+        yield* [SaveNotePurchaseAgreementRequest.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SaveNotePurchaseAgreementRequest>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SaveNotePurchaseAgreementRequest> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SaveNotePurchaseAgreementRequest.decode(p)];
+        }
+      } else {
+        yield* [SaveNotePurchaseAgreementRequest.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SaveNotePurchaseAgreementRequest {
@@ -631,8 +944,9 @@ export const SaveNotePurchaseAgreementRequest = {
 
   toJSON(message: SaveNotePurchaseAgreementRequest): unknown {
     const obj: any = {};
-    message.payload !== undefined &&
-      (obj.payload = message.payload ? NotePurchaseAgreementRecord.toJSON(message.payload) : undefined);
+    if (message.payload !== undefined) {
+      obj.payload = NotePurchaseAgreementRecord.toJSON(message.payload);
+    }
     return obj;
   },
 
@@ -669,19 +983,53 @@ export const SaveNotePurchaseAgreementResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload = RecordResultPayload.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<SaveNotePurchaseAgreementResponse, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<SaveNotePurchaseAgreementResponse | SaveNotePurchaseAgreementResponse[]>
+      | Iterable<SaveNotePurchaseAgreementResponse | SaveNotePurchaseAgreementResponse[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SaveNotePurchaseAgreementResponse.encode(p).finish()];
+        }
+      } else {
+        yield* [SaveNotePurchaseAgreementResponse.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, SaveNotePurchaseAgreementResponse>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<SaveNotePurchaseAgreementResponse> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [SaveNotePurchaseAgreementResponse.decode(p)];
+        }
+      } else {
+        yield* [SaveNotePurchaseAgreementResponse.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): SaveNotePurchaseAgreementResponse {
@@ -690,8 +1038,9 @@ export const SaveNotePurchaseAgreementResponse = {
 
   toJSON(message: SaveNotePurchaseAgreementResponse): unknown {
     const obj: any = {};
-    message.payload !== undefined &&
-      (obj.payload = message.payload ? RecordResultPayload.toJSON(message.payload) : undefined);
+    if (message.payload !== undefined) {
+      obj.payload = RecordResultPayload.toJSON(message.payload);
+    }
     return obj;
   },
 
@@ -1017,9 +1366,9 @@ export const NotePurchaseAgreementServiceDefinition = {
           ],
           578365826: [
             new Uint8Array([
-              27,
+              40,
               18,
-              25,
+              38,
               47,
               118,
               49,
@@ -1045,6 +1394,19 @@ export const NotePurchaseAgreementServiceDefinition = {
               101,
               110,
               116,
+              47,
+              123,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              46,
+              105,
+              100,
+              125,
             ]),
           ],
         },
@@ -1189,7 +1551,10 @@ export const NotePurchaseAgreementServiceDefinition = {
           ],
           578365826: [
             new Uint8Array([
-              27,
+              30,
+              58,
+              1,
+              42,
               34,
               25,
               47,
@@ -1227,7 +1592,7 @@ export const NotePurchaseAgreementServiceDefinition = {
       requestType: GetNotePurchaseAgreementDocRequest,
       requestStream: false,
       responseType: GetNotePurchaseAgreementDocResponse,
-      responseStream: false,
+      responseStream: true,
       options: {
         _unknownFields: {
           8338: [
@@ -1388,9 +1753,9 @@ export const NotePurchaseAgreementServiceDefinition = {
           ],
           578365826: [
             new Uint8Array([
-              32,
+              45,
               18,
-              30,
+              43,
               47,
               118,
               49,
@@ -1416,6 +1781,19 @@ export const NotePurchaseAgreementServiceDefinition = {
               101,
               110,
               116,
+              47,
+              123,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              46,
+              105,
+              100,
+              125,
               47,
               102,
               105,
@@ -1445,7 +1823,7 @@ export interface NotePurchaseAgreementServiceImplementation<CallContextExt = {}>
   getNotePurchaseAgreementDoc(
     request: GetNotePurchaseAgreementDocRequest,
     context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
+  ): ServerStreamingMethodResult<DeepPartial<GetNotePurchaseAgreementDocResponse>>;
 }
 
 export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
@@ -1464,13 +1842,13 @@ export interface NotePurchaseAgreementServiceClient<CallOptionsExt = {}> {
   getNotePurchaseAgreementDoc(
     request: DeepPartial<GetNotePurchaseAgreementDocRequest>,
     options?: CallOptions & CallOptionsExt,
-  ): Promise<GetNotePurchaseAgreementDocResponse>;
+  ): AsyncIterable<GetNotePurchaseAgreementDocResponse>;
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -1533,3 +1911,5 @@ if (_m0.util.Long !== Long) {
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
+
+export type ServerStreamingMethodResult<Response> = { [Symbol.asyncIterator](): AsyncIterator<Response, void> };

@@ -45,33 +45,63 @@ export const User = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.emailAddress = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.password = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<User, Uint8Array>
+  async *encodeTransform(source: AsyncIterable<User | User[]> | Iterable<User | User[]>): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [User.encode(p).finish()];
+        }
+      } else {
+        yield* [User.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, User>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<User> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [User.decode(p)];
+        }
+      } else {
+        yield* [User.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): User {
@@ -84,9 +114,15 @@ export const User = {
 
   toJSON(message: User): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.emailAddress !== undefined && (obj.emailAddress = message.emailAddress);
-    message.password !== undefined && (obj.password = message.password);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.emailAddress !== "") {
+      obj.emailAddress = message.emailAddress;
+    }
+    if (message.password !== "") {
+      obj.password = message.password;
+    }
     return obj;
   },
 
@@ -123,19 +159,53 @@ export const AuthenticateUserRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.payload = User.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<AuthenticateUserRequest, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<AuthenticateUserRequest | AuthenticateUserRequest[]>
+      | Iterable<AuthenticateUserRequest | AuthenticateUserRequest[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [AuthenticateUserRequest.encode(p).finish()];
+        }
+      } else {
+        yield* [AuthenticateUserRequest.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, AuthenticateUserRequest>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<AuthenticateUserRequest> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [AuthenticateUserRequest.decode(p)];
+        }
+      } else {
+        yield* [AuthenticateUserRequest.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): AuthenticateUserRequest {
@@ -144,7 +214,9 @@ export const AuthenticateUserRequest = {
 
   toJSON(message: AuthenticateUserRequest): unknown {
     const obj: any = {};
-    message.payload !== undefined && (obj.payload = message.payload ? User.toJSON(message.payload) : undefined);
+    if (message.payload !== undefined) {
+      obj.payload = User.toJSON(message.payload);
+    }
     return obj;
   },
 
@@ -184,26 +256,60 @@ export const AuthenticateUserResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.isAuthenticated = reader.bool();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.errorMessage = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
     }
     return message;
+  },
+
+  // encodeTransform encodes a source of message objects.
+  // Transform<AuthenticateUserResponse, Uint8Array>
+  async *encodeTransform(
+    source:
+      | AsyncIterable<AuthenticateUserResponse | AuthenticateUserResponse[]>
+      | Iterable<AuthenticateUserResponse | AuthenticateUserResponse[]>,
+  ): AsyncIterable<Uint8Array> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [AuthenticateUserResponse.encode(p).finish()];
+        }
+      } else {
+        yield* [AuthenticateUserResponse.encode(pkt).finish()];
+      }
+    }
+  },
+
+  // decodeTransform decodes a source of encoded messages.
+  // Transform<Uint8Array, AuthenticateUserResponse>
+  async *decodeTransform(
+    source: AsyncIterable<Uint8Array | Uint8Array[]> | Iterable<Uint8Array | Uint8Array[]>,
+  ): AsyncIterable<AuthenticateUserResponse> {
+    for await (const pkt of source) {
+      if (Array.isArray(pkt)) {
+        for (const p of pkt) {
+          yield* [AuthenticateUserResponse.decode(p)];
+        }
+      } else {
+        yield* [AuthenticateUserResponse.decode(pkt)];
+      }
+    }
   },
 
   fromJSON(object: any): AuthenticateUserResponse {
@@ -215,8 +321,12 @@ export const AuthenticateUserResponse = {
 
   toJSON(message: AuthenticateUserResponse): unknown {
     const obj: any = {};
-    message.isAuthenticated !== undefined && (obj.isAuthenticated = message.isAuthenticated);
-    message.errorMessage !== undefined && (obj.errorMessage = message.errorMessage);
+    if (message.isAuthenticated === true) {
+      obj.isAuthenticated = message.isAuthenticated;
+    }
+    if (message.errorMessage !== "") {
+      obj.errorMessage = message.errorMessage;
+    }
     return obj;
   },
 
@@ -362,7 +472,10 @@ export const AuthenticationServiceDefinition = {
           ],
           578365826: [
             new Uint8Array([
-              23,
+              26,
+              58,
+              1,
+              42,
               34,
               21,
               47,
